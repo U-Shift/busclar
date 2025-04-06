@@ -1,17 +1,23 @@
-busclaR
-================
+---
+title: "busclaR"
+subtitle: "Bus lane priorities using GTFS and overline methods"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
 
 ## Bus lane priorities using GTFS and overline methods
 
-This script helps to identify the road network segments with higher bus
-frequency, to support planning of BUS lanes for a given city.
+This script helps to identify the road network segments with higher bus frequency, to support planning of BUS lanes for a given city.
 
 ### Requires
 
-- GTFS data (`.zip`)
-- The following R packages
+-   GTFS data (`.zip`)
+-   The following R packages
 
-``` r
+```{r}
 library(tidyverse)
 library(tidytransit)
 library(sf)
@@ -19,11 +25,11 @@ library(stplanr)
 library(mapview)
 ```
 
-## Example in Lisbon (Carris)
+## Example in Lisbon
 
 #### Get GTFS data
 
-``` r
+```{r}
 bus_oprtator = "carris_lisboa"
 gtfs_location = gtfs_location = paste0("data/gtfs/", bus_operator, ".zip")
 gtfs = read_gtfs(gtfs_location)
@@ -31,7 +37,7 @@ gtfs = read_gtfs(gtfs_location)
 
 #### Filter GTFS for a given date
 
-``` r
+```{r}
 date = "2025-04-02" # any weekday date
 
 gtfs_date = filter_feed_by_date(gtfs, extract_date = date)
@@ -40,7 +46,7 @@ gtfs_date = gtfs_as_sf(gtfs_date)
 
 #### Manipulate data
 
-``` r
+```{r}
 trips = gtfs_date$trip
 stops = gtfs_date$stops
 shapes = gtfs_date$shapes
@@ -67,7 +73,7 @@ freq_data <- stop_times %>%
 
 #### Get frequency by route shape
 
-``` r
+```{r}
 routes_freq =
   freq_data %>%
   left_join(trips %>%
@@ -82,12 +88,9 @@ class(routes_freq) # sf   data.frame
 
 ### Overline
 
-We use the
-[`overline2()`](https://docs.ropensci.org/stplanr/reference/overline2.html)
-function from the [stplanr](https://docs.ropensci.org/stplanr/) package
-to aggregate the road segments and separate them by **bus frequency**.
+We use the [`overline2()`](https://docs.ropensci.org/stplanr/reference/overline2.html) function from the [stplanr](https://docs.ropensci.org/stplanr/) package to aggregate the road segments and separate them by **bus frequency**.
 
-``` r
+```{r}
 # as a function loop for all the hours
 routes_freq_all = data.frame()
 
@@ -104,16 +107,13 @@ for (h in 0:23) { # hours of the day
 }
 ```
 
-We get the road segments with the bus frequency for each hour of the day
-(bus line departure hour!).
+We get the road segments with the bus frequency for each hour of the day (bus line departure hour!).
 
-> Consider using the
-> [`overline_intersecttion()`](https://github.com/ropensci/stplanr/issues/420)
-> function **over** the `overline2` for smoother results.
+> Consider using the [`overline_intersecttion()`](https://github.com/ropensci/stplanr/issues/420) function **over** the `overline2` for smoother results.
 
 ### Map
 
-``` r
+```{r}
 h = 8 # change the desired hour
 routes_freq_hour = routes_freq_all %>% 
   filter(hour == h) 
@@ -123,7 +123,7 @@ summary(routes_freq_hour$freq)
 
 Min. 1st Qu. Median Mean 3rd Qu. Max. 1.00 5.00 9.00 12.54 16.00 114.00
 
-``` r
+```{r}
 mapviewOptions(vector.palette = hcl.colors(palette = "viridis", n = 80, rev = TRUE),
                legend.pos = "bottomright")
 
@@ -134,5 +134,7 @@ mapview(
   layer.name = "Hourly Frequency"
 )
 ```
+
+The result is an interactive map with the bus frequency per road segment at 8-9h am.
 
 ![](map_carris.png)
