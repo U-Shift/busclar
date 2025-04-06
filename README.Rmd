@@ -138,3 +138,13 @@ mapview(
 The result is an interactive map with the bus frequency per road segment at 8-9h am.
 
 ![](map_carris.png)
+
+## Compare with existing
+
+Then you can compare with the existing bus lanes from OSM and **identify missing BUS lanes** - if you consider *only* bus frequency, and not other attributes.
+
+![](bus_lisbon.png)
+
+See [`bus_lanes.R`](code/bus_lanes.R) script.
+
+> The information from OpenStreetMap may be incomplete or outdated
