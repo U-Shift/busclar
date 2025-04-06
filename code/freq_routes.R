@@ -98,7 +98,7 @@ mapview(
   routes_freq_hour %>% filter(freq > 2),
   zcol = "freq",
   lwd = "freq",
-  layer.name = "Hourly Frequency"
+  layer.name = "Frequency (hour)"
 )
 
 
