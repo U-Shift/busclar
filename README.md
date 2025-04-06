@@ -47,21 +47,21 @@ shapes = gtfs_date$shapes
 routes = gtfs_date$routes
 stop_times = gtfs_date$stop_times
 
-stop_times <- stop_times %>% 
-  left_join(trips) %>% 
-  left_join(routes) %>% 
+stop_times = stop_times |> 
+  left_join(trips) |> 
+  left_join(routes) |> 
   select(route_id, route_short_name, trip_id, stop_id, service_id,
          arrival_time, departure_time, direction_id, shape_id, stop_sequence)
 
-stop_times <- stop_times %>% 
+stop_times = stop_times |> 
   filter(stop_sequence == 1) # departures only
 
-stop_times <- stop_times %>% 
+stop_times = stop_times |> 
   mutate(arrival_hour = lubridate::hour(arrival_time)) # hour in integer format
 
-freq_data <- stop_times %>% 
-  group_by(route_id, route_short_name, direction_id, arrival_hour) %>% 
-  summarize(freq = n()) %>%
+freq_data = stop_times |> 
+  group_by(route_id, route_short_name, direction_id, arrival_hour) |> 
+  summarize(freq = n()) |>
   ungroup()
 ```
 
@@ -69,12 +69,12 @@ freq_data <- stop_times %>%
 
 ``` r
 routes_freq =
-  freq_data %>%
-  left_join(trips %>%
-              select(route_id, direction_id, shape_id) %>%
-              distinct()) %>%
-  as.data.frame() %>%
-  left_join(shapes) %>%
+  freq_data |>
+  left_join(trips |>
+              select(route_id, direction_id, shape_id) |>
+              distinct()) |>
+  as.data.frame() |>
+  left_join(shapes) |>
   st_as_sf()
 
 class(routes_freq) # sf   data.frame
@@ -92,12 +92,12 @@ to aggregate the road segments and separate them by **bus frequency**.
 routes_freq_all = data.frame()
 
 for (h in 0:23) { # hours of the day
-  routes_freq_h = routes_freq %>% 
+  routes_freq_h = routes_freq |> 
     filter(arrival_hour == h
            # direction_id = 1  # if needed for only one of the directions
-           ) %>%  
-    overline2(attrib = "freq") %>% 
-    arrange(freq) %>% 
+           ) |>  
+    overline2(attrib = "freq") |> 
+    arrange(freq) |> 
     mutate(hour = h)
   
   routes_freq_all = rbind(routes_freq_all, routes_freq_h)
@@ -115,28 +115,30 @@ We get the road segments with the bus frequency for each hour of the day
 
 ``` r
 h = 8 # change the desired hour
-routes_freq_hour = routes_freq_all %>% 
+routes_freq_hour = routes_freq_all |> 
   filter(hour == h) 
 
 summary(routes_freq_hour$freq)
 ```
 
-Min. 1st Qu. Median Mean 3rd Qu. Max. 1.00 5.00 9.00 12.54 16.00 114.00
+       Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+       1.00    5.00    9.00   12.54   16.00  114.00 
 
 ``` r
 mapviewOptions(vector.palette = hcl.colors(palette = "viridis", n = 80, rev = TRUE),
                legend.pos = "bottomright")
 
 mapview(
-  routes_freq_hour %>% filter(freq > 2),
+  routes_freq_hour |> filter(freq > 2),
   zcol = "freq",
   lwd = "freq",
   layer.name = "Hourly Frequency"
 )
 ```
 
-The result is an interactive map with the bus frequency per road segment
-at 8-9h am.
+The result is an [interactive
+map](http://www.rosafelix.bike/transit/carris_lisboa_8-9h.html) with the
+bus frequency per road segment at 8-9h am.
 
 ![](map_carris.png)
 
