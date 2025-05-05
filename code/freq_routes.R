@@ -9,7 +9,7 @@ mapviewOptions(vector.palette = hcl.colors(palette = "viridis", n = 80, rev = TR
                legend.pos = "bottomright")
 
 # Get GTFS data for a given region
-bus_oprtator = "carris_lisboa"
+bus_operator = "carris_lisboa"
 lisbon_gtfs_url = "https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS"
 gtfs_location = paste0("data/gtfs/", bus_operator, ".zip")
 download.file(lisbon_gtfs_url, destfile = gtfs_location, mode = "wb") # 24MB
@@ -73,8 +73,8 @@ for (h in 0:23) { # hours of the day
   routes_freq_all = rbind(routes_freq_all, routes_freq_h)
 }
 
-st_write(routes_freq_all, paste0("data/", gtfs_location, "routes_freq.gpkg"))
-piggyback::pb_upload(paste0("data/", gtfs_location, "routes_freq.gpkg"))
+st_write(routes_freq_all, paste0("data/", bus_operator, "_routes_freq.gpkg"))
+# piggyback::pb_upload(paste0("data/", gtfs_location, "routes_freq.gpkg"))
 
 
 # for a given hour
