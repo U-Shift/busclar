@@ -95,7 +95,7 @@ mapview(
 )
 # above 2 per hour
 mapview(
-  routes_freq_hour %>% filter(freq > 2),
+  routes_freq_hour %>% filter(freq > 30),
   zcol = "freq",
   lwd = "freq",
   layer.name = "Frequency (hour)"
