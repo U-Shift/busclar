@@ -10,6 +10,10 @@ library(stplanr)
 library(mapview)
 
 
+
+# single tests ------------------------------------------------------------
+
+
 # OSM data filtered
 road_osm = opq(BBOX) |> # uses osmdata package, to extract only with BB
   add_osm_feature(key = "highway") |> 
@@ -66,6 +70,9 @@ mapview(osm_shape_i_line_correct)
 mapview(osm_shape_i_line_correct) + mapview(shape_i, color = "red") + mapview(osm_shape_i_line, color = "green")
 
 
+
+
+# for all carris routes ---------------------------------------------------
 
 
 ## loop for all
@@ -140,9 +147,6 @@ for (h in 0:23) { # hours of the day
 }
 
 
-st_write(routes_freq_all_osm, paste0("data/", bus_operator, "_routes_freq_osm.gpkg"))
-# piggyback::pb_upload(paste0("data/", gtfs_location, "routes_freq.gpkg"))
-
 
 # for a given hour
 h = 8 # test
@@ -159,13 +163,4 @@ mapview(
   lwd = "freq",
   layer.name = "Frequência",
   lwd.multiplier = 2 # acho que não faz nada
-)
-
-
-# above 2 per hour
-mapview(
-  routes_freq_hour %>% filter(freq > 30),
-  zcol = "freq",
-  lwd = "freq",
-  layer.name = "Frequency (hour)"
 )
