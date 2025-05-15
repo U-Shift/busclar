@@ -164,3 +164,57 @@ mapview(
   layer.name = "Frequência",
   lwd.multiplier = 2 # acho que não faz nada
 )
+
+
+
+
+
+# from qgis ---------------------------------------------------------------
+
+shapes_osm_simplifiessnap = st_read("data/carris_routes_snapped6_simplified5_v2.gpkg")
+
+routes_freq_simplify = freq_data %>%
+  left_join(trips %>%
+              select(route_id, direction_id, shape_id) %>%
+              distinct()) %>%
+  as.data.frame()  |>
+  left_join(shapes_osm_simplifiessnap) |> 
+  st_as_sf()
+
+## overline
+routes_freq_simplify_all = data.frame()
+for (h in 0:23) { # hours of the day
+  routes_freq_h = routes_freq_simplify %>% 
+    filter(arrival_hour == h) %>% 
+    overline2(attrib = "freq") %>% 
+    arrange(freq) %>% 
+    mutate(hour = h)
+  
+  routes_freq_simplify_all = rbind(routes_freq_simplify_all, routes_freq_h)
+}
+
+
+# for a given hour
+h = 8 # test
+routes_freq_simplify_hour = routes_freq_simplify_all %>% 
+  filter(hour == h) 
+summary(routes_freq_simplify_hour$freq)
+
+
+## mapas
+# with all
+mapview(
+  routes_freq_simplify_hour,
+  zcol = "freq",
+  lwd = "freq",
+  layer.name = "Frequência",
+  lwd.multiplier = 2 # acho que não faz nada
+)
+
+mapview(
+  routes_freq_simplify_hour %>% filter(freq > 2),
+  zcol = "freq",
+  lwd = "freq",
+  layer.name = "Frequency (hour)",
+  lwd.multiplier = 200 # acho que não faz nada
+)
