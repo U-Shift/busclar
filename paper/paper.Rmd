@@ -1,0 +1,156 @@
+---
+title: "GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation"
+author: "Rosa Félix, Gonçalo Matos"
+date: "`r format(Sys.Date(), 'May %d, %Y')`" # %B for locale full month name
+bibliography: bibliography.bib
+biblio-style: apalike
+output: 
+  bookdown::pdf_document2:
+    keep_tex: true
+    toc: false
+    citation_package: natbib
+    latex_engine: xelatex
+    extra_dependencies: "subfig"
+urlcolor: blue
+citecolor: blue
+linkcolor: blue
+    # template: findings_template.tex
+preamble: | 
+    \documentclass{article}
+    \usepackage[english]{babel}
+    
+    % Set page size and margins
+    % Replace `letterpaper' with`a4paper' for UK/EU standard size
+    \usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+    
+    % Useful packages
+    \usepackage{amsmath}
+    \usepackage{graphicx}
+    \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+    \usepackage{graphicx}
+    \usepackage{subcaption}
+    \usepackage[sort&compress,round,semicolon,authoryear]{natbib}
+    \usepackage{hyperref}
+    \usepackage{rotating}
+    \usepackage{multirow}
+    \usepackage{lscape}
+    \usepackage{longtable}
+    \hypersetup
+    {
+     %bookmarks=true,     % show bookmarks bar?
+     unicode=false,     % non-Latin characters in Acrobat's bookmarks
+     pdftoolbar=true,    % show Acrobat's toolbar?
+     pdfmenubar=true,    % show Acrobat's menu?
+     pdffitwindow=false,   % window fit to page when opened
+     pdfstartview={FitH},  % fits the width of the page to the window
+     pdftitle={My title},  % title
+     pdfauthor={Author},   % author
+     pdfsubject={Subject},  % subject of the document
+     pdfcreator={Creator},  % creator of the document
+     pdfproducer={Producer}, % producer of the document
+     pdfkeywords={keywords}, % list of keywords
+     pdfnewwindow=true,   % links in new window
+     colorlinks=true,    % false: boxed links; true: colored links
+     linkcolor=red,     % color of internal links
+     citecolor=blue,    % color of links to bibliography
+     filecolor=magenta,   % color of file links
+     urlcolor=cyan      % color of external links
+    }
+    
+    
+    \usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
+    \usepackage{subcaption}
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    \usepackage{amssymb}
+    \usepackage{amsbsy}
+    %\usepackage{newtxtext,newtxmath}
+    \usepackage{booktabs}
+    \usepackage{colortbl}
+    \usepackage[none]{hyphenat}
+    \usepackage{multirow}
+    \usepackage{array}
+    \usepackage{pdfpages}
+    \usepackage{url}
+    
+abstract: |
+    Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
+    
+keywords: "abs, def"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      out.width = "100%",
+                      fig.align = "center",
+                      dpi = 300)
+```
+
+
+\textit{Keywords:} Keywords here, but also in the webform.
+
+
+# Questions
+
+Bus lanes improve bus operation reliability by reducing the variability of its running time [@surprenant-legault-2011], increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources [@basso-2011]. Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections [@truong-2015]. 
+
+However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service [@arasan-2010], jeopardizing public acceptance [@batty-2014]. Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.  
+
+GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment. Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit [@tidytransit] and GTFSWizard @quesadoguimaraes2024]. 
+
+
+* How to get an overview of where bus lanes should be prioritized for a given territory?
+
+
+# Methods
+
+GTFShift is an R package that provides methods for the entire workflow of bus network density analysis. 
+
+Starting with the load of the GTFS feed, with `load_feed()` fixing any integrity errors that might hinder the analysis process. 
+
+If the GTFS feed location is unknown, it can be queried using `query_mobilitydatabase()`, a method that asks the Mobility Database API for the feeds that match the parameters provided, such as the municipality, country, or even a boundary box.
+
+Then, to expand the scope analysis, it includes a method for aggregating multiple feeds, `unify()`. `create_calendar()` complements it, solving compatibility issues between feeds with `calendar_dates.txt` only and others with `calendar.txt`.
+
+Narrowing the scope is also possible, using filtering methods according to multiple parameters, such as `filter_by_agency()`, `filter_by_modes()`, and `filter_by_route_name()`.
+They extend the filtering already provided by the tidytransit package.
+
+Finally, network density can be analyzed at the stop level, with `get_stop_frequency_hourly()`, or at the route level, with `get_route_frequency_hourly()`.
+This analysis is aggregated by stop, route, and hour.
+
+For an aggregated geospatial analysis, the last accepts an `overline` flag, which overlaps routes in street segments, creating a single route network with combined frequencies.
+This aggregation is performed using `stplanr::overline2()` [@stplanr].
+
+To compare the streets with higher transit density and the existing bus lanes, `osm_bus_lanes()` allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
+
+# Findings
+
+By applying the methods presented in the previous chapter, it was possible to analyse the bus network density for Lisbon city, in Portugal.
+
+The analysis was performed using the aggregated feeds of both Carris and Carris Metropolitana, respectively, the urban and sub-urban bus operators in the area. 
+
+The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density. 
+
+```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap."}
+# include figure
+knitr::include_graphics("map2.png")
+```
+
+The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
+For instance, if the edges of the lines do not overlap, lines might not be aggregated correctly, causing inconsistent results.
+As an alternative, *GTFShift* provides the method `network_overline()`, that allows for an alternative route aggregation.
+Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
+It can be used to aggregate the routes frequencies.
+
+Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
+
+
+# Acknowledgements{.unnumbered}
+
+The authors acknowledge Francisco Costa and Manuel Banza for valuable discussion on the refined methods and further developments.
+R Felix is grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
+
+# References{.unnumbered}
+

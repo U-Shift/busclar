@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[sort&compress,round,semicolon,authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{longtable}
+\hypersetup
+{
+ %bookmarks=true,     % show bookmarks bar?
+ unicode=false,     % non-Latin characters in Acrobat's bookmarks
+ pdftoolbar=true,    % show Acrobat's toolbar?
+ pdfmenubar=true,    % show Acrobat's menu?
+ pdffitwindow=false,   % window fit to page when opened
+ pdfstartview={FitH},  % fits the width of the page to the window
+ pdftitle={My title},  % title
+ pdfauthor={Author},   % author
+ pdfsubject={Subject},  % subject of the document
+ pdfcreator={Creator},  % creator of the document
+ pdfproducer={Producer}, % producer of the document
+ pdfkeywords={keywords}, % list of keywords
+ pdfnewwindow=true,   % links in new window
+ colorlinks=true,    % false: boxed links; true: colored links
+ linkcolor=red,     % color of internal links
+ citecolor=blue,    % color of links to bibliography
+ filecolor=magenta,   % color of file links
+ urlcolor=cyan      % color of external links
+}
+
+
+\usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsbsy}
+%\usepackage{newtxtext,newtxmath}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage[none]{hyphenat}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{pdfpages}
+
+
+
+\title{Title of the Article in Title Case}
+\author{Author 1, Author 2, ... Author N}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%
+% ABSTRACT
+%%%%%%%%%%%%%%%%%%%%
+\begin{abstract} 
+
+Abstract here, but also in the web form.
+
+Papers should be focused and to the point, and not begin with trite observations like “Congestion is a problem the world over.” Usually you can delete your opening paragraph if it begins like that, and the reader is no worse off. As Strunk and White say: ``Omit Needless Words.'' The \textit{Abstract} should not say the same thing as the \textit{Questions}.
+
+Abstracts are a maximum of 100 words.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%
+% KEYWORDS
+%%%%%%%%%%%%%%%%%%%%
+\textit{Keywords:} Keywords here, but also in the webform.
+
+
+%%%%%%%%%%%%%%%%%%%%
+% QUESTIONS
+%%%%%%%%%%%%%%%%%%%%
+\section{Questions}
+The text is in 3 sections, with a total of 1000 words. You should cite articles with the citep command like this: \citep{bell2008attacker}.
+
+This section includes \textit{research questions} and \textit{hypotheses} addressed in the article.
+
+Before writing a paper for \textit{Findings}, please review: \url{https://findingspress.org/for-authors}
+
+%%%%%%%%%%%%%%%%%%%%
+% METHODS
+%%%%%%%%%%%%%%%%%%%%
+\section{Methods}
+
+This section describes the methods and data used in the article.
+
+
+%%%%%%%%%%%%%%%%%%%%
+% FINDINGS
+%%%%%%%%%%%%%%%%%%%%
+\section{Findings}
+
+This section describes the results of what you found.
+
+There shall be no introduction, `road-map paragraph,' literature review, conclusions, speculations, or policy implications beyond what is included above. Focus on what you found, not why you found it.
+
+You may include up to 3 tables and 3 figures in the paper. 
+
+%\subsection{Figures}
+The figures should be created as high-resolution JPEG files, and those files should be uploaded when you upload your paper, they should be referenced and numbered consistently, and should appear in the order they appear in the text, e.g. \ref{fig:JPEGExample}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{Findings.jpeg}
+    \caption{An example of a JPEG image, this one of the \textit{Findings Press} logo.}
+    \label{fig:JPEGExample}
+\end{figure}
+
+Creation as vector graphics before converting to JPEG is preferred for charts and maps, to allow zooming without loss of information or blurriness.
+
+All graphs shall have their axes labeled, clearly, with units as appropriate.
+
+Legends and scales shall be as consistent as possible between graphics, so that they can be compared.
+
+All maps shall have legends and scales and north shall be on top (unless stated otherwise).
+
+%\subsection{Tables}
+All tables shall be provided in an editable format
+
+Complex tables which may be hard to typeset in HTML may also be uploaded as separate figures.
+
+The tables should be standard LaTeX tables, as shown in \ref{tab:TableExample}.
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{ccc}
+         & Column 1 & Column 2 \\
+    Row 1     & 1 & 2 \\
+    Row 2     & 3 & 4 \\
+    \end{tabular}
+    \caption{Example Table}
+    \label{tab:TableExample}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%
+% ACKNOWLEDGEMENTS
+%%%%%%%%%%%%%%%%%%%%
+\section{Acknowledgements}
+
+Here you identify anyone who helped along the way, including providers of data if not cited, who is not a co-author.
+
+%%%%%%%%%%%%%%%%%%%%
+% REFERENCES
+%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{chicago}
+\bibliography{bibliography.bib}
+
+\end{document}
+
+

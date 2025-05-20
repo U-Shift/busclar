@@ -1,0 +1,168 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{subfig}
+\usepackage[]{natbib}
+\bibliographystyle{apalike}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation},
+  pdfauthor={Rosa Félix, Gonçalo Matos},
+  pdfkeywords={abs, def},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation}
+\author{Rosa Félix, Gonçalo Matos}
+\date{May 20, 2025}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
+\end{abstract}
+
+\textit{Keywords:} Keywords here, but also in the webform.
+
+\section{Questions}\label{questions}
+
+Bus lanes improve bus operation reliability by reducing the variability of its running time \citep{surprenant-legault-2011}, increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources \citep{basso-2011}. Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections \citep{truong-2015}.
+
+However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service \citep{arasan-2010}, jeopardizing public acceptance \citep{batty-2014}. Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.
+
+GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment. Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit \citep{tidytransit} and GTFSWizard \citet{quesadoguimaraes2024}{]}.
+
+\begin{itemize}
+\tightlist
+\item
+  How to get an overview of where bus lanes should be prioritized for a given territory?
+\end{itemize}
+
+\section{Methods}\label{methods}
+
+GTFShift is an R package that provides methods for the entire workflow of bus network density analysis.
+
+Starting with the load of the GTFS feed, with \texttt{load\_feed()} fixing any integrity errors that might hinder the analysis process.
+
+If the GTFS feed location is unknown, it can be queried using \texttt{query\_mobilitydatabase()}, a method that asks the Mobility Database API for the feeds that match the parameters provided, such as the municipality, country, or even a boundary box.
+
+Then, to expand the scope analysis, it includes a method for aggregating multiple feeds, \texttt{unify()}. \texttt{create\_calendar()} complements it, solving compatibility issues between feeds with \texttt{calendar\_dates.txt} only and others with \texttt{calendar.txt}.
+
+Narrowing the scope is also possible, using filtering methods according to multiple parameters, such as \texttt{filter\_by\_agency()}, \texttt{filter\_by\_modes()}, and \texttt{filter\_by\_route\_name()}.
+They extend the filtering already provided by the tidytransit package.
+
+Finally, network density can be analyzed at the stop level, with \texttt{get\_stop\_frequency\_hourly()}, or at the route level, with \texttt{get\_route\_frequency\_hourly()}.
+This analysis is aggregated by stop, route, and hour.
+
+For an aggregated geospatial analysis, the last accepts an \texttt{overline} flag, which overlaps routes in street segments, creating a single route network with combined frequencies.
+This aggregation is performed using \texttt{stplanr::overline2()} \citep{stplanr}.
+
+To compare the streets with higher transit density and the existing bus lanes, \texttt{osm\_bus\_lanes()} allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
+
+\section{Findings}\label{findings}
+
+By applying the methods presented in the previous chapter, it was possible to analyse the bus network density for Lisbon city, in Portugal.
+
+The analysis was performed using the aggregated feeds of both Carris and Carris Metropolitana, respectively, the urban and sub-urban bus operators in the area.
+
+The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{map2} 
+
+}
+
+\caption{Road segments with higher bus frequency, in Lisbon. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
+\end{figure}
+
+The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
+For instance, if the edges of the lines do not overlap, lines might not be aggregated correctly, causing inconsistent results.
+As an alternative, \emph{GTFShift} provides the method \texttt{network\_overline()}, that allows for an alternative route aggregation.
+Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
+It can be used to aggregate the routes frequencies.
+
+Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
+
+\section*{Acknowledgements}\label{acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+The authors acknowledge Francisco Costa and Manuel Banza for valuable discussion on the refined methods and further developments.
+R Felix is grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
+
+\renewcommand\refname{References}
+  \bibliography{bibliography.bib}
+
+\end{document}
