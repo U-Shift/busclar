@@ -35,8 +35,7 @@ preamble: |
     \usepackage{multirow}
     \usepackage{lscape}
     \usepackage{longtable}
-    \hypersetup
-    {
+    \hypersetup{
      %bookmarks=true,     % show bookmarks bar?
      unicode=false,     % non-Latin characters in Acrobat's bookmarks
      pdftoolbar=true,    % show Acrobat's toolbar?
@@ -93,6 +92,14 @@ knitr::opts_chunk$set(echo = FALSE,
 
 
 # Questions
+
+<!-- We can make it shorter and go straight to the problem identification, question and aims. -->
+
+<!-- do Co-Pilot: -->
+<!-- Bus lanes are a common measure to improve the performance of public transport systems, especially in urban areas. They are dedicated lanes for buses, allowing them to bypass traffic congestion and improve travel times. This is particularly important in cities where road space is limited and traffic congestion is a significant issue. -->
+<!-- The implementation of bus lanes can lead to significant improvements in the efficiency and reliability of public transport systems, making them a more attractive option for commuters. This can help to reduce the number of private vehicles on the road, leading to lower emissions and improved air quality. -->
+<!-- This paper presents the GTFShift R package, which provides a set of tools for analyzing bus transit density using the General Transit Feed Specification (GTFS). The package allows users to identify the streets with the highest density of bus transit, helping to prioritize the implementation of bus lanes in urban areas.  -->
+
 
 Bus lanes improve bus operation reliability by reducing the variability of its running time [@surprenant-legault-2011], increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources [@basso-2011]. Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections [@truong-2015]. 
 
