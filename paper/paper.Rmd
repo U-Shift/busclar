@@ -3,7 +3,7 @@ title: "GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation"
 author: "Rosa Félix, Gonçalo Matos"
 date: "`r format(Sys.Date(), 'May %d, %Y')`" # %B for locale full month name
 bibliography: bibliography.bib
-biblio-style: apalike
+biblio-style: apacite
 output: 
   bookdown::pdf_document2:
     keep_tex: true
@@ -15,10 +15,9 @@ urlcolor: blue
 citecolor: blue
 linkcolor: blue
 indent: true
-    # template: findings_template.tex
-
 header-includes:
   - \usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
+  - \usepackage{apacite}
     
 abstract: |
     Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
@@ -53,7 +52,7 @@ Bus lanes improve bus operation reliability by reducing the variability of its r
 
 However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service [@arasan-2010], jeopardizing public acceptance [@batty-2014]. Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.  
 
-GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment. Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit [@tidytransit] and GTFSWizard @quesadoguimaraes2024]. 
+GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment. Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit [@tidytransit] and GTFSWizard @quesadoguimaraes2024. 
 
 
 * How to get an overview of where bus lanes should be prioritized for a given territory?
