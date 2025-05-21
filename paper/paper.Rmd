@@ -14,6 +14,7 @@ output:
 urlcolor: blue
 citecolor: blue
 linkcolor: blue
+indent: true
     # template: findings_template.tex
 preamble: | 
     \documentclass{article}

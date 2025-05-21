@@ -26,16 +26,6 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
 \usepackage{longtable,booktabs,array}
@@ -86,7 +76,7 @@
 
 \title{GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation}
 \author{Rosa Félix, Gonçalo Matos}
-\date{May 20, 2025}
+\date{May 21, 2025}
 
 \begin{document}
 \maketitle
