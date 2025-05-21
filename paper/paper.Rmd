@@ -141,7 +141,7 @@ The analysis was performed using the aggregated feeds of both Carris and Carris 
 
 The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density. 
 
-```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap."}
+```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_lisboa_8-9h.html"}
 # include figure
 knitr::include_graphics("map2.png")
 ```
