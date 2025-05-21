@@ -16,67 +16,14 @@ citecolor: blue
 linkcolor: blue
 indent: true
     # template: findings_template.tex
-preamble: | 
-    \documentclass{article}
-    \usepackage[english]{babel}
-    
-    % Set page size and margins
-    % Replace `letterpaper' with`a4paper' for UK/EU standard size
-    \usepackage[a4paper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-    
-    % Useful packages
-    \usepackage{amsmath}
-    \usepackage{graphicx}
-    \usepackage[colorlinks=true, allcolors=blue]{hyperref}
-    \usepackage{graphicx}
-    \usepackage{subcaption}
-    \usepackage[sort&compress,round,semicolon,authoryear]{natbib}
-    \usepackage{hyperref}
-    \usepackage{rotating}
-    \usepackage{multirow}
-    \usepackage{lscape}
-    \usepackage{longtable}
-    \hypersetup{
-     %bookmarks=true,     % show bookmarks bar?
-     unicode=false,     % non-Latin characters in Acrobat's bookmarks
-     pdftoolbar=true,    % show Acrobat's toolbar?
-     pdfmenubar=true,    % show Acrobat's menu?
-     pdffitwindow=false,   % window fit to page when opened
-     pdfstartview={FitH},  % fits the width of the page to the window
-     pdftitle={My title},  % title
-     pdfauthor={Author},   % author
-     pdfsubject={Subject},  % subject of the document
-     pdfcreator={Creator},  % creator of the document
-     pdfproducer={Producer}, % producer of the document
-     pdfkeywords={keywords}, % list of keywords
-     pdfnewwindow=true,   % links in new window
-     colorlinks=true,    % false: boxed links; true: colored links
-     linkcolor=red,     % color of internal links
-     citecolor=blue,    % color of links to bibliography
-     filecolor=magenta,   % color of file links
-     urlcolor=cyan      % color of external links
-    }
-    
-    
-    \usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
-    \usepackage{subcaption}
-    \usepackage{amsmath}
-    \usepackage{amsfonts}
-    \usepackage{amssymb}
-    \usepackage{amsbsy}
-    %\usepackage{newtxtext,newtxmath}
-    \usepackage{booktabs}
-    \usepackage{colortbl}
-    \usepackage[none]{hyphenat}
-    \usepackage{multirow}
-    \usepackage{array}
-    \usepackage{pdfpages}
-    \usepackage{url}
+
+header-includes:
+  - \usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
     
 abstract: |
     Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
     
-keywords: "abs, def"
+keywords: "abs, def" # define below
 ---
 
 ```{r setup, include=FALSE}
