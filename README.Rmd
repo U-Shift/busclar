@@ -8,6 +8,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Introduction
+
 This is a method to support the prioritizartion of bus lanes.
 
 This script helps to identify the road network segments with higher bus frequency, to support planning of BUS lanes.
@@ -19,6 +21,28 @@ We use mainly two R packages:
 -   [**`GTFShift`**](https://u-shift.github.io/GTFShift/) to download and manipulate GTFS data
 -   [**`stplanr`**](https://docs.ropensci.org/stplanr) to manipulate the bus routes
 
-And
+And the data:
 
--   
+-   GTFS for a given city or region, filtered by the modes that run on-street
+
+-   OpenStreetMap for the same city or region, to compare with the existing Bus lanes.
+
+In this paper we will use the Lisbon municipality as a case study.
+
+## Methods
+
+### Get GTFS data
+
+Download and merge the existing GTFS for the Lisbon city
+
+```{r}
+# Lisbon_limit
+aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNICIPIOSgeo.gpkg", quiet = TRUE)
+lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
+
+# get all GTFS
+query_mobilitydatabase(token = Sys.getenv("MOBILITY_DATABASE"),
+                       is_official = FALSE, # some feeds are not uploaded to the database by official sources
+                       dataset_latitudes = c(lisboa[[2]], lisboa[[4]]),
+                       dataset_longitudes = c(lisboa[[1]], lisboa[[3]]))
+```
