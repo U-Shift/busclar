@@ -24,13 +24,29 @@ road_osm = road_osm |>
                                "tertiary", "tertiary_link", 
                                "residential", "living_street", "unclassified", "service"))
 
-osm_lanes = road_osm |> select(contains("psv"))
-osm_lanes = osm_lanes |> filter(psv == "designated" | 
-                                        `lanes:psv` == 1 |
-                                        `lanes:psv:forward` == 1 |
-                                        `lanes:psv:backward` == 1 |
-                                        `psv:lanes:backward` == "designated" |
-                                        `psv:lanes:forward` == "designated" |
-                                        !is.na(`psv:lanes`)
-                                  )
-mapview(osm_lanes)
+bus_lanes = road_osm |> select(contains("psv"))
+bus_lanes = bus_lanes |>
+  filter(
+    psv == "designated" |
+      `lanes:psv` == 1 |
+      `lanes:psv:forward` == 1 |
+      `lanes:psv:backward` == 1 |
+      `psv:lanes:backward` == "designated" |
+      `psv:lanes:forward` == "designated" |
+      !is.na(`psv:lanes`)
+  )
+
+mapview(bus_lanes)
+
+
+
+# from GTFShift -----------------------------------------------------------
+
+aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNICIPIOSgeo.gpkg", quiet = TRUE)
+lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
+
+bus_lanes = GTFShift::osm_bus_lanes(lisboa)
+
+mapview::mapview(bus_lanes, layer.name = "Bus lanes")
+
+st_write(bus_lanes, "other/bus_lanes_osm_lisbon.gpkg", delete_dsn = TRUE)
