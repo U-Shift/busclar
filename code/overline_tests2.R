@@ -218,3 +218,15 @@ mapview(
   layer.name = "Frequency (hour)",
   lwd.multiplier = 200 # acho que não faz nada
 )
+
+
+
+
+# simple network ----------------------------------------------------------
+
+road_osm_simple = road_osm |>
+  dplyr::filter(highway %in% c('motorway',"motorway_link",'primary', "primary_link",
+                               'secondary', "trunk", 'trunk_link',
+                               "tertiary",  
+                               "residential", "unclassified"))
+# "living_street", "service" removed, as they are not used in the overline

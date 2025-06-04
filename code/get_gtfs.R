@@ -57,19 +57,19 @@ routes_freq_lisbon_hour = GTFShift::get_route_frequency_hourly(gtfs = gtfs_bus_l
 
 routes_freq_lisbon_hour_clip = routes_freq_lisbon_hour |> st_crop(lisboa) # clip to Lisbon bounding box
 
-# Error in UseMethod("filter") : 
-#   no applicable method for 'filter' applied to an object of class "NULL"
+routes_freq_lisbon_hour_8 = routes_freq_lisbon_hour |> filter(hour == 8)
+max(routes_freq_lisbon_hour_8$frequency, na.rm = TRUE) # 115
+routes_freq_lisbon_hour_9 = routes_freq_lisbon_hour |> filter(hour == 9)
+max(routes_freq_lisbon_hour_9$frequency, na.rm = TRUE) # 102
+routes_freq_lisbon_hour_clip_8 = routes_freq_lisbon_hour_clip |> filter(hour == 8)
 
-routes_freq_lisbon_hour_8 = routes_freq_lisbon_hour |> filter(arrival_hour == 8)
-routes_freq_lisbon_hour_9 = routes_freq_lisbon_hour |> filter(arrival_hour == 9)
-routes_freq_lisbon_hour_clip_8 = routes_freq_lisbon_hour_clip |> filter(arrival_hour == 8)
 
-
-mapview::mapview(routes_freq_lisbon_hour_8 |> filter(frequency > 10),
+mapview::mapview(routes_freq_lisbon_hour_8 |> filter(frequency > 3),
                  zcol = "frequency", 
+                 lwd = "frequency",
             layer.name = "Routes frequency")
 
-mapview::mapview(routes_freq_lisbon_hour_clip_8 |> filter(frequency > 10),
+mapview::mapview(routes_freq_lisbon_hour_clip_8 |> filter(frequency > 3),
                  zcol = "frequency", 
                  lwd = "frequency",
                  layer.name = "Routes frequency")
@@ -82,3 +82,42 @@ mapview::mapview(routes_freq_lisbon_hour_clip_8 |> filter(frequency > 10),
 # Save GTFS with filtered no transfers date carris and metropolitana
 # tidytransit::write_gtfs(gtfs_bus_lisbon, "data/gtfs/gtfs_bus_lisbon_filtered.zip")
 # piggyback::pb_upload("data/gtfs/gtfs_bus_lisbon_filtered.zip")
+
+
+
+
+# with other funcion using rnet_join --------------------------------------
+
+road_osm_simple = road_osm |>
+  dplyr::filter(highway %in% c('motorway',"motorway_link",'primary', "primary_link",
+                               'secondary', "trunk", 'trunk_link',
+                               "tertiary",  "service", # otherwise the bus lanes won't show
+                               "residential", "unclassified"))
+
+routes_freq_lisbon_hour_no_overline = GTFShift::get_route_frequency_hourly(gtfs = gtfs_bus_lisbon,
+                                                               date = next_wednesday,
+                                                               overline = FALSE)
+routes_freq_lisbon_hour_no_overline_8 = routes_freq_lisbon_hour_no_overline |> filter(hour == 8)
+routes_freq_lisbon_hour_osm_overline_8 = GTFShift::network_overline(
+  road_osm_simple,
+  routes_freq_lisbon_hour_no_overline_8,
+  attr = "frequency",
+  network_segment_length = 100,
+  fun = sum,
+  join_dist = 8
+)
+mapview::mapview(routes_freq_lisbon_hour_osm_overline_8 |> filter(frequency > 2),
+                 zcol = "frequency", 
+                 lwd = "frequency",
+                 layer.name = "Routes frequency OSM overline")
+
+
+
+# not good results
+# routes_freq_lisbon_hour_osm_overline_8_filtered = routes_freq_lisbon_hour_osm_overline_8 |> 
+#   mutate(length = sf::st_length(geometry)) |> units::drop_units() |>
+#   filter(highway != "residential" & length >15)
+# mapview::mapview(routes_freq_lisbon_hour_osm_overline_8_filtered |> filter(frequency > 0),
+#                  zcol = "frequency", 
+#                  lwd = "frequency",
+#                  layer.name = "Routes frequency OSM overline filtered")
