@@ -84,14 +84,50 @@ carris_gtfs_735 = carris_gtfs_735 |>
            st_as_sf()) |> 
   arrange(route_dist, initial, final)
 
-st_distance(carris_osm_735_geom$initial, carris_gtfs_735$initial)
-st_distance(carris_osm_735_geom$final, carris_gtfs_735$final)
+init = st_distance(carris_osm_735_geom$initial, carris_gtfs_735$initial)
+fin = st_distance(carris_osm_735_geom$final, carris_gtfs_735$final)
+
+min(init[,1])
+which.min(fin[,4]) # 1
+
+conjunto = abs(init+fin)
+carris_gtfs_735_geom_minimos = carris_gtfs_735 |> 
+  mutate(osm_idseq = NA)
+
+for (i in 1:nrow(carris_gtfs_735_geom_minimos)) {
+  carris_gtfs_735_geom_minimos[i,]$osm_idseq = carris_osm_735_geom[which.min(conjunto[i,]),]$idseq
+}
+
+carris_gtfs_735_result = carris_gtfs_735_geom_minimos |>
+  st_drop_geometry() |>  
+  left_join(carris_osm_735_geom |> select(idseq, route_dist, geometry),
+            by = c("osm_idseq" = "idseq")) |> 
+  mutate(distance_diff = route_dist.x - route_dist.y)
+max(carris_gtfs_735_result$distance_diff)
+ 
+carris_gtfs_735_result = carris_gtfs_735_result |> 
+  select(shape_id, direction_id, route_short_name, geometry) |> 
+  st_as_sf()
+
+mapview(carris_gtfs_735_result, zcol = "shape_id")
+
+# 1
+
 
 # mapview(carris_osm_735_geom$initial) + mapview(carris_gtfs_735$initial, col.regions = "red")
 # mapview(carris_osm_735_geom$final) + mapview(carris_gtfs_735$final, col.regions = "red")
 
-distances_start = st_distance(carris_osm_735_geoms$initial, carris_gtfs_735$initial)[,1] |> 
+distances_start = st_distance(carris_osm_735_geom$initial, carris_gtfs_735$initial)[,1] |> 
   units::drop_units()
+
+
+
+
+
+
+
+
+
 
 # try with the first shape
 carris_gtfs_735_i = carris_gtfs_735 |> slice(1)
