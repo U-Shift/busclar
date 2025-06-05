@@ -169,8 +169,8 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
            st_as_sf(),
          final = lwgeom::st_endpoint(carris_osm_carreira_geom) |> 
            st_as_sf()) |> 
-  mutate(idseq = row_number()) |> 
-  select(idseq, initial, final, route_dist, geometry) |> 
+  # mutate(idseq = row_number()) |> 
+  select(osm_id, initial, final, route_dist, geometry) |> 
   arrange(route_dist, initial, final)
 
 
@@ -197,21 +197,21 @@ fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
 
 conjunto = abs(init+fin)
 carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
-  mutate(osm_idseq = NA)
+  mutate(osm_id = NA)
 
 for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
-  carris_gtfs_carreira_minimos[i,]$osm_idseq = carris_osm_carreira_geom[which.min(conjunto[i,]),]$idseq
+  carris_gtfs_carreira_minimos[i,]$osm_id = carris_osm_carreira_geom[which.min(conjunto[i,]),]$osm_id
 }
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
   st_drop_geometry() |>  
-  left_join(carris_osm_carreira_geom |> select(idseq, route_dist, geometry),
-            by = c("osm_idseq" = "idseq")) |> 
+  left_join(carris_osm_carreira_geom |> select(osm_id, route_dist, geometry),
+            by = "osm_id") |> 
   mutate(distance_diff = route_dist.x - route_dist.y)
 max(carris_gtfs_carreira_result$distance_diff)
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_result |> 
-  select(shape_id, direction_id, route_short_name, geometry) |> 
+  select(shape_id, direction_id, route_short_name, osm_id, geometry) |> 
   st_as_sf()
 
 mapview(carris_gtfs_carreira_result, zcol = "shape_id")
