@@ -157,7 +157,7 @@ length(unique(carris_osm_multilines_redux$osm_id)) # 287 !
 carreira = "736"
 carris_osm_carreira = carris_osm_multilines_redux |> 
   filter(ref == carreira)
-nrow(carris_osm_carreira) # 4
+nrow(carris_osm_carreira) # 6
 # mapview(carris_osm_carreira)
 
 
@@ -179,7 +179,7 @@ carris_gtfs_carreira = routes_freq_lisbon_hour_no_overline |>
   filter(route_short_name == carreira) |> 
   select(route_id, shape_id, route_short_name, direction_id, geometry) |>
   distinct()
-nrow(carris_gtfs_carreira) 
+nrow(carris_gtfs_carreira) # 6
 
 
 # 2. Compare distances
@@ -196,7 +196,7 @@ fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
 
 
 conjunto = abs(init+fin)
-carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
+carris_gtfs_carreira_minimos = carris_gtfs_carreira |>  # TO-DO: incorporate without _minimos
   mutate(osm_id = NA)
 
 for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
@@ -208,15 +208,21 @@ carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
   left_join(carris_osm_carreira_geom |> select(osm_id, route_dist, geometry),
             by = "osm_id") |> 
   mutate(distance_diff = route_dist.x - route_dist.y)
-max(carris_gtfs_carreira_result$distance_diff)
+max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG HERE
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_result |> 
   select(shape_id, direction_id, route_short_name, osm_id, geometry) |> 
   st_as_sf()
 
 mapview(carris_gtfs_carreira_result, zcol = "shape_id")
+length(unique(carris_gtfs_carreira_result$osm_id)) # 4
 
-# IT WORKS!!
+nrow(carris_osm_carreira) # 6
+nrow(carris_gtfs_carreira) # 6
+length(unique(carris_gtfs_carreira_result$osm_id)) # 4
+
+# THEY ARE DIFFERENT UNIQUE
+
 
 # after getting the osm shapes for all unique shape_id (gtfs), bring back the geometry to the
 routes_freq_lisbon_hour_no_overline_OSM |>
