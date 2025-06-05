@@ -1,6 +1,7 @@
 library(osmdata)
 library(sf)
 library(mapview)
+library(dplyr)
 
 available_features()
 available_tags("route")
@@ -43,13 +44,16 @@ mapview(carris_osm_platform, zcol = "ref")
 carris_osm_735 = carris_osm_multilines_redux |> 
   filter(ref == "735")
 nrow(carris_osm_735) # 4
-carris_osm_735 = carris_osm_735 |>
+
+carris_osm_735_geoms = carris_osm_735 |> 
+  mutate(route_dist = st_length(carris_osm_735) |> units::drop_units()) |> 
   mutate(initial = lwgeom::st_startpoint(carris_osm_735) |> 
            st_as_sf(),
          final = lwgeom::st_endpoint(carris_osm_735) |> 
-           st_as_sf())
-  
-
+           st_as_sf()) |> 
+  mutate(idseq = row_number()) |> 
+  select(idseq, initial, final, route_dist, geometry) |> 
+  arrange(route_dist, initial, final)
 
 # let's find which one corresponds to the shape_id
 
@@ -60,10 +64,32 @@ gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_
 routes_freq_lisbon_hour_no_overline = GTFShift::get_route_frequency_hourly(gtfs = gtfs_carris,
                                                                            date = next_wednesday,
                                                                            overline = FALSE)
-
+# 1. filter by ref / short_name
 carris_gtfs_735 = routes_freq_lisbon_hour_no_overline |> 
-  filter(route_short_name == "735")
-nrow(carris_gtfs_735)
+  filter(route_short_name == "735") |> 
+  select(route_id, shape_id, route_short_name, direction_id, geometry) |>
+  distinct()
+nrow(carris_gtfs_735) 
+
+
+# 2. Compare distances
+carris_gtfs_735 = carris_gtfs_735 |> 
+  mutate(route_dist = st_length(carris_gtfs_735) |> units::drop_units()) |> 
+  mutate(initial = lwgeom::st_startpoint(carris_gtfs_735) |> 
+           st_as_sf(),
+         final = lwgeom::st_endpoint(carris_gtfs_735) |> 
+           st_as_sf()) |> 
+  arrange(route_dist, initial, final)
+
+st_distance(carris_osm_735_geoms$initial, carris_gtfs_735$initial)
+st_distance(carris_osm_735_geoms$final, carris_gtfs_735$final)
+
+mapview(carris_osm_735_geoms$final) + mapview(carris_gtfs_735$final, col.regions = "red")
+# does not make sence! is it somehow not a endpoint but in the middle of the roude?
+
+
+distances_start = st_distance(carris_osm_735_geoms$initial, carris_gtfs_735$initial)[,1] |> 
+  units::drop_units()
 
 # try with the first shape
 carris_gtfs_735_i = carris_gtfs_735 |> slice(1)
@@ -79,7 +105,11 @@ carris_osm_735_pointinit = carris_osm_735$initial |>
   st_as_sf()
 mapview(carris_gtfs_735_i_pointinit) + mapview(carris_osm_735_pointinit, col.regions = "red")
 
-carris_osm_735_i_pontinit = carris_osm_735_pointinit |> 
+
+
+
+
+# remove units
   mutate(distance = st_distance(carris_osm_735_pointinit, carris_gtfs_735_i_pointinit)[,1] |>  # in meters
            units::drop_units()) # remove units
 #ver mqat!
@@ -88,4 +118,28 @@ carris_osm_735_i_pontinit = carris_osm_735_pointinit |>
 # encontrar!
   
 
+
+# Procedure ---------------------------------------------------------------
+
+# 1. Filter by ref / short_name. Is it unique?
+#    - If yes, then proceed to step 6.
+# Is it 0? Print the message "No results found for the given ref/short_name." and continue to next iteration.
+# Save info in the df with the short_name routes list.
+# 
+# 2. Is circular and only 1 result?
+#    - If yes, then proceed to step 6.
+#    - If no, then proceed to step 3.
+# 
+# 3. Compare the route distances and find the closest one.
+#    - If only 1 result, then proceed to step 6.
+# 
+# 4. Compare the start point. Select the route with the minimum distance between starting points.
+#   - If only 1 result, then proceed to step 6.
+# 
+# 5. Compare the end point. Select the route with the minimum distance between end points.
+#   - If only 1 result, then proceed to step 6.
+#   - If still more than 1 result, assume the first filtered one.
+# 
+# 6. From the unique identified result that can be assumed as the same between gtfs and osm, assign the geometry to (a new) gtfs shapes.
+# Proceed with the left_joins and ovelines to get the sum of frequency.
 
