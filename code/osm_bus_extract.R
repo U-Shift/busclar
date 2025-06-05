@@ -44,12 +44,15 @@ mapview(carris_osm_platform, zcol = "ref")
 carris_osm_735 = carris_osm_multilines_redux |> 
   filter(ref == "735")
 nrow(carris_osm_735) # 4
+# mapview(carris_osm_735)
 
-carris_osm_735_geoms = carris_osm_735 |> 
-  mutate(route_dist = st_length(carris_osm_735) |> units::drop_units()) |> 
-  mutate(initial = lwgeom::st_startpoint(carris_osm_735) |> 
+
+carris_osm_735_geom = carris_osm_735 |> st_line_merge() # from MUTLILINESTRING to LINESTRING
+carris_osm_735_geom = carris_osm_735_geom |> 
+  mutate(route_dist = st_length(carris_osm_735_geom) |> units::drop_units()) |> 
+  mutate(initial = lwgeom::st_startpoint(carris_osm_735_geom) |> 
            st_as_sf(),
-         final = lwgeom::st_endpoint(carris_osm_735) |> 
+         final = lwgeom::st_endpoint(carris_osm_735_geom) |> 
            st_as_sf()) |> 
   mutate(idseq = row_number()) |> 
   select(idseq, initial, final, route_dist, geometry) |> 
@@ -81,12 +84,11 @@ carris_gtfs_735 = carris_gtfs_735 |>
            st_as_sf()) |> 
   arrange(route_dist, initial, final)
 
-st_distance(carris_osm_735_geoms$initial, carris_gtfs_735$initial)
-st_distance(carris_osm_735_geoms$final, carris_gtfs_735$final)
+st_distance(carris_osm_735_geom$initial, carris_gtfs_735$initial)
+st_distance(carris_osm_735_geom$final, carris_gtfs_735$final)
 
-mapview(carris_osm_735_geoms$final) + mapview(carris_gtfs_735$final, col.regions = "red")
-# does not make sence! is it somehow not a endpoint but in the middle of the roude?
-
+# mapview(carris_osm_735_geom$initial) + mapview(carris_gtfs_735$initial, col.regions = "red")
+# mapview(carris_osm_735_geom$final) + mapview(carris_gtfs_735$final, col.regions = "red")
 
 distances_start = st_distance(carris_osm_735_geoms$initial, carris_gtfs_735$initial)[,1] |> 
   units::drop_units()
