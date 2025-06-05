@@ -145,12 +145,15 @@ mapview(carris_gtfs_735_result, zcol = "shape_id")
 #   - If still more than 1 result, assume the first filtered one.
 # 
 # 6. From the unique identified result that can be assumed as the same between gtfs and osm, assign the geometry to (a new) gtfs shapes.
-# Proceed with the left_joins and ovelines to get the sum of frequency.
+# Proceed with the left_joins and overlines to get the sum of frequency.
 
 
 
 
 # test with 1 route and 6 variants! -------------------------------------------------------
+nrow(carris_osm_multilines_redux) # 287
+length(unique(carris_osm_multilines_redux$osm_id)) # 287 !
+
 carreira = "736"
 carris_osm_carreira = carris_osm_multilines_redux |> 
   filter(ref == carreira)
@@ -215,12 +218,18 @@ mapview(carris_gtfs_carreira_result, zcol = "shape_id")
 
 # IT WORKS!!
 
-# after getting the osm shapes fot all unique shape_id (gtfs), bring back the geometry to the
-routes_freq_lisbon_hour_no_overline_OSM |> st_drop_geometry() |> 
+# after getting the osm shapes for all unique shape_id (gtfs), bring back the geometry to the
+routes_freq_lisbon_hour_no_overline_OSM |>
+  st_drop_geometry() |> 
   left_join(carris_gtfs_carreira_result |> 
               select(shape_id, geometry),
             by = "shape_id") |>
   st_as_sf()
 # test
 
-
+# test with a loop route -------------------------------------------------------
+teste_loop = carris_osm_multilines_redux |> 
+  filter(ref == "31B") |> # interestingly, it is not classifies as roundtrip in osm.
+  # But as the result is a single line, proceed to final step
+  st_line_merge() # this is relevant to end up with a LINESTRING only in the end.
+mapview(teste_loop)
