@@ -191,6 +191,8 @@ carris_gtfs_carreira = carris_gtfs_carreira |>
            st_as_sf()) |> 
   arrange(route_dist, initial, final)
 
+## TO-DO compare first the distances (we are skipping that!!)
+
 init = st_distance(carris_osm_carreira_geom$initial, carris_gtfs_carreira$initial)
 fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
 
@@ -207,7 +209,7 @@ carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
   st_drop_geometry() |>  
   left_join(carris_osm_carreira_geom |> select(osm_id, route_dist, geometry),
             by = "osm_id") |> 
-  mutate(distance_diff = route_dist.x - route_dist.y)
+  mutate(distance_diff = abs(route_dist.x - route_dist.y)) # absolute difference
 max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG HERE
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_result |> 
