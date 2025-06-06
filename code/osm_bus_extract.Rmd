@@ -22,13 +22,14 @@ mapview::mapviewOptions(fgb = FALSE, viewer.suppress = TRUE)
 aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNICIPIOSgeo.gpkg", quiet = TRUE)
 lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
 
-carris_osm = opq(bbox = lisboa)  |> 
+q = opq(bbox = lisboa)  |> 
   add_osm_feature(key = "route", value = "bus") |> 
-  add_osm_feature(key = "network", value = "Carris", key_exact = TRUE) |> 
-  osmdata_sf()
+  add_osm_feature(key = "network", value = "Carris", key_exact = TRUE)
 ```
 
+Get routes multilines and stops
 ```{r}
+carris_osm = q |> osmdata_sf()
 carris_osm_multilines = carris_osm$osm_multilines
 carris_osm_multilines_redux = carris_osm_multilines |> 
   select(osm_id, ref, from, to, via, name, roundtrip)
@@ -45,6 +46,43 @@ carris_osm_platform = carris_osm_points |> filter(public_transport == "platform"
   select_if(~!all(is.na(.)))
 # mapview(carris_osm_platform, zcol = "ref")
 ```
+
+And relation between them
+
+> Based on https://stackoverflow.com/questions/78758864/get-relation-data-from-osmdata
+
+```{r}
+# Save XML
+library(xml2)
+osm_file <- tempfile(fileext = ".osm")
+osmdata_xml(q, filename = osm_file)
+
+# Read and parse
+doc <- read_xml(osm_file)
+
+# Find all route relations
+relations <- xml_find_all(doc, ".//relation[tag[@k='type'][@v='route'] and tag[@k='route'][@v='bus'] and tag[@k='network'][@v='Carris']]")
+
+relations_df = lapply(relations, function(relation) {
+  relation_id <- xml_attr(relation, "id")
+  members <- xml_find_all(relation, "member")
+  
+  members_df = lapply(members, function(member) {
+    c(  
+       type = xml_attr(member, "type"),
+       ref = xml_attr(member, "ref"),
+       role = xml_attr(member, "role")
+    )
+  }) 
+  df <- data.frame(do.call(rbind, members_df))
+  df$relation_osm_id = relation_id
+  return(df)
+})
+relations_df = bind_rows(relations_df)
+
+relations_df |> distinct(role , .keep_all=TRUE)
+```
+
 
 ## 2. Load GTFS
 ```{r}
@@ -91,28 +129,28 @@ nrow(carris_gtfs_carreira) # 6
 
 Compute osm final and initial points
 ```{r}
-carris_osm_carreira_geom = carris_osm_carreira |> 
-  rowwise() |>
-  mutate( # from MUTLILINESTRING to LINESTRING
-    # Apply your function to each MULTILINESTRING
-    geometry = multiline_to_sorted_linestring(geometry),
-    # Convert the list column to proper sf geometry
-    geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))
-  ) |> st_set_geometry("geometry") |>
-  ungroup()
+carris_osm_carreira_geom = carris_osm_carreira 
 
 mapview(carris_osm_carreira_geom, zcol="osm_id")
 st_geometry_type(carris_osm_carreira_geom)
 
 carris_osm_carreira_geom = carris_osm_carreira_geom |> 
-  mutate(route_dist = st_length(carris_osm_carreira_geom) |> units::drop_units()) |> 
+  rowwise() |>
   mutate(
-    initial = lwgeom::st_startpoint(carris_osm_carreira_geom) |> st_as_sf(),
-    final = lwgeom::st_endpoint(carris_osm_carreira_geom) |> st_as_sf()) |> 
-  # mutate(idseq = row_number()) |> 
-  select(osm_id, initial, final, route_dist, geometry) |> 
+    # Geographical data
+    route_dist = st_length(geometry) |> units::drop_units(),
+    # Other relevant parameters
+    nr_stops = nrow(relations_df |> filter(relation_osm_id==osm_id & role=="stop")) + 2, # +2 because 1st and last stop have other role
+    first_stop_osm_id = relations_df |> filter(relation_osm_id==osm_id & role=="stop_entry_only") |> slice(1) |> pull(ref),
+    last_stop_osm_id = relations_df |> filter(relation_osm_id==osm_id & role=="stop_exit_only") |> slice(1) |> pull(ref),
+    initial = carris_osm_stoppositions |> filter(osm_id==first_stop_osm_id) |> slice(1) |> pull(geometry),
+    final = carris_osm_stoppositions |> filter(osm_id==last_stop_osm_id) |> slice(1) |> pull(geometry)
+  ) |> 
+  ungroup() |> 
+  select(osm_id, initial, final, route_dist, nr_stops, first_stop_osm_id, last_stop_osm_id, geometry) |> 
   arrange(route_dist, initial, final)
 
+mapview(carris_osm_carreira_geom, zcol="osm_id")
 carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19131145)
 carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 1979936)
 mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
@@ -124,11 +162,18 @@ Same for GTFS shapes
 ```{r}
 # 2. Match gtfs shapes and osm routes, by choosing the one that share the closest start and end points
 carris_gtfs_carreira = carris_gtfs_carreira |> 
-  mutate(route_dist = st_length(carris_gtfs_carreira) |> units::drop_units()) |> 
+  rowwise() |>
   mutate(
-    initial = lwgeom::st_startpoint(carris_gtfs_carreira) |> st_as_sf(),
-     final = lwgeom::st_endpoint(carris_gtfs_carreira) |> st_as_sf()
+    # Geographical data
+    route_dist = st_length(geometry) |> units::drop_units(),
+    initial = lwgeom::st_startpoint(geometry), # We could also replace this with stop.txt locations
+    final = lwgeom::st_endpoint(geometry),
+    # Other relevant parameters
+    trip_id_copy = trip_id,
+    nr_stops = nrow(gtfs_carris$stop_times |> filter(trip_id == trip_id_copy))
   ) |> 
+  ungroup() |> 
+  select(-trip_id_copy) |>
   arrange(route_dist, initial, final)
 
 carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(shape_id == "199_1_ASC_shp")
@@ -158,10 +203,13 @@ for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
   st_drop_geometry() |>  
-  left_join(carris_osm_carreira_geom |> select(osm_id, route_dist, geometry),
-            by = "osm_id") |> 
-  mutate(distance_diff = abs(route_dist.x - route_dist.y)) |> # absolute difference
-  st_as_sf()
+  left_join(
+    carris_osm_carreira_geom |> select(osm_id, route_dist, nr_stops, geometry), 
+    by = "osm_id",
+    suffix = c("_gtfs", "_osm")
+  ) |> 
+  mutate(distance_diff = abs(route_dist_gtfs - route_dist_osm)) |> # absolute difference
+  st_as_sf(sf_column_name="geometry")
 
 
 carris_gtfs_carreira_result$shape_osm = paste(
@@ -180,7 +228,16 @@ max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG
 
 mapview(carris_gtfs_carreira, zcol = "shape_id")
 mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
+
+mapview(carris_gtfs_carreira |> filter(grepl("199_3", shape_id)), zcol = "shape_id")
+mapview(carris_gtfs_carreira_result |> filter(grepl("199_3", shape_id)), zcol = "shape_osm")
 ```
 
- 
+```{r}
+names(carris_gtfs_carreira_result)
+
+carris_gtfs_carreira_result |>
+  select(shape_id, nr_stops_gtfs, route_dist_gtfs, osm_id, nr_stops_osm, route_dist_osm ,distance_diff)
+```
+
  
