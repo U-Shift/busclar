@@ -1,0 +1,174 @@
+---
+title: "osm_bus_extract"
+output: html_document
+---
+
+# Map shapes to OSM routes
+
+```{r}
+library(osmdata)
+library(sf)
+library(mapview)
+library(dplyr)
+library(GTFShift)
+
+mapview::mapviewOptions(fgb = FALSE, viewer.suppress = TRUE)
+```
+
+
+## 1. Download OSM routes
+
+```{r}
+aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNICIPIOSgeo.gpkg", quiet = TRUE)
+lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
+
+carris_osm = opq(bbox = lisboa)  |> 
+  add_osm_feature(key = "route", value = "bus") |> 
+  add_osm_feature(key = "network", value = "Carris", key_exact = TRUE) |> 
+  osmdata_sf()
+```
+
+```{r}
+carris_osm_multilines = carris_osm$osm_multilines
+carris_osm_multilines_redux = carris_osm_multilines |> 
+  select(osm_id, ref, from, to, via, name, roundtrip)
+# mapview(carris_osm_multilines_redux) 
+
+carris_osm_points = st_crop(carris_osm$osm_points, lisboa)
+# mapview(carris_osm_points) 
+
+carris_osm_stoppositions = carris_osm_points |> filter(public_transport == "stop_position") |> 
+  select_if(~!all(is.na(.)))
+# mapview(carris_osm_stoppositions, zcol = "ref") 
+
+carris_osm_platform = carris_osm_points |> filter(public_transport == "platform") |> 
+  select_if(~!all(is.na(.)))
+# mapview(carris_osm_platform, zcol = "ref")
+```
+
+## 2. Load GTFS
+```{r}
+data_sources = read.csv(system.file("extdata", "gtfs_sources_pt.csv", package = "GTFShift"))
+
+gtfs_carris = tidytransit::read_gtfs(data_sources[data_sources$ID=="lisboa", ]$URL)
+next_wednesday = calendar_nextBusinessWednesday(country_code="PT")
+gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
+# gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
+```
+
+## 3. Analyse one line
+
+```{r}
+carreira = "736"
+```
+
+Filter osm network
+```{r}
+carris_osm_carreira = carris_osm_multilines_redux %>%
+  filter(ref == carreira)
+
+nrow(carris_osm_carreira) # 6
+mapview(carris_osm_carreira, zcol="osm_id")
+```
+
+Filter GTFS
+```{r}
+shapes_sf = tidytransit::shapes_as_sf(gtfs_carris$shapes)
+carris_gtfs_carreira = gtfs_carris$routes |>  # Start on routes.txt to match line number with route_short_name
+  select(route_id, route_short_name, route_long_name) |>
+  filter(route_short_name == carreira) |>
+  left_join(gtfs_carris$trips |> select(route_id, trip_id, shape_id, direction_id), by="route_id") |> 
+  left_join(shapes_sf, by="shape_id") |>
+  distinct(shape_id, .keep_all = TRUE) |> 
+  sf::st_as_sf()
+
+View(carris_gtfs_carreira)
+mapview(carris_gtfs_carreira)
+nrow(carris_gtfs_carreira) # 6
+```
+
+## 4. Match based on initial and final points 
+
+Compute osm final and initial points
+```{r}
+carris_osm_carreira_geom = carris_osm_carreira |> st_line_merge() # from MUTLILINESTRING to LINESTRING
+
+carris_osm_carreira_geom = carris_osm_carreira_geom |> 
+  mutate(route_dist = st_length(carris_osm_carreira_geom) |> units::drop_units()) |> 
+  mutate(
+    initial = lwgeom::st_startpoint(carris_osm_carreira_geom) |> st_as_sf(),
+    final = lwgeom::st_endpoint(carris_osm_carreira_geom) |> st_as_sf()) |> 
+  # mutate(idseq = row_number()) |> 
+  select(osm_id, initial, final, route_dist, geometry) |> 
+  arrange(route_dist, initial, final)
+
+carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19131145)
+mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
+
+mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
+```
+
+Same for GTFS shapes
+```{r}
+# 2. Match gtfs shapes and osm routes, by choosing the one that share the closest start and end points
+carris_gtfs_carreira = carris_gtfs_carreira |> 
+  mutate(route_dist = st_length(carris_gtfs_carreira) |> units::drop_units()) |> 
+  mutate(
+    initial = lwgeom::st_startpoint(carris_gtfs_carreira) |> st_as_sf(),
+     final = lwgeom::st_endpoint(carris_gtfs_carreira) |> st_as_sf()
+  ) |> 
+  arrange(route_dist, initial, final)
+
+carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(shape_id == "199_1_ASC_shp")
+mapview(carris_gtfs_carreira_id, color="gray") + mapview(carris_gtfs_carreira_id$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira_id$final, col.regions="#003f8f")
+
+mapview(carris_gtfs_carreira, color="gray") + mapview(carris_gtfs_carreira$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira$final, col.regions="#003f8f")
+
+```
+
+Compute distances between init and final points for both
+```{r}
+init = st_distance(carris_osm_carreira_geom$initial, carris_gtfs_carreira$initial)
+fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
+```
+
+Match OSM network and GTFS shapes considering the match with min aggregated distance (init + fin)
+```{r}
+conjunto = abs(init+fin)
+conjunto
+
+carris_gtfs_carreira_minimos = carris_gtfs_carreira |>  # TO-DO: incorporate without _minimos
+  mutate(osm_id = NA)
+
+for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
+  carris_gtfs_carreira_minimos[i,]$osm_id = carris_osm_carreira_geom[which.min(conjunto[i,]),]$osm_id
+}
+
+carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
+  st_drop_geometry() |>  
+  left_join(carris_osm_carreira_geom |> select(osm_id, route_dist, geometry),
+            by = "osm_id") |> 
+  mutate(distance_diff = abs(route_dist.x - route_dist.y)) |> # absolute difference
+  st_as_sf()
+
+
+carris_gtfs_carreira_result$shape_osm = paste(
+  carris_gtfs_carreira_result$shape_id, 
+  " // ", 
+  carris_gtfs_carreira_result$osm_id , 
+  " // ", 
+  carris_gtfs_carreira_result$distance_diff
+)
+```
+
+Analyse results
+```{r}
+View(carris_gtfs_carreira_result)
+max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG HERE
+
+mapview(carris_gtfs_carreira, zcol = "shape_id")
+mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
+```
+
+ 
+ 
