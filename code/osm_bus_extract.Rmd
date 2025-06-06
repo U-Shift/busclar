@@ -91,7 +91,18 @@ nrow(carris_gtfs_carreira) # 6
 
 Compute osm final and initial points
 ```{r}
-carris_osm_carreira_geom = carris_osm_carreira |> st_line_merge() # from MUTLILINESTRING to LINESTRING
+carris_osm_carreira_geom = carris_osm_carreira |> 
+  rowwise() |>
+  mutate( # from MUTLILINESTRING to LINESTRING
+    # Apply your function to each MULTILINESTRING
+    geometry = multiline_to_sorted_linestring(geometry),
+    # Convert the list column to proper sf geometry
+    geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))
+  ) |> st_set_geometry("geometry") |>
+  ungroup()
+
+mapview(carris_osm_carreira_geom, zcol="osm_id")
+st_geometry_type(carris_osm_carreira_geom)
 
 carris_osm_carreira_geom = carris_osm_carreira_geom |> 
   mutate(route_dist = st_length(carris_osm_carreira_geom) |> units::drop_units()) |> 
@@ -103,6 +114,7 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
   arrange(route_dist, initial, final)
 
 carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19131145)
+carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 1979936)
 mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
 
 mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
