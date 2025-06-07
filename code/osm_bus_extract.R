@@ -8,7 +8,7 @@ available_tags("route")
 
 carris_osm = opq("Lisbon")  |> 
   add_osm_feature(key = "route",
-                  value = "bus") |> 
+                  value = c("bus", "tram")) |> # exclude "funicular"
   osmdata_sf()
 
 mapview(carris_osm$osm_lines) ## alll
@@ -39,7 +39,7 @@ carris_osm_platform = carris_osm_points |> filter(public_transport == "platform"
   select_if(~!all(is.na(.)))
 mapview(carris_osm_platform, zcol = "ref")
 
-# st_write(carris_osm_lines, "data/carris_osm_lines.gpkg", delete_dsn = TRUE)
+# st_write(carris_osm_multilines_redux, "data/carris_osm_multilines_redux.gpkg", delete_dsn = TRUE)
 
 
 # retrieve info from gtfs
@@ -47,10 +47,15 @@ mapview(carris_osm_platform, zcol = "ref")
 # gtfs_carris = GTFShift::load_feed(data_sources$producer_url[1])
 gtfs_carris = tidytransit::read_gtfs("https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS")
 next_wednesday = calendar_nextBusinessWednesday(country_code="PT")
-gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
+last_wednesday = as.Date(next_wednesday) - 7 # next_wednesday
+gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris,
+                                               extract_date = last_wednesday
+                                               # extract_date = next_wednesday
+                                               )
 # gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
 routes_freq_lisbon_hour_no_overline = GTFShift::get_route_frequency_hourly(gtfs = gtfs_carris,
-                                                                           date = next_wednesday,
+                                                                           # date = next_wednesday, # affraid for santos
+                                                                           date = last_wednesday,
                                                                            overline = FALSE)
 
 
@@ -251,15 +256,17 @@ mapview(teste_loop)
 # test with stop names ----------------------------------------------------
 
 carreira = "736"
-carris_osm_multilines_redux_linestrings = carris_osm_multilines_redux |> 
-  rowwise() |>
-  mutate( # from MUTLILINESTRING to LINESTRING
-    # Apply your function to each MULTILINESTRING
-    geometry = multiline_to_sorted_linestring(geometry),
-    # Convert the list column to proper sf geometry
-    geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))
-  ) |> st_set_geometry("geometry") |>
-  ungroup()
+# carris_osm_multilines_redux_linestrings = carris_osm_multilines_redux |> 
+#   rowwise() |>
+#   mutate( # from MUTLILINESTRING to LINESTRING
+#     # Apply your function to each MULTILINESTRING
+#     geometry = multiline_to_sorted_linestring(geometry),
+#     # Convert the list column to proper sf geometry
+#     geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))
+#   ) |> st_set_geometry("geometry") |>
+#   ungroup()
+carris_osm_multilines_redux_linestrings = carris_osm_multilines_redux |>
+  st_line_merge(directed = FALSE)
 carris_osm_carreira = carris_osm_multilines_redux_linestrings %>%
   filter(ref == carreira)
 
@@ -270,3 +277,417 @@ carris_gtfs_carreira = routes_freq_lisbon_hour_no_overline |>
   filter(route_short_name == carreira) |> 
   select(route_id, shape_id, route_short_name, direction_id, geometry) |>
   distinct()
+
+# stop test
+
+
+# only rely on distances --------------------------------------------------
+
+carris_gtfs_shapes_winfo = routes_freq_lisbon_hour_no_overline |> 
+  select(route_id, shape_id, route_short_name, direction_id) |>
+  distinct()
+carris_gtfs_shapes_winfo = carris_gtfs_shapes_winfo |> 
+  left_join(gtfs_carris$routes |>  #get back their names (headways?)
+              select(route_id, route_long_name)) |>
+  mutate(shapedist_gtfs = st_length(geometry) |> units::drop_units() |> round())
+nrow(carris_gtfs_shapes_winfo) # 284 (but they were more one day - May?)
+
+carris_osm_shapes_winfo = carris_osm_multilines_redux_linestrings |> 
+  mutate(shapedist_osm = st_length(geometry) |> units::drop_units() |> round())
+nrow(carris_osm_shapes_winfo) # 298
+
+# filter the ones that are in common
+carris_gtfs_patterns = carris_gtfs_shapes_winfo |> 
+  st_drop_geometry() |> 
+  group_by(route_short_name) |>
+  summarise(patterns_carris = n())
+
+carris_osm_patterns = carris_osm_shapes_winfo |>
+  st_drop_geometry() |> 
+  group_by(ref) |>
+  summarise(patterns_osm = n())
+
+carris_shapes_comparison = carris_gtfs_patterns |>
+  full_join(carris_osm_patterns, 
+            by = c("route_short_name" = "ref")) |> 
+  mutate_if(is.integer, ~replace(., is.na(.), 0)) |> 
+  mutate(diff= patterns_carris - patterns_osm)
+
+# Lets start with the 0 ones - only perfect matches
+commonroutes = carris_shapes_comparison |> 
+  filter(diff == 0) |> 
+  select(route_short_name)
+
+carris_gfts_shapes_winfo_common = carris_gtfs_shapes_winfo |> 
+  filter(route_short_name %in% commonroutes$route_short_name) |>
+  st_drop_geometry()
+carris_osm_shapes_winfo_common = carris_osm_shapes_winfo |>
+  filter(ref %in% commonroutes$route_short_name)
+
+
+carreiras = unique(carris_gfts_shapes_winfo_common$route_short_name) # test with first carreira
+carris_gtfs_osm_common0 = data.frame()
+for (i in carreiras) {
+  carris_osm_i = carris_osm_shapes_winfo_common |> 
+    filter(ref == i) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common |> 
+    filter(route_short_name == i) |> 
+    arrange(shapedist_gtfs) |> 
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm,
+           name = carris_osm_i$name,
+           osm_id = carris_osm_i$osm_id) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  avgdifferences = mean(carris_gtfs_i$shape_differences)
+  carris_gtfs_osm_common0 = bind_rows(carris_gtfs_osm_common0, carris_gtfs_i)
+  
+  print(paste0(i, ", ", avgdifferences))
+}
+
+# now the ones only in GTFS
+commonroutes_1 = carris_shapes_comparison |> 
+  filter(patterns_osm == 0) |> # funiculars - excluded from the osm query
+  select(route_short_name)
+# these are funiculars, I don't need them as they belong to a diferent catedory
+
+
+# ow the ones with differences > 1 ----------------------------------------
+
+
+# now the ones with differences > 1
+commonroutes_2 = carris_shapes_comparison |> 
+  filter(patterns_osm != 0 & diff > 0) |> 
+  select(route_short_name)
+
+carris_gfts_shapes_winfo_common2 = carris_gtfs_shapes_winfo |> 
+  filter(route_short_name %in% commonroutes_2$route_short_name) |>
+  st_drop_geometry()
+carris_osm_shapes_winfo_common2 = carris_osm_shapes_winfo |>
+  filter(ref %in% commonroutes_2$route_short_name)
+# assume the full trip?
+carris_gtfs_osm_common2 = carris_gfts_shapes_winfo_common2 |> 
+  mutate(shapedist_osm = rep(carris_osm_shapes_winfo_common2$shapedist_osm, 3),
+         name = rep(carris_osm_shapes_winfo_common2$name, 3),
+         osm_id = rep(carris_osm_shapes_winfo_common2$osm_id, 3)) |> 
+  mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+
+# now the ones with differences < 1
+commonroutes_3 = carris_shapes_comparison |> 
+  filter(diff < 0) |> 
+  select(route_short_name)
+
+carris_gfts_shapes_winfo_common3 = carris_gtfs_shapes_winfo |> 
+  filter(route_short_name %in% commonroutes_3$route_short_name) |>
+  st_drop_geometry()
+carris_osm_shapes_winfo_common3 = carris_osm_shapes_winfo |>
+  filter(ref %in% commonroutes_3$route_short_name)
+
+carreiras3 = unique(carris_gfts_shapes_winfo_common3$route_short_name) # test with first carreira
+carris_gtfs_osm_common3 = data.frame()
+
+# à pata 1
+carreira3 = carreiras3[1]
+carreira3 # 727
+    carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(1,2,3,4,8,9,10)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+  
+# à pata 2
+carreira3 = carreiras3[2]
+carreira3 # 732
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(3,4)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 3  
+carreira3 = carreiras3[3]
+carreira3 # 768
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(1,2)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 4
+carreira3 = carreiras3[4]
+carreira3 # 723
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(1,2,3,5,6)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 5
+carreira3 = carreiras3[5]
+carreira3 # 764
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(3,4)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 6
+carreira3 = carreiras3[6]
+carreira3 # 760
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(4,4,5,6,7,8) # este foi difícil
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 7
+carreira3 = carreiras3[7]
+carreira3 # 712
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(2,3,4)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences) # este tem uma diferença muito maior pq o gtfs está adaptado às obras e o osm é o mais estável
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+  
+# à pata 8
+carreira3 = carreiras3[8]
+carreira3 # 776
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(2,3)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 9
+carreira3 = carreiras3[9]
+carreira3 # 725
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(1,2)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 10
+carreira3 = carreiras3[10]  
+carreira3 # 754
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(3,4)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 11
+carreira3 = carreiras3[11]
+carreira3 # 783
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(3,4,5,6)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 12  
+carreira3 = carreiras3[12]
+carreira3 # 26B
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = c(3,4)
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+# à pata 13
+carreira3 = carreiras3[13]
+carreira3 # 46B
+  carris_osm_i = carris_osm_shapes_winfo_common3 |> 
+    filter(ref == carreira3) |>
+    arrange(shapedist_osm)
+  
+  carris_gtfs_i = carris_gfts_shapes_winfo_common3 |> 
+    filter(route_short_name == carreira3) |> 
+    arrange(shapedist_gtfs)
+  
+  conjuntos_iguais = 2
+  
+  carris_gtfs_i = carris_gtfs_i |>
+    mutate(shapedist_osm = carris_osm_i$shapedist_osm[conjuntos_iguais],
+           name = carris_osm_i$name[conjuntos_iguais],
+           osm_id = carris_osm_i$osm_id[conjuntos_iguais]) |> 
+    mutate(shape_differences = abs(shapedist_gtfs - shapedist_osm))
+  mean(carris_gtfs_i$shape_differences)
+  
+  carris_gtfs_osm_common3 = bind_rows(carris_gtfs_osm_common3, carris_gtfs_i)
+
+
+# final result ------------------------------------------------------------
+
+# combined
+carris_gtfs_osm_common_all = bind_rows(carris_gtfs_osm_common0, 
+                                              carris_gtfs_osm_common2,
+                                              carris_gtfs_osm_common3)
+length(unique(carris_gtfs_osm_common_all$route_short_name)) # 107
+length(unique(carris_gtfs_osm_common_all$shape_id)) # 276
+
+carris_gtfs_osm_match = carris_gtfs_osm_common_all |> 
+  select(shape_id, osm_id) |>
+  left_join(carris_osm_multilines_redux_linestrings |> select(osm_id, geometry)) |> 
+  left_join(routes_freq_lisbon_hour_no_overline |> st_drop_geometry()) |> 
+  st_as_sf()
+
+st_write(carris_gtfs_osm_match, "data/carris_gtfs_osm_match.gpkg", delete_dsn = TRUE)
+piggyback::pb_upload("data/carris_gtfs_osm_match.gpkg")
+
