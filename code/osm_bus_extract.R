@@ -692,13 +692,17 @@ carris_gtfs_osm_common_all_linestrings = carris_gtfs_osm_common_all_geo |>
   filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "LINESTRING")
 carris_gtfs_osm_common_all_linestrings
 carris_gtfs_osm_common_all_multilinestrings = carris_gtfs_osm_common_all_geo |>
-  filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "MULTILINESTRING") |> 
-    rowwise() |>
-    mutate(geometry = multiline_to_sorted_linestring(geometry),
-      geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))) |>
-  st_set_geometry("geometry") |>
-  ungroup()
-carris_gtfs_osm_common_all_multilinestrings
+  filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "MULTILINESTRING") 
+  # st_cast("LINESTRING", do_split = FALSE) # this one only keeps the first linestring
+carris_gtfs_osm_common_all_multilinestrings = stplanr::line_cast(carris_gtfs_osm_common_all_multilinestrings)
+# carris_gtfs_osm_common_all_multilinestrings = carris_gtfs_osm_common_all_geo |>
+#   filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "MULTILINESTRING") |> 
+#     rowwise() |>
+#     mutate(geometry = multiline_to_sorted_linestring(geometry),
+#       geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))) |>
+#   st_set_geometry("geometry") |>
+#   ungroup()
+carris_gtfs_osm_common_all_multilinestrings # for this purpose is ok, but do not use for others, as the segments are splited
 mapview(carris_gtfs_osm_common_all_multilinestrings, zcol = "shape_id")
 carris_gtfs_osm_common_all_geo = bind_rows(carris_gtfs_osm_common_all_linestrings, 
                                               carris_gtfs_osm_common_all_multilinestrings)
@@ -729,6 +733,9 @@ for (h in 0:23) { # hours of the day
   carris_gtfs_osm_match_overline = rbind(carris_gtfs_osm_match_overline, routes_freq_h)
 }
 
+st_write(carris_gtfs_osm_match_overline, "data/carris_overline.gpkg", delete_dsn = TRUE)
+piggyback::pb_upload("data/carris_overline.gpkg")
+
 # for a given hour
 h = 8 # test
 routes_freq_simplify_hour = carris_gtfs_osm_match_overline |> 
@@ -751,3 +758,10 @@ mapview(
   lwd.multiplier = 2 # acho que não faz nada
 )
 
+mapview(
+  routes_freq_simplify_hour |> filter(frequency > 6),
+  zcol = "frequency",
+  lwd = "frequency",
+  layer.name = "Frequência",
+  lwd.multiplier = 2 # acho que não faz nada
+)
