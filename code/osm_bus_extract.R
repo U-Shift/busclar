@@ -765,3 +765,11 @@ mapview(
   layer.name = "Frequência",
   lwd.multiplier = 2 # acho que não faz nada
 )
+
+mapview(
+  routes_freq_simplify_hour |> filter(frequency > 20),
+  zcol = "frequency",
+  lwd = "frequency",
+  layer.name = "Frequência",
+  lwd.multiplier = 2 # acho que não faz nada
+)
