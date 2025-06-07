@@ -6,7 +6,7 @@ library(dplyr)
 available_features()
 available_tags("route")
 
-carris_osm = opq(bbox = lisboa)  |> 
+carris_osm = opq("Lisbon")  |> 
   add_osm_feature(key = "route",
                   value = "bus") |> 
   osmdata_sf()
@@ -16,19 +16,22 @@ mapview(carris_osm$osm_lines) ## alll
 # carris_osm_lines = st_crop(carris_osm$osm_lines, lisboa) |> 
 #   select_if(~!all(is.na(.)))
 # mapview(carris_osm_lines) 
-carris_osm_multilines = st_crop(carris_osm$osm_multilines, stplanr::geo_buffer(Lisbon_limit, dist = 500)) |> 
+carris_osm_multilines = carris_osm$osm_multilines |> 
+  # st_crop(stplanr::geo_buffer(Lisbon_limit, dist = 500)) |> 
   filter(operator == "Carris") |> # juntar a Carris Metropolitana noutra altura
   select_if(~!all(is.na(.)))
 names(carris_osm_multilines)
 mapview(carris_osm_multilines, zcol = "colour") 
 
 carris_osm_multilines_redux = carris_osm_multilines |> 
-  select(osm_id, ref, from, to, via, name, roundtrip) |> 
+  select(osm_id, ref, from, to, via, name, roundtrip)
   
-
-
-carris_osm_points = st_crop(carris_osm$osm_points, lisboa)
+# filter with pattern: all values include "Carris" in text
+carris_osm_points = carris_osm$osm_points |>
+  filter(grepl("Carris", network)) |> # Carris, Carris Metropolitana
+  st_crop(st_bbox(carris_osm_multilines_redux))
 mapview(carris_osm_points) 
+
 carris_osm_stoppositions = carris_osm_points |> filter(public_transport == "stop_position") |> 
   select_if(~!all(is.na(.)))
 mapview(carris_osm_stoppositions, zcol = "ref") 
@@ -41,7 +44,8 @@ mapview(carris_osm_platform, zcol = "ref")
 
 # retrieve info from gtfs
 
-gtfs_carris = load_feed(data_sources$producer_url[1])
+# gtfs_carris = GTFShift::load_feed(data_sources$producer_url[1])
+gtfs_carris = tidytransit::read_gtfs("https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS")
 next_wednesday = calendar_nextBusinessWednesday(country_code="PT")
 gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
 # gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
@@ -161,7 +165,7 @@ nrow(carris_osm_carreira) # 6
 # mapview(carris_osm_carreira)
 
 
-carris_osm_carreira_geom = carris_osm_carreira |> st_line_merge() # from MUTLILINESTRING to LINESTRING
+carris_osm_carreira_geom = carris_osm_carreira |> st_line_merge(directed = TRUE) # from MUTLILINESTRING to LINESTRING
 # mapview(carris_osm_carreira)
 carris_osm_carreira_geom = carris_osm_carreira_geom |> 
   mutate(route_dist = st_length(carris_osm_carreira_geom) |> units::drop_units()) |> 
@@ -241,3 +245,28 @@ teste_loop = carris_osm_multilines_redux |>
   # But as the result is a single line, proceed to final step
   st_line_merge() # this is relevant to end up with a LINESTRING only in the end.
 mapview(teste_loop)
+
+
+
+# test with stop names ----------------------------------------------------
+
+carreira = "736"
+carris_osm_multilines_redux_linestrings = carris_osm_multilines_redux |> 
+  rowwise() |>
+  mutate( # from MUTLILINESTRING to LINESTRING
+    # Apply your function to each MULTILINESTRING
+    geometry = multiline_to_sorted_linestring(geometry),
+    # Convert the list column to proper sf geometry
+    geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))
+  ) |> st_set_geometry("geometry") |>
+  ungroup()
+carris_osm_carreira = carris_osm_multilines_redux_linestrings %>%
+  filter(ref == carreira)
+
+carris_osm_multilines_redux_linestrings_directed = carris_osm_multilines_redux |>
+  st_line_merge(directed = TRUE)
+
+carris_gtfs_carreira = routes_freq_lisbon_hour_no_overline |> 
+  filter(route_short_name == carreira) |> 
+  select(route_id, shape_id, route_short_name, direction_id, geometry) |>
+  distinct()
