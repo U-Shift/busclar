@@ -682,12 +682,72 @@ carris_gtfs_osm_common_all = bind_rows(carris_gtfs_osm_common0,
 length(unique(carris_gtfs_osm_common_all$route_short_name)) # 107
 length(unique(carris_gtfs_osm_common_all$shape_id)) # 276
 
-carris_gtfs_osm_match = carris_gtfs_osm_common_all |> 
-  select(shape_id, osm_id) |>
+# some are linestring and some are multilinestring
+# convert the ones that are multilinestring to linestring
+
+carris_gtfs_osm_common_all_geo = carris_gtfs_osm_common_all |> 
   left_join(carris_osm_multilines_redux_linestrings |> select(osm_id, geometry)) |> 
-  left_join(routes_freq_lisbon_hour_no_overline |> st_drop_geometry()) |> 
   st_as_sf()
+carris_gtfs_osm_common_all_linestrings = carris_gtfs_osm_common_all_geo |>
+  filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "LINESTRING")
+carris_gtfs_osm_common_all_linestrings
+carris_gtfs_osm_common_all_multilinestrings = carris_gtfs_osm_common_all_geo |>
+  filter(st_geometry_type(carris_gtfs_osm_common_all_geo) == "MULTILINESTRING") |> 
+    rowwise() |>
+    mutate(geometry = multiline_to_sorted_linestring(geometry),
+      geometry = st_as_sfc(geometry, crs = st_crs(carris_osm_carreira))) |>
+  st_set_geometry("geometry") |>
+  ungroup()
+carris_gtfs_osm_common_all_multilinestrings
+mapview(carris_gtfs_osm_common_all_multilinestrings, zcol = "shape_id")
+carris_gtfs_osm_common_all_geo = bind_rows(carris_gtfs_osm_common_all_linestrings, 
+                                              carris_gtfs_osm_common_all_multilinestrings)
+
+# combine with frequencies
+carris_gtfs_osm_match = carris_gtfs_osm_common_all_geo |> 
+  select(shape_id, osm_id) |>
+  left_join(routes_freq_lisbon_hour_no_overline |> st_drop_geometry() |> 
+              select(-route_id, -direction_id))
+
 
 st_write(carris_gtfs_osm_match, "data/carris_gtfs_osm_match.gpkg", delete_dsn = TRUE)
 piggyback::pb_upload("data/carris_gtfs_osm_match.gpkg")
+
+
+# viz ---------------------------------------------------------------------
+
+## overline
+library(stplanr)
+carris_gtfs_osm_match_overline = data.frame()
+for (h in 0:23) { # hours of the day
+  routes_freq_h = carris_gtfs_osm_match |> 
+    filter(hour == h) |> 
+    overline2(attrib = "frequency")  |>  
+    arrange(frequency) |> 
+    mutate(hour = h)
+  
+  carris_gtfs_osm_match_overline = rbind(carris_gtfs_osm_match_overline, routes_freq_h)
+}
+
+# for a given hour
+h = 8 # test
+routes_freq_simplify_hour = carris_gtfs_osm_match_overline |> 
+  filter(hour == h) 
+summary(routes_freq_simplify_hour$freq)
+# 7h - max 94
+# 8h - max 99
+# 9h - max 91
+# 10h - max 74
+# 17h - max 88
+# 18h - max 88
+
+## mapas
+# with all
+mapview(
+  routes_freq_simplify_hour,
+  zcol = "frequency",
+  lwd = "frequency",
+  layer.name = "Frequência",
+  lwd.multiplier = 2 # acho que não faz nada
+)
 
