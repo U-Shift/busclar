@@ -97,7 +97,9 @@ gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_
 ## 3. Analyse one line
 
 ```{r}
-carreira = "736"
+carreira = "55B"
+unique(carris_osm_multilines_redux$ref)
+length(unique(carris_osm_multilines_redux$ref))
 ```
 
 Filter osm network
@@ -141,8 +143,24 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
     route_dist = st_length(geometry) |> units::drop_units(),
     # Other relevant parameters
     nr_stops = nrow(relations_df |> filter(relation_osm_id==osm_id & role=="stop")) + 2, # +2 because 1st and last stop have other role
-    first_stop_osm_id = relations_df |> filter(relation_osm_id==osm_id & role=="stop_entry_only") |> slice(1) |> pull(ref),
-    last_stop_osm_id = relations_df |> filter(relation_osm_id==osm_id & role=="stop_exit_only") |> slice(1) |> pull(ref),
+    first_stop_osm_id = relations_df |> 
+      # Consider both stop_entry/exit_only and stop, because circular lines do not have entry/exit, only stop
+      filter(relation_osm_id==osm_id & role %in% c("stop_entry_only", "stop")) |> 
+      # Use sorting to give priority to entry/exit, when they exist
+      arrange(
+        match(role, c("stop_entry_only", "stop")), 
+        role
+      ) |> 
+      slice(1)  |> 
+      pull(ref),
+    last_stop_osm_id = relations_df |> 
+      filter(relation_osm_id==osm_id & role %in% c("stop_exit_only", "stop")) |> 
+      arrange(
+        match(role, c("stop", "stop_exit_only")),
+        role
+      ) |> 
+      slice(1) |> 
+      pull(ref),
     initial = carris_osm_stoppositions |> filter(osm_id==first_stop_osm_id) |> slice(1) |> pull(geometry),
     final = carris_osm_stoppositions |> filter(osm_id==last_stop_osm_id) |> slice(1) |> pull(geometry)
   ) |> 
@@ -229,8 +247,8 @@ max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG
 mapview(carris_gtfs_carreira, zcol = "shape_id")
 mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
 
-mapview(carris_gtfs_carreira |> filter(grepl("199_3", shape_id)), zcol = "shape_id")
-mapview(carris_gtfs_carreira_result |> filter(grepl("199_3", shape_id)), zcol = "shape_osm")
+mapview(carris_gtfs_carreira |> filter(grepl("106_4", shape_id)), zcol = "shape_id")
+mapview(carris_gtfs_carreira_result |> filter(grepl("106_4", shape_id)), zcol = "shape_osm")
 ```
 
 ```{r}
