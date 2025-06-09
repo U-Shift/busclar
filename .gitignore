@@ -53,3 +53,6 @@ rsconnect/
 data/
 other/
 mappymatch/
+
+# Local GTFS files
+*.zip

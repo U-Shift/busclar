@@ -210,13 +210,13 @@ fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
 Match OSM network and GTFS shapes considering the match with min aggregated distance (init + fin)
 ```{r}
 conjunto = abs(init+fin)
-conjunto
+conjunto # matrix osm (lines) x gtfs (cols)
 
 carris_gtfs_carreira_minimos = carris_gtfs_carreira |>  # TO-DO: incorporate without _minimos
   mutate(osm_id = NA)
 
 for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
-  carris_gtfs_carreira_minimos[i,]$osm_id = carris_osm_carreira_geom[which.min(conjunto[i,]),]$osm_id
+  carris_gtfs_carreira_minimos[i,]$osm_id = carris_osm_carreira_geom[which.min(conjunto[,i]),]$osm_id
 }
 
 carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
