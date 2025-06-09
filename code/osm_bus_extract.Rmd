@@ -114,6 +114,7 @@ mapview(carris_osm_carreira, zcol="osm_id")
 Filter GTFS
 ```{r}
 shapes_sf = tidytransit::shapes_as_sf(gtfs_carris$shapes)
+stops_sf = tidytransit::stops_as_sf(gtfs_carris$stops)
 carris_gtfs_carreira = gtfs_carris$routes |>  # Start on routes.txt to match line number with route_short_name
   select(route_id, route_short_name, route_long_name) |>
   filter(route_short_name == carreira) |>
@@ -142,7 +143,7 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
     # Geographical data
     route_dist = st_length(geometry) |> units::drop_units(),
     # Other relevant parameters
-    nr_stops = nrow(relations_df |> filter(relation_osm_id==osm_id & role=="stop")) + 2, # +2 because 1st and last stop have other role
+    nr_stops = nrow(relations_df |> filter(relation_osm_id==osm_id & grepl("stop", role))),
     first_stop_osm_id = relations_df |> 
       # Consider both stop_entry/exit_only and stop, because circular lines do not have entry/exit, only stop
       filter(relation_osm_id==osm_id & role %in% c("stop_entry_only", "stop")) |> 
@@ -168,6 +169,7 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
   select(osm_id, name, initial, final, route_dist, nr_stops, first_stop_osm_id, last_stop_osm_id, geometry) |> 
   arrange(route_dist, initial, final)
 
+View(carris_osm_carreira_geom)
 nrow(carris_osm_carreira_geom)
 mapview(carris_osm_carreira_geom, zcol="osm_id")
 carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19136075)
@@ -185,10 +187,14 @@ carris_gtfs_carreira = carris_gtfs_carreira |>
   mutate(
     # Geographical data
     route_dist = st_length(geometry) |> units::drop_units(),
-    initial = lwgeom::st_startpoint(geometry), # We could also replace this with stop.txt locations
-    final = lwgeom::st_endpoint(geometry),
-    # Other relevant parameters
     trip_id_copy = trip_id,
+    
+    first_stop_id = gtfs_carris$stop_times |> filter(trip_id == trip_id_copy & stop_sequence == 1) |> slice(1) |> pull(stop_id),
+    last_stop_id = gtfs_carris$stop_times |> filter(trip_id == trip_id_copy) |> arrange(desc(stop_sequence)) |> slice(1) |> pull(stop_id),
+    initial = stops_sf |> filter(stop_id == first_stop_id) |> slice(1) |> pull(geometry),
+    final = stops_sf |> filter(stop_id == last_stop_id) |> slice(1) |> pull(geometry),
+    
+    # Other relevant parameters
     nr_stops = nrow(gtfs_carris$stop_times |> filter(trip_id == trip_id_copy))
   ) |> 
   ungroup() |> 
@@ -214,7 +220,7 @@ length_diff = sapply(carris_gtfs_carreira$route_dist, function(y) abs(carris_osm
 
 Match OSM network and GTFS shapes considering the match with min aggregated distance (init + fin)
 ```{r}
-conjunto = abs(init+fin+length_diff)
+conjunto = abs(init + fin + length_diff)
 conjunto # matrix osm (lines) x gtfs (cols)
 
 carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
