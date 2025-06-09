@@ -156,7 +156,7 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
     last_stop_osm_id = relations_df |> 
       filter(relation_osm_id==osm_id & role %in% c("stop_exit_only", "stop")) |> 
       arrange(
-        match(role, c("stop", "stop_exit_only")),
+        match(role, c("stop_exit_only", "stop")),
         role
       ) |> 
       slice(1) |> 
