@@ -165,12 +165,13 @@ carris_osm_carreira_geom = carris_osm_carreira_geom |>
     final = carris_osm_stoppositions |> filter(osm_id==last_stop_osm_id) |> slice(1) |> pull(geometry)
   ) |> 
   ungroup() |> 
-  select(osm_id, initial, final, route_dist, nr_stops, first_stop_osm_id, last_stop_osm_id, geometry) |> 
+  select(osm_id, name, initial, final, route_dist, nr_stops, first_stop_osm_id, last_stop_osm_id, geometry) |> 
   arrange(route_dist, initial, final)
 
+nrow(carris_osm_carreira_geom)
 mapview(carris_osm_carreira_geom, zcol="osm_id")
-carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19131145)
-carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 1979936)
+carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19136075)
+carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(8754460, 8754490))
 mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
 
 mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
@@ -194,7 +195,7 @@ carris_gtfs_carreira = carris_gtfs_carreira |>
   select(-trip_id_copy) |>
   arrange(route_dist, initial, final)
 
-carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(shape_id == "199_1_ASC_shp")
+carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(grepl("171_3", shape_id))
 mapview(carris_gtfs_carreira_id, color="gray") + mapview(carris_gtfs_carreira_id$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira_id$final, col.regions="#003f8f")
 
 mapview(carris_gtfs_carreira, color="gray") + mapview(carris_gtfs_carreira$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira$final, col.regions="#003f8f")
@@ -212,7 +213,7 @@ Match OSM network and GTFS shapes considering the match with min aggregated dist
 conjunto = abs(init+fin)
 conjunto # matrix osm (lines) x gtfs (cols)
 
-carris_gtfs_carreira_minimos = carris_gtfs_carreira |>  # TO-DO: incorporate without _minimos
+carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
   mutate(osm_id = NA)
 
 for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
@@ -222,7 +223,7 @@ for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
 carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
   st_drop_geometry() |>  
   left_join(
-    carris_osm_carreira_geom |> select(osm_id, route_dist, nr_stops, geometry), 
+    carris_osm_carreira_geom |> select(osm_id, name, route_dist, nr_stops, geometry), 
     by = "osm_id",
     suffix = c("_gtfs", "_osm")
   ) |> 
@@ -242,7 +243,7 @@ carris_gtfs_carreira_result$shape_osm = paste(
 Analyse results
 ```{r}
 View(carris_gtfs_carreira_result)
-max(carris_gtfs_carreira_result$distance_diff) # 3869.512 !!! SOMETHING IS WRONG HERE
+max(carris_gtfs_carreira_result$distance_diff)
 
 mapview(carris_gtfs_carreira, zcol = "shape_id")
 mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
