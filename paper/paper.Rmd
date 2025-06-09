@@ -87,9 +87,26 @@ The analysis was performed using the aggregated feeds of both Carris and Carris 
 
 The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density. 
 
-```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_lisboa_8-9h.html"}
+```{r, eval=FALSE}
+library(dplyr)
+library(sf)
+library(tmap)
+tmap_mode("view")
+carris_gtfs_osm_overline = st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_overline.gpkg")
+carris_gtfs_osm_overline8 = carris_gtfs_osm_overline |> filter(hour == 8)
+
+map3 = mapview::mapview(carris_gtfs_osm_overline8,
+                 zcol = "frequency", 
+                          layer.name = "Bus frequency", 
+                          legend = TRUE, 
+                          lwd = "frequency")
+# export as image
+```
+
+
+```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and lighter lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_8h.html"}
 # include figure
-knitr::include_graphics("map2.png")
+knitr::include_graphics("map3.png")
 ```
 
 The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
