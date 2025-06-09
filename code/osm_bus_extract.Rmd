@@ -195,6 +195,8 @@ carris_gtfs_carreira = carris_gtfs_carreira |>
   select(-trip_id_copy) |>
   arrange(route_dist, initial, final)
 
+View(carris_gtfs_carreira)
+
 carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(grepl("171_3", shape_id))
 mapview(carris_gtfs_carreira_id, color="gray") + mapview(carris_gtfs_carreira_id$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira_id$final, col.regions="#003f8f")
 
@@ -204,13 +206,15 @@ mapview(carris_gtfs_carreira, color="gray") + mapview(carris_gtfs_carreira$initi
 
 Compute distances between init and final points for both
 ```{r}
-init = st_distance(carris_osm_carreira_geom$initial, carris_gtfs_carreira$initial)
-fin = st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final)
+init = units::drop_units( st_distance(carris_osm_carreira_geom$initial, carris_gtfs_carreira$initial) )
+fin = units::drop_units( st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final) )
+
+length_diff = sapply(carris_gtfs_carreira$route_dist, function(y) abs(carris_osm_carreira_geom$route_dist - y))
 ```
 
 Match OSM network and GTFS shapes considering the match with min aggregated distance (init + fin)
 ```{r}
-conjunto = abs(init+fin)
+conjunto = abs(init+fin+length_diff)
 conjunto # matrix osm (lines) x gtfs (cols)
 
 carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
