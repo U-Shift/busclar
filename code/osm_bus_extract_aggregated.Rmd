@@ -20,7 +20,7 @@ mapview::mapviewOptions(fgb = FALSE, viewer.suppress = TRUE)
 ```{r}
 data_sources = read.csv(system.file("extdata", "gtfs_sources_pt.csv", package = "GTFShift"))
 
-gtfs_carris = tidytransit::read_gtfs("../gtfs_2025-05-23.zip")
+gtfs_carris = GTFShift::load_feed("../gtfs_2025-05-23.zip")
 next_wednesday = "2025-05-28" # calendar_nextBusinessWednesday(country_code="PT")
 gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
 # gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
@@ -116,7 +116,7 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
   
   # 1. Get base data 
   # > Filter osm network
-  carris_osm_carreira = carris_osm_multilines_redux %>%
+  carris_osm_carreira = carris_osm_multilines_redux |>
     filter(ref == carreira)
   # nrow(carris_osm_carreira)
   # mapview(carris_osm_carreira, zcol="osm_id")
@@ -323,8 +323,81 @@ mapview(carris_gtfs_carreiras_result_found |> filter(grepl("723", route_short_na
 ```
 
 ```{r}
-names(carris_gtfs_carreiras_result)
+names(carris_gtfs_carreiras_result_found)
 
-carris_gtfs_carreiras_result |>
+carris_gtfs_carreiras_result_found |>
   select(shape_id, nr_stops_gtfs, route_dist_gtfs, osm_id, nr_stops_osm, route_dist_osm ,distance_diff)
 ```
+
+## 4. Results visualization
+
+```{r}
+library(GTFShift)
+
+gtfs_carris = GTFShift::load_feed("../gtfs_2025-05-23.zip")
+
+frequencies_route = GTFShift::get_route_frequency_hourly(gtfs_carris, date="2025-05-28")
+summary(frequencies_route)
+names(frequencies_route)
+quantile(frequencies_route$frequency)
+
+mapview::mapview(
+  frequencies_route |> filter(hour == 8 & frequency > 2),
+  zcol = "frequency",
+  layer.name = "Frequency (hour)"
+)
+
+# Overline
+frequencies_route_overline = GTFShift::get_route_frequency_hourly(gtfs_carris, date="2025-05-28", overline = TRUE)
+summary(frequencies_route_overline)
+quantile(frequencies_route_overline$frequency)
+mapview::mapview(
+  frequencies_route_overline |> filter(hour == 8 & frequency > 2),
+  zcol = "frequency",
+  layer.name = "Frequency (hour)"
+)
+
+# Replace GTFS geometry with OSM
+frequencies_route_osm <- frequencies_route |>
+  # Store original geometry in a new column
+  mutate(geometry_gtfs = geometry) |>
+  # Drop sf class (convert to data frame)
+  sf::st_drop_geometry() |>
+  # Left join with the carris data (also as data frame)
+  dplyr::right_join(
+    carris_gtfs_carreiras_result_found |>
+      mutate(geometry_osm = geometry) |>
+      select(shape_id, geometry_osm,route_short_name,route_long_name) |>
+      st_drop_geometry(),
+    by = "shape_id"
+  ) |> 
+  select(-geometry_gtfs) |>
+  st_as_sf(sf_column_name="geometry_osm")
+
+mapview::mapview(
+  frequencies_route_osm |> filter(hour == 8 & frequency > 2),
+  zcol = "frequency",
+  layer.name = "Frequency (hour)(OSM shapes)"
+)
+
+frequencies_route_osm_aggregated = data.frame()
+for (h in unique(frequencies_route_osm$hour)) { # hours of the day
+  routes_freq_h = frequencies_route_osm |>
+    filter(hour == h) |>
+    stplanr::overline2(attrib = "frequency") |>
+    arrange(frequency) |>
+    mutate(hour = h)
+
+  frequencies_route_osm_aggregated = rbind(frequencies_route_osm_aggregated, routes_freq_h)
+}
+quantile(frequencies_route_osm_aggregated$frequency)
+mapview::mapview(
+  frequencies_route_osm_aggregated |> filter(hour == 8 & frequency > 2),
+  zcol = "frequency",
+  layer.name = "Frequency (hour)(OSM shapes)"
+)
+
+```
+
+
+
