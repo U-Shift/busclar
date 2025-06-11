@@ -16,6 +16,7 @@ mapview::mapviewOptions(fgb = FALSE, viewer.suppress = TRUE)
 ```
 
 ## 1. Load GTFS
+
 ```{r}
 data_sources = read.csv(system.file("extdata", "gtfs_sources_pt.csv", package = "GTFShift"))
 
@@ -40,6 +41,7 @@ q = opq("Lisbon")  |>
 ```
 
 Get routes multilines and stops
+
 ```{r}
 carris_osm = q |> osmdata_sf()
 carris_osm_multilines = carris_osm$osm_multilines
@@ -63,7 +65,7 @@ carris_osm_platform = carris_osm_points |> filter(public_transport == "platform"
 
 And relation between them
 
-> Based on https://stackoverflow.com/questions/78758864/get-relation-data-from-osmdata
+> Based on <https://stackoverflow.com/questions/78758864/get-relation-data-from-osmdata>
 
 ```{r}
 # Save XML
@@ -97,7 +99,7 @@ relations_df = bind_rows(relations_df)
 relations_df |> distinct(role , .keep_all=TRUE)
 ```
 
-## 3. Aggregated analysis 
+## 3. Aggregated analysis
 
 ```{r}
 carreiras = unique( gtfs_carris$routes |> pull(route_short_name) )
@@ -160,10 +162,21 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
           pull(ref),
         last_stop_osm_id = relations_df |> 
           filter(relation_osm_id==osm_id & role %in% c("stop_exit_only", "stop")) |> 
+          mutate( role_group = case_when(
+            # When roundtrip (circular), keep normal order
+            roundtrip == "yes" ~ 1, 
+            # Otherwise, consider first stop_exit_only or last stop (if no exit_only)
+            role == "stop_exit_only" ~ 1,role == "stop" ~ 2,TRUE ~ 3
+          ) ) |>
           arrange(
-            match(role, c("stop_exit_only", "stop")),
-            role
-          ) |> 
+            role_group,
+            case_when(
+              roundtrip == "yes" ~ row_number(),             # When roundtrip (circular), keep normal order
+              role == "stop_exit_only" ~ row_number(),       # keep natural order
+              role == "stop" ~ desc(row_number()),           # reverse order
+              TRUE ~ row_number()                            # fallback order for others
+            )
+          ) |>
           slice(1) |> 
           pull(ref),
         initial = carris_osm_stoppositions |> filter(osm_id==first_stop_osm_id) |> slice(1) |> pull(geometry),
@@ -186,7 +199,7 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
   # View(carris_osm_carreira_geom)
   # nrow(carris_osm_carreira_geom)
   # mapview(carris_osm_carreira_geom, zcol="osm_id")
-  # carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(19136074, 19136075))
+  # carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(19136079, 19136078))
   # mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
   # mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
   
@@ -211,7 +224,7 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
     arrange(route_dist, initial, final)
   
   # View(carris_gtfs_carreira)
-  # carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(grepl("171_3", shape_id))
+  # carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(grepl("109_4", shape_id))
   # mapview(carris_gtfs_carreira_id, color="gray") + mapview(carris_gtfs_carreira_id$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira_id$final, col.regions="#003f8f")
   # mapview(carris_gtfs_carreira, color="gray") + mapview(carris_gtfs_carreira$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira$final, col.regions="#003f8f")
   
@@ -235,11 +248,17 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
   carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
     st_drop_geometry() |>  
     left_join(
-      carris_osm_carreira_geom |> select(osm_id, name, route_dist, nr_stops, geometry), 
+      carris_osm_carreira_geom |> select(osm_id, name, route_dist, nr_stops, geometry, initial, final), 
       by = "osm_id",
       suffix = c("_gtfs", "_osm")
     ) |> 
-    mutate(distance_diff = abs(route_dist_gtfs - route_dist_osm)) |> # absolute difference
+    rowwise() |>
+    mutate(
+      distance_diff = abs(route_dist_gtfs - route_dist_osm),
+      points_diff = units::drop_units( st_distance(initial_osm, initial_gtfs) ) + units::drop_units( st_distance(final_osm, final_gtfs) ) 
+    ) |> # absolute difference
+    ungroup() |>
+    select(-initial_gtfs, -final_gtfs) |> 
     st_as_sf(sf_column_name="geometry")
   
   
@@ -252,7 +271,9 @@ carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
     " // ", 
     carris_gtfs_carreira_result$osm_id , 
     " // ", 
-    sprintf("%.2f",carris_gtfs_carreira_result$distance_diff)
+    sprintf("%.2f",carris_gtfs_carreira_result$distance_diff),
+    " // ",
+    sprintf("%.2f",carris_gtfs_carreira_result$points_diff)
   )
   
   # View(carris_gtfs_carreira_result)
@@ -275,15 +296,15 @@ safe_bind <- function(a, b) tryCatch(bind_rows(a, b), error = function(e) e)
 Reduce(safe_bind, carris_gtfs_carreiras_result[1:5]) 
 ```
 
-
 Analyse results
+
 ```{r}
 View(carris_gtfs_carreiras_result_found)
 
 max(carris_gtfs_carreiras_result_found$distance_diff)
-nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff>500))
-unique(carris_gtfs_carreiras_result_found |> filter(distance_diff>500) |> pull(route_short_name))
-nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff<=500))
+nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff>500 & points_diff>100))
+unique(carris_gtfs_carreiras_result_found |> filter(distance_diff>500 & points_diff>100) |> pull(route_short_name))
+nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff<=500 & points_diff<100))
 
 length(unique(carris_gtfs_carreiras_result_found |> filter(distance_diff<=500) |> pull(route_short_name)))
 
@@ -292,8 +313,8 @@ mapview(shapes_sf, zcol = "shape_id")
 mapview(carris_gtfs_carreiras_result_found, zcol = "shape_osm")
 
 mapview(shapes_sf |> filter(grepl("106_4", shape_id)), zcol = "shape_id")
-mapview(carris_gtfs_carreiras_result_found |> filter(grepl("171_0", shape_id)), zcol = "shape_osm")
-mapview(carris_gtfs_carreiras_result_found |> filter(grepl("67B", route_short_name)), zcol = "shape_osm")
+mapview(carris_gtfs_carreiras_result_found |> filter(grepl("109_4", shape_id)), zcol = "shape_osm")
+mapview(carris_gtfs_carreiras_result_found |> filter(grepl("734", route_short_name)), zcol = "shape_osm")
 ```
 
 ```{r}
@@ -302,5 +323,3 @@ names(carris_gtfs_carreiras_result)
 carris_gtfs_carreiras_result |>
   select(shape_id, nr_stops_gtfs, route_dist_gtfs, osm_id, nr_stops_osm, route_dist_osm ,distance_diff)
 ```
-
- 
