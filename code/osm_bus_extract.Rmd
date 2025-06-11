@@ -88,8 +88,8 @@ relations_df |> distinct(role , .keep_all=TRUE)
 ```{r}
 data_sources = read.csv(system.file("extdata", "gtfs_sources_pt.csv", package = "GTFShift"))
 
-gtfs_carris = tidytransit::read_gtfs(data_sources[data_sources$ID=="lisboa", ]$URL)
-next_wednesday = calendar_nextBusinessWednesday(country_code="PT")
+gtfs_carris = tidytransit::read_gtfs("../gtfs_2025-05-23.zip")
+next_wednesday = "2025-05-28" # calendar_nextBusinessWednesday(country_code="PT")
 gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
 # gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
 ```
@@ -97,7 +97,7 @@ gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_
 ## 3. Analyse one line
 
 ```{r}
-carreira = "55B"
+carreiras = gtfs_carris$routes$route_short_name
 unique(carris_osm_multilines_redux$ref)
 length(unique(carris_osm_multilines_redux$ref))
 ```
@@ -173,7 +173,7 @@ View(carris_osm_carreira_geom)
 nrow(carris_osm_carreira_geom)
 mapview(carris_osm_carreira_geom, zcol="osm_id")
 carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id == 19136075)
-carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(8754460, 8754490))
+carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(19136074, 19136075))
 mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
 
 mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
@@ -259,7 +259,7 @@ mapview(carris_gtfs_carreira, zcol = "shape_id")
 mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
 
 mapview(carris_gtfs_carreira |> filter(grepl("106_4", shape_id)), zcol = "shape_id")
-mapview(carris_gtfs_carreira_result |> filter(grepl("106_4", shape_id)), zcol = "shape_osm")
+mapview(carris_gtfs_carreira_result |> filter(grepl("171_0", shape_id)), zcol = "shape_osm")
 ```
 
 ```{r}

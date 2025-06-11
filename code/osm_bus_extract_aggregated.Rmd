@@ -1,0 +1,299 @@
+---
+title: "osm_bus_extract"
+output: html_document
+---
+
+# Map shapes to OSM routes
+
+```{r}
+library(osmdata)
+library(sf)
+library(mapview)
+library(dplyr)
+library(GTFShift)
+
+mapview::mapviewOptions(fgb = FALSE, viewer.suppress = TRUE)
+```
+
+## 1. Load GTFS
+```{r}
+data_sources = read.csv(system.file("extdata", "gtfs_sources_pt.csv", package = "GTFShift"))
+
+gtfs_carris = tidytransit::read_gtfs("../gtfs_2025-05-23.zip")
+next_wednesday = "2025-05-28" # calendar_nextBusinessWednesday(country_code="PT")
+gtfs_carris = tidytransit::filter_feed_by_date(gtfs_carris, extract_date = next_wednesday)
+# gtfs_carris = gtfs_carris |> filter_by_modes(modes = list(0, 3))  # filter by mode = tram and bus
+
+shapes_sf = tidytransit::shapes_as_sf(gtfs_carris$shapes)
+stops_sf = tidytransit::stops_as_sf(gtfs_carris$stops)
+```
+
+## 2. Download OSM routes
+
+```{r}
+area = sf::st_bbox(stops_sf) |> st_as_sfc() |> st_buffer(500) |> st_bbox()
+mapview(area)
+
+q = opq("Lisbon")  |> 
+  add_osm_feature(key = "route", value = c("bus", "tram")) |>  # TODO! Validate for trams
+  add_osm_feature(key = "network", value = "Carris", key_exact = TRUE)
+```
+
+Get routes multilines and stops
+```{r}
+carris_osm = q |> osmdata_sf()
+carris_osm_multilines = carris_osm$osm_multilines
+carris_osm_multilines_redux = carris_osm_multilines |> 
+  select(osm_id, ref, from, to, via, name, roundtrip)
+# mapview(carris_osm_multilines_redux) 
+
+carris_osm_points = carris_osm$osm_points |>
+  filter(grepl("Carris", network)) |>
+  st_crop(st_bbox(stplanr::geo_buffer(carris_osm_multilines_redux, dist=100) ))
+# mapview(carris_osm_points) 
+
+carris_osm_stoppositions = carris_osm_points |> filter(public_transport == "stop_position") |> 
+  select_if(~!all(is.na(.)))
+# mapview(carris_osm_stoppositions, zcol = "ref") 
+
+carris_osm_platform = carris_osm_points |> filter(public_transport == "platform") |> 
+  select_if(~!all(is.na(.)))
+# mapview(carris_osm_platform, zcol = "ref")
+```
+
+And relation between them
+
+> Based on https://stackoverflow.com/questions/78758864/get-relation-data-from-osmdata
+
+```{r}
+# Save XML
+library(xml2)
+osm_file <- tempfile(fileext = ".osm")
+osmdata_xml(q, filename = osm_file)
+
+# Read and parse
+doc <- read_xml(osm_file)
+
+# Find all route relations
+relations <- xml_find_all(doc, ".//relation[tag[@k='type'][@v='route'] and tag[@k='route'][@v='bus'] and tag[@k='network'][@v='Carris']]")
+
+relations_df = lapply(relations, function(relation) {
+  relation_id <- xml_attr(relation, "id")
+  members <- xml_find_all(relation, "member")
+  
+  members_df = lapply(members, function(member) {
+    c(  
+       type = xml_attr(member, "type"),
+       ref = xml_attr(member, "ref"),
+       role = xml_attr(member, "role")
+    )
+  }) 
+  df <- data.frame(do.call(rbind, members_df))
+  df$relation_osm_id = relation_id
+  return(df)
+})
+relations_df = bind_rows(relations_df)
+
+relations_df |> distinct(role , .keep_all=TRUE)
+```
+
+## 3. Aggregated analysis 
+
+```{r}
+carreiras = unique( gtfs_carris$routes |> pull(route_short_name) )
+length(carreiras)
+
+unique(carris_osm_multilines_redux$ref)
+length(unique(carris_osm_multilines_redux$ref))
+```
+
+```{r}
+carris_gtfs_carreiras_result <- lapply(carreiras, function(carreira) {
+  
+  message(sprintf("Running for route %s...", carreira))
+  
+  # 1. Get base data 
+  # > Filter osm network
+  carris_osm_carreira = carris_osm_multilines_redux %>%
+    filter(ref == carreira)
+  # nrow(carris_osm_carreira)
+  # mapview(carris_osm_carreira, zcol="osm_id")
+  
+  # > Filter GTFS
+  carris_gtfs_carreira = gtfs_carris$routes |>  # Start on routes.txt to match line number with route_short_name
+    select(route_id, route_short_name, route_long_name) |>
+    filter(route_short_name == carreira) |>
+    left_join(gtfs_carris$trips |> select(route_id, trip_id, shape_id, direction_id), by="route_id") |> 
+    left_join(shapes_sf, by="shape_id") |>
+    distinct(shape_id, .keep_all = TRUE) |> 
+    sf::st_as_sf()
+  
+  # View(carris_gtfs_carreira)
+  # mapview(carris_gtfs_carreira)
+  # nrow(carris_gtfs_carreira)
+  
+  # 2. Match based on initial and final points 
+  # > Compute osm final and initial points
+  carris_osm_carreira_geom = carris_osm_carreira 
+  
+  # mapview(carris_osm_carreira_geom, zcol="osm_id")
+  # st_geometry_type(carris_osm_carreira_geom)
+  
+  carris_osm_carreira_geom = tryCatch ({
+    carris_osm_carreira_geom |> 
+      rowwise() |>
+      mutate(
+        # Geographical data
+        route_dist = st_length(geometry) |> units::drop_units(),
+        # Other relevant parameters
+        nr_stops = nrow(relations_df |> filter(relation_osm_id==osm_id & grepl("stop", role))),
+        first_stop_osm_id = relations_df |> 
+          # Consider both stop_entry/exit_only and stop, because circular lines do not have entry/exit, only stop
+          filter(relation_osm_id==osm_id & role %in% c("stop_entry_only", "stop")) |> 
+          # Use sorting to give priority to entry/exit, when they exist
+          arrange(
+            match(role, c("stop_entry_only", "stop")), 
+            role
+          ) |> 
+          slice(1)  |> 
+          pull(ref),
+        last_stop_osm_id = relations_df |> 
+          filter(relation_osm_id==osm_id & role %in% c("stop_exit_only", "stop")) |> 
+          arrange(
+            match(role, c("stop_exit_only", "stop")),
+            role
+          ) |> 
+          slice(1) |> 
+          pull(ref),
+        initial = carris_osm_stoppositions |> filter(osm_id==first_stop_osm_id) |> slice(1) |> pull(geometry),
+        final = carris_osm_stoppositions |> filter(osm_id==last_stop_osm_id) |> slice(1) |> pull(geometry)
+      ) |> 
+      ungroup() |> 
+      select(osm_id, name, route_dist, nr_stops, initial, final, first_stop_osm_id, last_stop_osm_id, geometry) |> 
+      arrange(route_dist)
+  }, error = function(e) {
+    warning("Error on element: ", e)
+    return(NULL)
+  })
+  
+  if (is.null(carris_osm_carreira_geom)) {
+    return(data.frame(
+      route_short_name=carreira
+    ))  # Return NULL for failed elements
+  }
+  
+  # View(carris_osm_carreira_geom)
+  # nrow(carris_osm_carreira_geom)
+  # mapview(carris_osm_carreira_geom, zcol="osm_id")
+  # carris_osm_carreira_geom_id = carris_osm_carreira_geom |> filter(osm_id %in% c(19136074, 19136075))
+  # mapview(carris_osm_carreira_geom_id, color="gray") + mapview(carris_osm_carreira_geom_id$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom_id$final, col.regions="#003f8f")
+  # mapview(carris_osm_carreira_geom, color="gray") + mapview(carris_osm_carreira_geom$initial, col.regions="#ffd400") + mapview(carris_osm_carreira_geom$final, col.regions="#003f8f")
+  
+  # > Same for GTFS shapes
+  carris_gtfs_carreira = carris_gtfs_carreira |> 
+    rowwise() |>
+    mutate(
+      # Geographical data
+      route_dist = st_length(geometry) |> units::drop_units(),
+      trip_id_copy = trip_id,
+      
+      first_stop_id = gtfs_carris$stop_times |> filter(trip_id == trip_id_copy & stop_sequence == 1) |> slice(1) |> pull(stop_id),
+      last_stop_id = gtfs_carris$stop_times |> filter(trip_id == trip_id_copy) |> arrange(desc(stop_sequence)) |> slice(1) |> pull(stop_id),
+      initial = stops_sf |> filter(stop_id == first_stop_id) |> slice(1) |> pull(geometry),
+      final = stops_sf |> filter(stop_id == last_stop_id) |> slice(1) |> pull(geometry),
+      
+      # Other relevant parameters
+      nr_stops = nrow(gtfs_carris$stop_times |> filter(trip_id == trip_id_copy))
+    ) |> 
+    ungroup() |> 
+    select(-trip_id_copy) |>
+    arrange(route_dist, initial, final)
+  
+  # View(carris_gtfs_carreira)
+  # carris_gtfs_carreira_id = carris_gtfs_carreira |> filter(grepl("171_3", shape_id))
+  # mapview(carris_gtfs_carreira_id, color="gray") + mapview(carris_gtfs_carreira_id$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira_id$final, col.regions="#003f8f")
+  # mapview(carris_gtfs_carreira, color="gray") + mapview(carris_gtfs_carreira$initial, col.regions="#ffd400") + mapview(carris_gtfs_carreira$final, col.regions="#003f8f")
+  
+  # 3. Match gtfs shapes and osm routes, by choosing the one that share the closest start and end points
+  # >  Compute distances between init and final points for both
+  init = units::drop_units( st_distance(carris_osm_carreira_geom$initial, carris_gtfs_carreira$initial) )
+  fin = units::drop_units( st_distance(carris_osm_carreira_geom$final, carris_gtfs_carreira$final) )
+  length_diff = sapply(carris_gtfs_carreira$route_dist, function(y) abs(carris_osm_carreira_geom$route_dist - y))
+  
+  # > Match OSM network and GTFS shapes considering the match with min aggregated distance (init + fin)
+  conjunto = abs(init + fin + length_diff)
+  # conjunto # matrix osm (lines) x gtfs (cols)
+  
+  carris_gtfs_carreira_minimos = carris_gtfs_carreira |> 
+    mutate(osm_id = NA)
+  
+  for (i in 1:nrow(carris_gtfs_carreira_minimos)) {
+    carris_gtfs_carreira_minimos[i,]$osm_id = carris_osm_carreira_geom[which.min(conjunto[,i]),]$osm_id
+  }
+  
+  carris_gtfs_carreira_result = carris_gtfs_carreira_minimos |>
+    st_drop_geometry() |>  
+    left_join(
+      carris_osm_carreira_geom |> select(osm_id, name, route_dist, nr_stops, geometry), 
+      by = "osm_id",
+      suffix = c("_gtfs", "_osm")
+    ) |> 
+    mutate(distance_diff = abs(route_dist_gtfs - route_dist_osm)) |> # absolute difference
+    st_as_sf(sf_column_name="geometry")
+  
+  
+  carris_gtfs_carreira_result$shape_osm = paste(
+    carris_gtfs_carreira_result$shape_id, 
+    " // ", 
+    carris_gtfs_carreira_result$osm_id , 
+    " // ", 
+    carris_gtfs_carreira_result$distance_diff
+  )
+  
+  # View(carris_gtfs_carreira_result)
+  # max(carris_gtfs_carreira_result$distance_diff)
+  # mapview(carris_gtfs_carreira, zcol = "shape_id")
+  # mapview(carris_gtfs_carreira_result, zcol = "shape_osm")
+
+  
+  return(carris_gtfs_carreira_result)
+})
+
+carris_gtfs_carreiras_result_found = bind_rows( carris_gtfs_carreiras_result[lengths(carris_gtfs_carreiras_result)>1] )
+carris_gtfs_carreiras_result_not_found = bind_rows( carris_gtfs_carreiras_result[lengths(carris_gtfs_carreiras_result)<=1] )
+
+View(carris_gtfs_carreiras_result_found)
+View(carris_gtfs_carreiras_result_not_found)
+
+safe_bind <- function(a, b) tryCatch(bind_rows(a, b), error = function(e) e)
+Reduce(safe_bind, carris_gtfs_carreiras_result[1:5]) 
+```
+
+
+Analyse results
+```{r}
+View(carris_gtfs_carreiras_result_found)
+
+max(carris_gtfs_carreiras_result_found$distance_diff)
+nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff>500))
+unique(carris_gtfs_carreiras_result_found |> filter(distance_diff>500) |> pull(route_short_name))
+nrow(carris_gtfs_carreiras_result_found |> filter(distance_diff<=500))
+
+length(unique(carris_gtfs_carreiras_result_found |> filter(distance_diff<=500) |> pull(route_short_name)))
+
+
+mapview(shapes_sf, zcol = "shape_id")
+mapview(carris_gtfs_carreiras_result_found, zcol = "shape_osm")
+
+mapview(shapes_sf |> filter(grepl("106_4", shape_id)), zcol = "shape_id")
+mapview(carris_gtfs_carreiras_result |> filter(grepl("171_0", shape_id)), zcol = "shape_osm")
+```
+
+```{r}
+names(carris_gtfs_carreiras_result)
+
+carris_gtfs_carreiras_result |>
+  select(shape_id, nr_stops_gtfs, route_dist_gtfs, osm_id, nr_stops_osm, route_dist_osm ,distance_diff)
+```
+
+ 
