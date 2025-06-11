@@ -367,7 +367,7 @@ frequencies_route_osm <- frequencies_route |>
   dplyr::right_join(
     carris_gtfs_carreiras_result_found |>
       mutate(geometry_osm = geometry) |>
-      select(shape_id, geometry_osm,route_short_name,route_long_name) |>
+      select(shape_id,osm_id,geometry_osm,route_short_name,route_long_name) |>
       st_drop_geometry(),
     by = "shape_id"
   ) |> 
