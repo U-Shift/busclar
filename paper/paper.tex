@@ -78,7 +78,7 @@
 
 \title{GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation}
 \author{Rosa Félix, Gonçalo Matos}
-\date{May 09, 2025}
+\date{May 12, 2025}
 
 \begin{document}
 \maketitle
@@ -90,17 +90,56 @@ Identifying the streets with the highest density of bus transit can help in plan
 
 \section{Questions}\label{questions}
 
-Bus lanes improve bus operation reliability by reducing the variability of its running time \citep{surprenant-legault-2011}, increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources \citep{basso-2011}. Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections \citep{truong-2015}.
+Bus lanes (or Transit priority lanes) improve bus operation reliability by reducing the variability of its running time \citep{surprenant-legault-2011}, increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources \citep{basso-2011}.
+Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections \citep{truong-2015}.
 
-However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service \citep{arasan-2010}, jeopardizing public acceptance \citep{batty-2014}. Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.
+However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service \citep{arasan-2010}, jeopardizing public acceptance \citep{batty-2014}.
+Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.
 
-GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment. Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit \citep{tidytransit} and GTFSWizard \citet{quesadoguimaraes2024}.
+GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment.
+Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit \citep{tidytransit} and GTFSWizard \citet{quesadoguimaraes2024}.
 
 \begin{itemize}
 \tightlist
 \item
   How to get an overview of where bus lanes should be prioritized for a given territory?
+\item
+  Efficient public transport
 \end{itemize}
+
+\begin{quote}
+Bus lanes have the potential to significantly improve bus speed and reliability by limiting the negative impacts of traffic congestion (\href{https://journals.sagepub.com/doi/10.1177/0361198118791914\#bibr6-0361198118791914}{\emph{6}}).
+\end{quote}
+
+When planning bus lanes, we should consider:
+
+\begin{itemize}
+\item
+  Roadway Capacity: Bus lanes should be implemented on roads with adequate width to accommodate both bus traffic and other vehicles.
+\item
+  Route Length: Bus lanes should be created for a good length of the road, rather than short stretches, to be effective.
+\item
+  Traffic Conditions: Careful consideration should be given to traffic flows and potential impacts on other road users, especially on already congested roadways.
+\item
+  Public Support: Ensuring sufficient public support for bus lane regulations and enforcement is crucial for success.
+\item
+  Hourly frequency of buses and trams at a peak hour
+\item
+  Number of lanes (2 or more) in the same direction
+\item
+  Existing bus lanes in the area
+\end{itemize}
+
+These are only rule of thumb, and the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
+Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance.
+
+See also \citet{szarata2022}; \citet{cesme2018}. the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
+
+\begin{quote}
+Dedicated bus lanes are typically applied on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability.
+\end{quote}
+
+\url{https://nacto.org/publication/transit-street-design-guide/}
 
 \section{Methods}\label{methods}
 
@@ -110,7 +149,8 @@ Starting with the load of the GTFS feed, with \texttt{load\_feed()} fixing any i
 
 If the GTFS feed location is unknown, it can be queried using \texttt{query\_mobilitydatabase()}, a method that asks the Mobility Database API for the feeds that match the parameters provided, such as the municipality, country, or even a boundary box.
 
-Then, to expand the scope analysis, it includes a method for aggregating multiple feeds, \texttt{unify()}. \texttt{create\_calendar()} complements it, solving compatibility issues between feeds with \texttt{calendar\_dates.txt} only and others with \texttt{calendar.txt}.
+Then, to expand the scope analysis, it includes a method for aggregating multiple feeds, \texttt{unify()}.
+\texttt{create\_calendar()} complements it, solving compatibility issues between feeds with \texttt{calendar\_dates.txt} only and others with \texttt{calendar.txt}.
 
 Narrowing the scope is also possible, using filtering methods according to multiple parameters, such as \texttt{filter\_by\_agency()}, \texttt{filter\_by\_modes()}, and \texttt{filter\_by\_route\_name()}.
 They extend the filtering already provided by the tidytransit package.
@@ -137,7 +177,7 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 
 }
 
-\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and darker lines represent the strteets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
+\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and lighter lines represent the streets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
 \end{figure}
 
 The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
@@ -147,6 +187,9 @@ Given a simplified network (generated externally), it identifies the segments co
 It can be used to aggregate the routes frequencies.
 
 Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
+
+Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
+For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
