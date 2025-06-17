@@ -1,6 +1,6 @@
 ---
 title: "GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation"
-author: "Rosa Félix, Gonçalo Matos"
+author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
 date: "`r format(Sys.Date(), 'May %d, %Y')`" # %B for locale full month name
 bibliography: bibliography.bib
 biblio-style: apacite
@@ -20,7 +20,7 @@ header-includes:
   - \usepackage{apacite}
     
 abstract: |
-    Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
+    Identifying the streets with the highest density of bus frequency can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
     
 keywords: "abs, def" # define below
 ---
@@ -46,7 +46,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 <!-- The implementation of bus lanes can lead to significant improvements in the efficiency and reliability of public transport systems, making them a more attractive option for commuters. This can help to reduce the number of private vehicles on the road, leading to lower emissions and improved air quality. -->
 
-<!-- This paper presents the GTFShift R package, which provides a set of tools for analyzing bus transit density using the General Transit Feed Specification (GTFS). The package allows users to identify the streets with the highest density of bus transit, helping to prioritize the implementation of bus lanes in urban areas.  -->
+<!-- This paper presents the GTFShift R package, which provides a set of tools for analyzing bus transit density using the General Transit Feed Specification (GTFS). The package allows users to identify the streets with the highest density of bus frequency, helping to prioritize the implementation of bus lanes in urban areas, and providing decision makers an overview of the network.  -->
 
 Bus lanes (or Transit priority lanes) improve bus operation reliability by reducing the variability of its running time [@surprenant-legault-2011], increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources [@basso-2011].
 Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections [@truong-2015].
@@ -82,7 +82,8 @@ When planning bus lanes, we should consider:
 These are only rule of thumb, and the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
 Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance.
 
-See also @szarata2022; @cesme2018. the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
+See also @szarata2022; @cesme2018.
+the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
 
 > Dedicated bus lanes are typically applied on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability.
 
@@ -109,6 +110,8 @@ For an aggregated geospatial analysis, the last accepts an `overline` flag, whic
 This aggregation is performed using `stplanr::overline2()` [@stplanr].
 
 To compare the streets with higher transit density and the existing bus lanes, `osm_bus_lanes()` allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
+
+We searched for cities with PT networks on OpenStreetMap, that include the tag [`gtfs:shape_id`](https://overpass-turbo.eu/?template=key&key=gtfs%3Ashape_id).
 
 # Findings
 

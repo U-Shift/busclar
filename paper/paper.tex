@@ -67,7 +67,7 @@
 \urlstyle{same}
 \hypersetup{
   pdftitle={GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation},
-  pdfauthor={Rosa Félix, Gonçalo Matos},
+  pdfauthor={Rosa Félix, Gonçalo Matos, Filipe Moura},
   pdfkeywords={abs, def},
   colorlinks=true,
   linkcolor={blue},
@@ -77,13 +77,13 @@
   pdfcreator={LaTeX via pandoc}}
 
 \title{GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation}
-\author{Rosa Félix, Gonçalo Matos}
-\date{May 12, 2025}
+\author{Rosa Félix, Gonçalo Matos, Filipe Moura}
+\date{May 17, 2025}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-Identifying the streets with the highest density of bus transit can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
+Identifying the streets with the highest density of bus frequency can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
 \end{abstract}
 
 \textit{Keywords:} Keywords here, but also in the webform.
@@ -133,7 +133,8 @@ When planning bus lanes, we should consider:
 These are only rule of thumb, and the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
 Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance.
 
-See also \citet{szarata2022}; \citet{cesme2018}. the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
+See also \citet{szarata2022}; \citet{cesme2018}.
+the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
 
 \begin{quote}
 Dedicated bus lanes are typically applied on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability.
@@ -162,6 +163,8 @@ For an aggregated geospatial analysis, the last accepts an \texttt{overline} fla
 This aggregation is performed using \texttt{stplanr::overline2()} \citep{stplanr}.
 
 To compare the streets with higher transit density and the existing bus lanes, \texttt{osm\_bus\_lanes()} allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
+
+We searched for cities with PT networks on OpenStreetMap, that include the tag \href{https://overpass-turbo.eu/?template=key&key=gtfs\%3Ashape_id}{\texttt{gtfs:shape\_id}}.
 
 \section{Findings}\label{findings}
 
