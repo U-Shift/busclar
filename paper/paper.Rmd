@@ -112,6 +112,8 @@ This aggregation is performed using `stplanr::overline2()` [@stplanr].
 To compare the streets with higher transit density and the existing bus lanes, `osm_bus_lanes()` allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
 
 We searched for cities with PT networks on OpenStreetMap, that include the tag [`gtfs:shape_id`](https://overpass-turbo.eu/?template=key&key=gtfs%3Ashape_id).
+At the time of writing this paper, only [about 10k objects](https://taginfo.openstreetmap.org/keys/gtfs%3Ashape_id) had this tag on OSM - a number relatively low considering the [+300k bus routes](https://taginfo.openstreetmap.org/tags/route=bus) existing on OSM.
+<!--# Serão 3.9M ??  https://taginfo.openstreetmap.org/keys/name#combinations -->
 
 # Findings
 
