@@ -51,43 +51,42 @@ knitr::opts_chunk$set(echo = FALSE,
 Bus lanes (or Transit priority lanes) improve bus operation reliability by reducing the variability of its running time [@surprenant-legault-2011], increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources [@basso-2011].
 Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections [@truong-2015].
 
-However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service [@arasan-2010], jeopardizing public acceptance [@batty-2014].
-Identifying the most critical corridors in the network is then critical to quantify impacts, justify, and prioritize interventions.
-
-GTFShift package provides tools for this process, focused on geospatial analysis of the density of the network per street segment.
-Based on the analysis of the General Transit Feed Specification (GTFS), it extends the capabilities of other R libraries that work with this transit standard, such as tidytransit [@tidytransit] and GTFSWizard @quesadoguimaraes2024.
-
--   How to get an overview of where bus lanes should be prioritized for a given territory?
--   Efficient public transport
-
-> Bus lanes have the potential to significantly improve bus speed and reliability by limiting the negative impacts of traffic congestion ([*6*](https://journals.sagepub.com/doi/10.1177/0361198118791914#bibr6-0361198118791914)).
-
-When planning bus lanes, we should consider:
-
--   Roadway Capacity: Bus lanes should be implemented on roads with adequate width to accommodate both bus traffic and other vehicles.
-
--   Route Length: Bus lanes should be created for a good length of the road, rather than short stretches, to be effective.
-
--   Traffic Conditions: Careful consideration should be given to traffic flows and potential impacts on other road users, especially on already congested roadways.
-
--   Public Support: Ensuring sufficient public support for bus lane regulations and enforcement is crucial for success.
-    <!-- THIS IS FROM GOOGLE AI - FIND MANUALS AND GUIDELINES -->
-
--   Hourly frequency of buses and trams at a peak hour
-
--   Number of lanes (2 or more) in the same direction
-
--   Existing bus lanes in the area
-
-These are only rule of thumb, and the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
-Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance.
-
 See also @szarata2022; @cesme2018.
 the last ones also suggest estimated Travel Time Savings Under Various Enforcement Scenarios.
 
-> Dedicated bus lanes are typically applied on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability.
+However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service [@arasan-2010], jeopardizing public acceptance [@batty-2014].
 
-<https://nacto.org/publication/transit-street-design-guide/>
+The rules of thumb for implementing bus lanes are not well defined, but some common criteria include:
+<!-- improve this points -->
+-   Hourly frequency of buses and trams at a peak hour
+-   Number of lanes (2 or more) in the same direction
+-   Existing bus lanes in the area
+
+NACTO suggests that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
+Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
+
+Identifying the corridors with highest bus frequency in the road network is then critical to prioritize new bus lanes, quantify impacts, and justify its implementation.
+
+To support this, this paper presents [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package to identify priorities for bus lanes' implementation.
+Based on the analysis of the General Transit Feed Specification (GTFS) data, it extends the capabilities of other R libraries that deal with this transit standard, such as `tidytransit` [@tidytransit] and `GTFSWizard` [@quesadoguimaraes2024].
+
+-   How to get an overview of where bus lanes should be prioritized for a given territory?
+-   **Efficient** public transport
+
+> Bus lanes have the potential to significantly improve bus speed and reliability by limiting the negative impacts of traffic congestion ([*6*](https://journals.sagepub.com/doi/10.1177/0361198118791914#bibr6-0361198118791914)).
+
+<!-- When planning bus lanes, we should consider: -->
+
+<!-- -   Roadway Capacity: Bus lanes should be implemented on roads with adequate width to accommodate both bus traffic and other vehicles. -->
+
+<!-- -   Route Length: Bus lanes should be created for a good length of the road, rather than short stretches, to be effective. -->
+
+<!-- -   Traffic Conditions: Careful consideration should be given to traffic flows and potential impacts on other road users, especially on already congested roadways. -->
+
+<!-- -   Public Support: Ensuring sufficient public support for bus lane regulations and enforcement is crucial for success. -->
+<!--    THIS IS FROM GOOGLE AI - FIND MANUALS AND GUIDELINES --> 
+
+
 
 # Methods
 
@@ -127,8 +126,8 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 ```{r, eval=FALSE}
 library(dplyr)
 library(sf)
-library(tmap)
-tmap_mode("view")
+# library(tmap)
+# tmap_mode("view")
 carris_gtfs_osm_overline = st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_overline.gpkg")
 carris_gtfs_osm_overline8 = carris_gtfs_osm_overline |> filter(hour == 8)
 
@@ -138,6 +137,16 @@ map3 = mapview::mapview(carris_gtfs_osm_overline8,
                           legend = TRUE, 
                           lwd = "frequency")
 # export as image
+map_bus = mapview(bus_lanes, color = "red")
+map4 = mapview(
+    carris_gtfs_osm_overline8 |> filter(frequency > 10),
+    zcol = "frequency",
+    layer.name = "Bus frequency",
+    legend = TRUE,
+    lwd = "frequency"
+  )
+
+leafsync::sync(map_bus, map4)
 ```
 
 ```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and lighter lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_8h.html"}
@@ -150,7 +159,7 @@ For instance, if the edges of the lines do not overlap or do not follow the same
 
 <!-- To overcome this issue, Mobility Data, the organization behind the GTFS standard should provide guidelines or formal requirements to draw or generate the [`shapes.txt`](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) file, so that they can be aggregated and analysed correctly. -->
 
-As an alternative, *GTFShift* provides the method `network_overline()`, that allows for an alternative route aggregation.
+As an alternative, *GTFShift* provides the method `network_overline()`, that allows for a route aggregation.
 Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
 It can be used to aggregate the routes frequencies.
 
@@ -159,6 +168,9 @@ Additionally, filtering the road network segments by existing number of lanes in
 The presented replicable method provides an feasible methodology to generate evidence to support decision-making when considering the bus lane network expansion, for a given city.
 The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
 We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
+
+Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance. 
+<!-- improve this idea -->
 
 This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
 
