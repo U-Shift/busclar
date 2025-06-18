@@ -101,7 +101,7 @@ Then, to expand the scope analysis, it includes a method for aggregating multipl
 `create_calendar()` complements it, solving compatibility issues between feeds with `calendar_dates.txt` only and others with `calendar.txt`.
 
 Narrowing the scope is also possible, using filtering methods according to multiple parameters, such as `filter_by_agency()`, `filter_by_modes()`, and `filter_by_route_name()`.
-They extend the filtering already provided by the tidytransit package.
+They extend the filtering already provided by the `tidytransit` R package.
 
 Finally, network density can be analyzed at the stop level, with `get_stop_frequency_hourly()`, or at the route level, with `get_route_frequency_hourly()`.
 This analysis is aggregated by stop, route, and hour.
@@ -118,6 +118,7 @@ At the time of writing this paper, only [about 10k objects](https://taginfo.open
 # Findings
 
 By applying the methods presented in the previous chapter, it was possible to analyse the bus network density for Lisbon city, in Portugal.
+With GTFS data now widely available and accessible tools to process it, this kind of analysis has become much more feasible today.
 
 The analysis was performed using the aggregated feeds of both Carris and Carris Metropolitana, respectively, the urban and sub-urban bus operators in the area.
 
@@ -145,12 +146,19 @@ knitr::include_graphics("map3.png")
 ```
 
 The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
-For instance, if the edges of the lines do not overlap, lines might not be aggregated correctly, causing inconsistent results.
+For instance, if the edges of the lines do not overlap or do not follow the same route-over-the-road – which is very common, even besides [GTFS recommendation](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) – geometries might not be aggregated correctly, causing inconsistent results.
+
+<!-- To overcome this issue, Mobility Data, the organization behind the GTFS standard should provide guidelines or formal requirements to draw or generate the [`shapes.txt`](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) file, so that they can be aggregated and analysed correctly. -->
+
 As an alternative, *GTFShift* provides the method `network_overline()`, that allows for an alternative route aggregation.
 Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
 It can be used to aggregate the routes frequencies.
 
 Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
+
+The presented replicable method provides an feasible methodology to generate evidence to support decision-making when considering the bus lane network expansion, for a given city.
+The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
+We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
 
 This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
 
