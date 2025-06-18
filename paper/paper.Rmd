@@ -152,6 +152,8 @@ It can be used to aggregate the routes frequencies.
 
 Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
 
+This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
+
 Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
 For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
 
