@@ -21,7 +21,7 @@ road_osm = road_osm$osm_lines |>
 road_osm = road_osm |>
   dplyr::filter(highway %in% c('motorway',"motorway_link",'primary', "primary_link",
                                'secondary',"secondary_link", "trunk", 'trunk_link',
-                               "tertiary", "tertiary_link", 
+                               "tertiary", "tertiary_link", "busway",
                                "residential", "living_street", "unclassified", "service"))
 
 bus_lanes = road_osm |> select(contains("psv"))
@@ -41,6 +41,7 @@ mapview(bus_lanes)
 
 
 # from GTFShift -----------------------------------------------------------
+devtools::install_github("U-Shift/GTFShift")
 
 aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNICIPIOSgeo.gpkg", quiet = TRUE)
 lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
@@ -49,4 +50,5 @@ bus_lanes = GTFShift::osm_bus_lanes(lisboa)
 
 mapview::mapview(bus_lanes, layer.name = "Bus lanes")
 
-st_write(bus_lanes, "other/bus_lanes_osm_lisbon.gpkg", delete_dsn = TRUE)
+sf::st_write(bus_lanes, "other/bus_lanes_osm_lisbon.gpkg", delete_dsn = TRUE)
+piggyback::pb_upload("other/bus_lanes_osm_lisbon.gpkg")
