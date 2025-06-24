@@ -47,7 +47,7 @@ aml = sf::st_read("https://github.com/U-Shift/MQAT/raw/refs/heads/main/geo/MUNIC
 lisboa = aml |> dplyr::filter(Concelho == "Lisboa") |> sf::st_bbox()
 
 bus_lanes = GTFShift::osm_bus_lanes(lisboa)
-
+bus_lanes = bus_lanes |> select(osm_id, name, highway, geometry)
 mapview::mapview(bus_lanes, layer.name = "Bus lanes")
 
 sf::st_write(bus_lanes, "other/bus_lanes_osm_lisbon.gpkg", delete_dsn = TRUE)
