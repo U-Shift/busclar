@@ -126,6 +126,7 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 ```{r, eval=FALSE}
 library(dplyr)
 library(sf)
+library(mapview)
 # library(tmap)
 # tmap_mode("view")
 carris_gtfs_osm_overline = st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_overline.gpkg")
