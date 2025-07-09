@@ -78,7 +78,7 @@
 
 \title{GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation}
 \author{Rosa Félix, Gonçalo Matos, Filipe Moura}
-\date{May 18, 2025}
+\date{May 09, 2025}
 
 \begin{document}
 \maketitle
@@ -86,7 +86,7 @@
 Identifying the streets with the highest density of bus frequency can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
 \end{abstract}
 
-\textit{Keywords:} Keywords here, but also in the webform.
+\textit{Keywords:} Bus lanes, GTFS, Network prioritization, R package.
 
 \section{Questions}\label{questions}
 
@@ -153,9 +153,9 @@ At the time of writing this paper, only \href{https://taginfo.openstreetmap.org/
 By applying the methods presented in the previous chapter, it was possible to analyse the bus network density for Lisbon city, in Portugal.
 With GTFS data now widely available and accessible tools to process it, this kind of analysis has become much more feasible today.
 
-The analysis was performed using the aggregated feeds of both Carris and Carris Metropolitana, respectively, the urban and sub-urban bus operators in the area.
+The analysis was performed using the aggregated feeds of both \emph{Carris} and \emph{Carris Metropolitana}, respectively, the urban and sub-urban bus operators in the area.
 
-The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density.
+The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit frequency, at morning peak hour.
 
 \begin{figure}
 
@@ -163,7 +163,7 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 
 }
 
-\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and lighter lines represent the streets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
+\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
 \end{figure}
 
 The previous approach, nevertheless, can be problematic if the GTFS shapes do not share the same geometry.
@@ -173,24 +173,24 @@ As an alternative, \emph{GTFShift} provides the method \texttt{network\_overline
 Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
 It can be used to aggregate the routes frequencies.
 
-Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
-
 The presented replicable method provides an feasible methodology to generate evidence to support decision-making when considering the bus lane network expansion, for a given city.
 The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
 We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
 
+Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
 Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance.
-
 This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency -- providing evidence for decision on which hours to allocate road lanes for bus.
 
 Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
 For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
 
+Bus lanes for emergency vehicles, in the approach to hospitals, for instance, could also be considered.
+
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
 
 The authors acknowledge Francisco Costa and Manuel Banza for valuable discussion on the refined methods and further developments.
-R Felix is grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
+R Felix and FMoura are grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
 
 \renewcommand\refname{References}
   \bibliography{bibliography.bib}

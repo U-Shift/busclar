@@ -34,7 +34,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       dpi = 300)
 ```
 
-\textit{Keywords:} Keywords here, but also in the webform.
+\textit{Keywords:} Bus lanes, GTFS, Network prioritization, R package.
 
 # Questions
 
@@ -102,13 +102,12 @@ Then, to expand the scope analysis, it includes a method for aggregating multipl
 Narrowing the scope is also possible, using filtering methods according to multiple parameters, such as `filter_by_agency()`, `filter_by_modes()`, and `filter_by_route_name()`.
 They extend the filtering already provided by the `tidytransit` R package.
 
-Finally, network density can be analyzed at the stop level, with `get_stop_frequency_hourly()`, or at the route level, with `get_route_frequency_hourly()`.
-This analysis is aggregated by stop, route, and hour.
-
-For an aggregated geospatial analysis, the last accepts an `overline` flag, which overlaps routes in street segments, creating a single route network with combined frequencies.
+Finally, network density can be analyzed at the route level, with `get_route_frequency_hourly()`.
+This analysis results in a dataset with the frequency of each route (`shape_id`) at each hour of the day.
+For an aggregated geospatial analysis, this function accepts an `overline` flag, which overlaps routes in street segments, creating a single route network with sum frequencies.
 This aggregation is performed using `stplanr::overline2()` [@stplanr].
 
-To compare the streets with higher transit density and the existing bus lanes, `osm_bus_lanes()` allows to export the roads classified as bus lanes in OpenStreetMap, given a bounding box.
+To compare the streets with higher transit density and the existing bus lanes, `osm_bus_lanes()` allows to export the roads classified as bus lanes in *OpenStreetMap*, for a given bounding box.
 
 We searched for cities with PT networks on OpenStreetMap, that include the tag [`gtfs:shape_id`](https://overpass-turbo.eu/?template=key&key=gtfs%3Ashape_id).
 At the time of writing this paper, only [about 10k objects](https://taginfo.openstreetmap.org/keys/gtfs%3Ashape_id) had this tag on OSM - a number relatively low considering the [+300k bus routes](https://taginfo.openstreetmap.org/tags/route=bus) existing on OSM.
@@ -119,9 +118,9 @@ At the time of writing this paper, only [about 10k objects](https://taginfo.open
 By applying the methods presented in the previous chapter, it was possible to analyse the bus network density for Lisbon city, in Portugal.
 With GTFS data now widely available and accessible tools to process it, this kind of analysis has become much more feasible today.
 
-The analysis was performed using the aggregated feeds of both Carris and Carris Metropolitana, respectively, the urban and sub-urban bus operators in the area.
+The analysis was performed using the aggregated feeds of both *Carris* and *Carris Metropolitana*, respectively, the urban and sub-urban bus operators in the area.
 
-The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit density.
+The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit frequency, at morning peak hour.
 
 ```{r, eval=FALSE}
 library(dplyr)
@@ -150,7 +149,7 @@ map4 = mapview(
 leafsync::sync(map_bus, map4)
 ```
 
-```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and lighter lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_8h.html"}
+```{r MapResults, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_8h.html"}
 # include figure
 knitr::include_graphics("map3.png")
 ```
@@ -164,23 +163,25 @@ As an alternative, *GTFShift* provides the method `network_overline()`, that all
 Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters.
 It can be used to aggregate the routes frequencies.
 
-Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
 
 The presented replicable method provides an feasible methodology to generate evidence to support decision-making when considering the bus lane network expansion, for a given city.
 The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
 We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
 
+Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
 Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance. 
 <!-- improve this idea -->
-
 This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
 
 Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
 For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
 
+Bus lanes for emergency vehicles, in the approach to hospitals, for instance, could also be considered.
+
+
 # Acknowledgements {.unnumbered}
 
 The authors acknowledge Francisco Costa and Manuel Banza for valuable discussion on the refined methods and further developments.
-<!--#  and U-Shift. --> R Felix is grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
+<!--#  and U-Shift. --> R Felix and FMoura are grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
 
 # References {.unnumbered}
