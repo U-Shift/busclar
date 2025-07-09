@@ -99,3 +99,5 @@ mapview(
 
 st_write(routes_freq_all_osm, "data/carris_cm_frequency_osm.gpkg")
 piggyback::pb_upload("data/carris_cm_frequency_osm_052025.gpkg")
+sf::st_write(shapes_geometry_osm_all, "data/shapes_geometry_osm_aml2025.gpkg")
+piggyback::pb_upload("data/shapes_geometry_osm_aml2025.gpkg")
