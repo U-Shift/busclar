@@ -22,12 +22,15 @@ gtfs_carris2_filtered$trips = gtfs_carris2_filtered$trips |>
 gtfs_carris_merged = unify(gtfs_carris1_filtered, gtfs_carris2_filtered, create_transfers = FALSE)
 # tidytransit::write_gtfs(gtfs_carris_merged, "data/gtfs/gtfs_carriseCM_merged.zip")
 
+# remove the prefix .x and .y from the variable shape_id
+gtfs_carris_merged$shapes = gtfs_carris_merged$shapes |> 
+  mutate(shape_id = gsub("\\.x|\\.y", "", shape_id))
+gtfs_carris_merged$trips = gtfs_carris_merged$trips |> 
+  mutate(shape_id = gsub("\\.x|\\.y", "", shape_id))
+
 # get hourly frequency by shape
 frequencies_route = GTFShift::get_route_frequency_hourly(gtfs_carris_merged, date = date)
 
-# remove the prefix .x and .y from the variable shape_id
-frequencies_route = frequencies_route |> 
-  mutate(shape_id = gsub("\\.x|\\.y", "", shape_id))
 
 # # Build OSM query
 # library(osmdata)
