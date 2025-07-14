@@ -185,10 +185,9 @@ The presented replicable method provides an feasible methodology to generate evi
 The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
 We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
 
-Additionally, filtering the road network segments by existing number of lanes in the same direction (2 or more) may better support the decision of implementing bus corridors.
-Public policies may opt to implement bus lanes in streets with only one lane, or implement dynamic bus lanes (for peak hours only), for instance. 
-<!-- improve this idea -->
-This method also allows to consider the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
+Additionally, subsetting the road network segments by other available OSM data, such as existing number of lanes in the same direction (2 or more), may better support the decision of implementing bus corridors.
+Public policies may opt to implement bus lanes in streets with only one lane.
+This method also supports the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
 
 Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
 For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
