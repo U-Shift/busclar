@@ -126,7 +126,7 @@
 Identifying the streets with the highest density of bus frequency can help in planning and prioritizing the implementation of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit density over a given territory.
 \end{abstract}
 
-\textit{Keywords:} Bus lanes, GTFS, Network prioritization, R package.
+\textit{Keywords:} Bus lanes, GTFS, Network prioritization, Decision support tool, R package.
 
 \section{Questions}\label{questions}
 
@@ -175,7 +175,7 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
   \href{https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html}{\texttt{get\_route\_frequency\_hourly()}}: Calculates the hourly frequency of bus routes for a given day, considering its geometries.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
   The \texttt{overline} parameter aggregates all the bus routes that share common line segments, providing a sum of frequencies per street segment, using \href{https://docs.ropensci.org/stplanr/reference/overline.html}{\texttt{stplanr::overline2()}} \citep{stplanr}.
-  Optionally, using \texttt{use\_osm\_routes} parameter, it retrieves the geometries from \emph{OpenStreetMap} by matching the tag \texttt{gtfs:shape\_id}, overwriting the original GTFS \texttt{shapes.txt}.
+  Optionally, using \texttt{use\_osm\_routes} parameter, it retrieves the geometries from \emph{OpenStreetMap} (OSM) by matching the tag \texttt{gtfs:shape\_id}, overwriting the original GTFS \texttt{shapes.txt}.
 \end{itemize}
 
 The parameter \texttt{use\_osm\_routes} is particularly useful if the GTFS shapes do not share the same geometry.
@@ -191,7 +191,7 @@ To reproduce the results presented in this paper, refer to \href{https://github.
 
 \section{Findings}\label{findings}
 
-We start by loading the R libraries, the static GTFS feeds for both bus operators and merging them.
+We load the R libraries, the static GTFS feeds for both bus agencies, and unify them.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -210,20 +210,22 @@ We start by loading the R libraries, the static GTFS feeds for both bus operator
 \end{Highlighting}
 \end{Shaded}
 
-Next, the bus routes frequency is estimated hourly for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
+Next, the hourly bus frequency is estimated for each route, for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# OSM query for bus networks in Lisbon}
 \FunctionTok{library}\NormalTok{(osmdata)}
-\NormalTok{q }\OtherTok{=} \FunctionTok{opq}\NormalTok{(}\StringTok{"Lisbon"}\NormalTok{)  }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"route"}\NormalTok{, }\AttributeTok{value =} \StringTok{"bus"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"network"}\NormalTok{, }\AttributeTok{value =} \FunctionTok{c}\NormalTok{(}\StringTok{"Carris"}\NormalTok{, }\StringTok{"Carris Metropolitana"}\NormalTok{)) }\CommentTok{\# operators}
+\NormalTok{query }\OtherTok{=} \FunctionTok{opq}\NormalTok{(}\StringTok{"Lisbon"}\NormalTok{)  }\SpecialCharTok{|\textgreater{}}
+        \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"route"}\NormalTok{,}
+                        \AttributeTok{value =} \StringTok{"bus"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+        \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"network"}\NormalTok{,}
+                        \AttributeTok{value =} \FunctionTok{c}\NormalTok{(}\StringTok{"Carris"}\NormalTok{, }\StringTok{"Carris Metropolitana"}\NormalTok{)) }\CommentTok{\# operators}
 
 \CommentTok{\# get hourly frequency by shape}
-\NormalTok{frequencies\_segment }\OtherTok{=} \FunctionTok{get\_route\_frequency\_hourly}\NormalTok{(gtfs\_lisbon, }
+\NormalTok{frequencies\_segment }\OtherTok{=} \FunctionTok{get\_route\_frequency\_hourly}\NormalTok{(}\AttributeTok{gtfs =}\NormalTok{ gtfs\_lisbon, }
                                                  \AttributeTok{overline =} \ConstantTok{TRUE}\NormalTok{, }
-                                                 \AttributeTok{use\_osm\_routes =}\NormalTok{ q)}
+                                                 \AttributeTok{use\_osm\_routes =}\NormalTok{ query)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -233,7 +235,7 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 \begin{Highlighting}[]
 \CommentTok{\# filtrer for the peak hour 8{-}9am}
 \NormalTok{frequencies\_segment\_8 }\OtherTok{=}\NormalTok{ frequencies\_segment }\SpecialCharTok{|\textgreater{}} 
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(hour }\SpecialCharTok{==} \DecValTok{8}\NormalTok{)}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(hour }\SpecialCharTok{==} \DecValTok{8}\NormalTok{) }\CommentTok{\# the hour with the highest frequency}
 
 \NormalTok{mapview}\SpecialCharTok{::}\FunctionTok{mapview}\NormalTok{(}
 \NormalTok{  frequencies\_segment\_8,}
@@ -253,20 +255,22 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 \caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
 \end{figure}
 
-\subsection{TO-DO: continue here}\label{to-do-continue-here}
+Based on the resulting information, we can compare the data with existing bus lanes and identify high-frequency segments lacking dedicated infrastructure, which should be prioritized.
+Note that for two-way segments, frequency is aggregated and should be divided by two.
 
-The presented replicable method provides an feasible methodology to generate evidence to support decision-making when considering the bus lane network expansion, for a given city.
-The data requirements are commonly available for most cities, as GTFS feeds are widely used by public transport operators.
-We acknowledge that this evidence may not be sufficient to justify the implementation of bus lanes, as it does not consider other factors such as traffic conditions, public support, and roadway capacity.
+Filtering the road network segments using other available OSM data, such as the number of lanes in the same direction (two or more), can further support decisions on implementing bus corridors.
+However, policies may also favour bus lanes on single-lane streets, for example, to create transit-priority streets.
+Bus lanes for emergency vehicle access, such as near hospitals, can also be considered.
 
-Additionally, subsetting the road network segments by other available OSM data, such as existing number of lanes in the same direction (2 or more), may better support the decision of implementing bus corridors.
-Public policies may opt to implement bus lanes in streets with only one lane.
-This method also supports the implementation of dynamic bus lanes (instead of static), by taking into account the hourly frequency -- providing evidence for decision on which hours to allocate road lanes for bus.
+Further enhancements of the method may include passenger capacity per hour instead of just frequency.
+For instance, routes with articulated buses (over 80 passengers) would be weighted more heavily than neighbourhood minibuses (up to 25 passengers).
 
-Further enhancements of the method may include the passenger capacity per hour, instead of the frequency of the number of vehicles.
-For instance, bus routes with articulated buses (more than 80 passengers) would weight more than an historical tram route (max 25 passengers).
+This method supports not only static bus lanes but also dynamic bus lanes, by analyzing hourly frequency -- providing evidence for decision on which hours to allocate road lanes for bus.
 
-Bus lanes for emergency vehicles, in the approach to hospitals, for instance, could also be considered.
+The presented replicable approach offers a feasible methodology to generate evidence for decision-making on the implementation or expansion of bus lane networks.
+Required data is commonly available for most cities, as GTFS feeds are widely used by public transport agencies.
+
+We acknowledge that this evidence alone may not be sufficient to justify bus lane implementation, as it does not account for other factors such traffic conditions, roadway capacity, or public acceptance.
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
