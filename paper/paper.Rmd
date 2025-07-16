@@ -197,7 +197,9 @@ Bus lanes for emergency vehicles, in the approach to hospitals, for instance, co
 
 # Acknowledgements {.unnumbered}
 
-The authors acknowledge Francisco Costa for valuable discussion on the refined methods and further developments.
-<!--#  and U-Shift. --> R Felix and FMoura are grateful for the Foundation for Science and Technology's support through funding UIDB/04625/2025 from the research unit CERIS.
+The authors acknowledge Francisco Costa for valuable discussion on the further developments.
+
+The authors gratefully acknowledges the support for this research by the Portuguese Foundation for Science and Technology (FCT) funding [PTDC/ECI-TRA/3120/2021](https://doi.org/10.54499/PTDC/ECI-TRA/3120/2021) from STREETS4ALL Project.
+R Félix and F Moura are grateful for the FCT support through funding UIDB/04625/2025 from the research unit CERIS.
 
 # References {.unnumbered}
