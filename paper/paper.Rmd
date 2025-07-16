@@ -90,7 +90,7 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
 - [`get_route_frequency_hourly()`](https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html): Calculates the hourly frequency of bus routes for a given day, considering its geometries.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
   The `overline` parameter aggregates all the bus routes that share common line segments, providing a sum of frequencies per street segment, using [`stplanr::overline2()`](https://docs.ropensci.org/stplanr/reference/overline.html) [@stplanr].
-  Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* by matching the tag `gtfs:shape_id`, overwriting the original GTFS `shapes.txt`. 
+  Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* (OSM) by matching the tag `gtfs:shape_id`, overwriting the original GTFS `shapes.txt`. 
 <!-- overlapping line segments -->
 
 The parameter `use_osm_routes` is particularly useful if the GTFS shapes do not share the same geometry. 
@@ -108,12 +108,13 @@ Alternatively, the [`osm_shapes_match_routes()`](https://u-shift.github.io/GTFSh
 
 The case study is Lisbon, Portugal, where the bus network is operated by *Carris* and *Carris Metropolitana*, respectively, the urban and sub-urban bus operators in the area.
 
-For this article, we used `GTFShift` version v0.6 and `R` version v4.5.
+For this article, we used `GTFShift` version v0.6 and `R` version v4.5. <!-- CHANGE TO v0.7 -->
+
 To reproduce the results presented in this paper, refer to [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository.
 
 # Findings
 
-We start by loading the R libraries, the static GTFS feeds for both bus operators and merging them.
+We load the R libraries, the static GTFS feeds for both bus operators, and unify them.
 
 ```{r load, cache=TRUE, message=FALSE, warning=FALSE}
 library(GTFShift)
@@ -147,19 +148,21 @@ gtfs_lisbon$trips = gtfs_lisbon$trips |>
 
 ```
 
-Next, the bus routes frequency is estimated hourly for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
+Next, the hourly bus frequency is estimated for each route, for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
 
 ```{r routefrequency, cache=TRUE, message=FALSE, warning=FALSE}
 # OSM query for bus networks in Lisbon
 library(osmdata)
-q = opq("Lisbon")  |>
-  add_osm_feature(key = "route", value = "bus") |>
-  add_osm_feature(key = "network", value = c("Carris", "Carris Metropolitana")) # operators
+query = opq("Lisbon")  |>
+        add_osm_feature(key = "route",
+                        value = "bus") |>
+        add_osm_feature(key = "network",
+                        value = c("Carris", "Carris Metropolitana")) # operators
 
 # get hourly frequency by shape
 frequencies_segment = get_route_frequency_hourly(gtfs_lisbon, 
                                                  overline = TRUE, 
-                                                 use_osm_routes = q)
+                                                 use_osm_routes = query)
 ```
 
 The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit frequency, at morning peak hour.
