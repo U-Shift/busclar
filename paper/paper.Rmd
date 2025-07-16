@@ -48,32 +48,34 @@ knitr::opts_chunk$set(eval = FALSE,
 
 <!-- This paper presents the GTFShift R package, which provides a set of tools for analyzing bus transit density using the General Transit Feed Specification (GTFS). The package allows users to identify the streets with the highest density of bus frequency, helping to prioritize the implementation of bus lanes in urban areas, and providing decision makers an overview of the network.  -->
 
-Bus lanes (or Transit priority lanes) have the potential to improve bus operation reliability by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of its running time [@surprenant-legault-2011], increasing the average commercial speed that can ultimately be used to increase the frequency of service without additional material or human resources [@basso-2011].
-Benefits multiplied by a contiguous network, with the highest savings in travel time verified at intersections [@truong-2015].
-
+Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
+<!-- without additional material or human resources -->
+These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015].
 <!-- See also @szarata2022;  -->
+However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
 
-However, introducing them on heterogeneous traffic infrastructure has an impact on other modes, such as private vehicles, that with less space allocated, witness a decrease in the level of service [@arasan-2010], jeopardizing public acceptance [@batty-2014].
-
-There is not a definition of criteria for implementing bus lanes, but some common criteria include:
+Common criteria for implementing bus lanes include:
 <!-- improve this points -->
 
--   Hourly frequency of buses (and trams) at a peak hour
--   Number of lanes in the same direction
--   Existing bus lanes in the area (from a network perspective)
+-   Frequency of buses (and trams) per hour and direction, at a peak hour;
+-   Number of lanes in the same direction;
+-   Existing traffic conditions, such as the number of vehicles per lane;
+-   Existing bus lanes in the area (from a network continuity perspective).
 
 For instance, NACTO suggests that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
-Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the overall demand for public transport in the area.
+Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the demand for public transport in the area.
 
-@vuchic1981 defends that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation.
+@vuchic1981 defends that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
 
-Identifying the corridors with highest bus frequency in the road network is then critical to prioritize new bus lanes and justify its implementation.
+This paper focuses in the identification of the bus frequency per hour for each segment of the road network, using General Transit Feed Specification (GTFS) data -- which is widely available for many transit agencies.
+Identifying the corridors with highest bus frequency is critical to prioritize new bus lanes and support its implementation.
 
-To support this analysis, this paper presents [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package to identify priorities for bus lanes' implementation [@gshift2025].
-Based on the analysis of the General Transit Feed Specification (GTFS) data, it extends the capabilities of other R libraries that deal with this transit standard, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
+For this analysis, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package to identify priorities for bus lanes' implementation [@gshift2025].
+It extends the capabilities of other R libraries that deal with this transit standard, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
 <!-- and `GTFSWizard` [@quesadoguimaraes2024]. -->
 
 This tool can be used to address the prioritization of bus lanes for a given territory in order to increase its transit efficiency.
+<!-- remove? -->
 
 
 # Methods
