@@ -59,7 +59,7 @@ Common criteria for implementing bus lanes include:
 
 -   Frequency of buses (and trams) per hour and direction, at a peak hour;
 -   Number of lanes in the same direction;
--   Existing traffic conditions, such as the number of vehicles per lane;
+-   Existing traffic conditions;
 -   Existing bus lanes in the area (from a network continuity perspective).
 
 For instance, NACTO suggests that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
@@ -67,14 +67,14 @@ Nevertheless, the decision should be based on a more detailed analysis of the ne
 
 @vuchic1981 defends that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
 
-This paper focuses in the identification of the bus frequency per hour for each segment of the road network, using General Transit Feed Specification (GTFS) data -- which is widely available for many transit agencies.
-Identifying the corridors with highest bus frequency is critical to prioritize new bus lanes and support its implementation.
+This paper focuses on identifying hourly bus frequency for each road segment, using General Transit Feed Specification (GTFS) data, which is widely available from many transit agencies.
+Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
 
-For this analysis, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package to identify priorities for bus lanes' implementation [@gshift2025].
-It extends the capabilities of other R libraries that deal with this transit standard, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
+For this, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package to identifying bus lane priorities [@gshift2025].
+It extends the functionality of other R libraries that deal with this transit standard, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
 <!-- and `GTFSWizard` [@quesadoguimaraes2024]. -->
 
-This tool can be used to address the prioritization of bus lanes for a given territory in order to increase its transit efficiency.
+This tool helps prioritize bus lanes in a given territory to improve transit efficiency.
 <!-- remove? -->
 
 
