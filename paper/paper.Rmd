@@ -87,8 +87,9 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
 
 - [`get_route_frequency_hourly()`](https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html): Calculates the hourly frequency of bus routes for a given day, considering its geometries.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
-  Using `overline` parameter aggregates all the bus routes that share the same geometry, providing a single frequency value per street segment, using [`stplanr::overline2()`](https://docs.ropensci.org/stplanr/reference/overline.html) [@stplanr].
-  Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* (by matching the tag `gtfs:shape_id`), overwriting the original GTFS `shapes.txt`. 
+  The `overline` parameter aggregates all the bus routes that share common line segments, providing a sum of frequencies per street segment, using [`stplanr::overline2()`](https://docs.ropensci.org/stplanr/reference/overline.html) [@stplanr].
+  Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* by matching the tag `gtfs:shape_id`, overwriting the original GTFS `shapes.txt`. 
+<!-- overlapping line segments -->
 
 The parameter `use_osm_routes` is particularly useful if the GTFS shapes do not share the same geometry. 
 For instance, if the edges of the lines do not overlap or do not follow the same route-over-the-road – which is very common, even besides [GTFS recommendation](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) – geometries might not be aggregated correctly, causing inconsistent results.
