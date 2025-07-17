@@ -194,13 +194,12 @@ Bus lanes for emergency vehicle access, such as near hospitals, can also be cons
 Further enhancements of the method may include passenger capacity per hour instead of just frequency.
 For instance, routes with articulated buses (over 80 passengers) would be weighted more heavily than neighbourhood minibuses (up to 25 passengers).
 
-
 This method supports not only static bus lanes but also dynamic bus lanes, by analyzing hourly frequency – providing evidence for decision on which hours to allocate road lanes for bus.
 
 The presented replicable approach offers a feasible methodology to generate evidence for decision-making on the implementation or expansion of bus lane networks.
 Required data is commonly available for most cities, as GTFS feeds are widely used by public transport agencies.
 
-We acknowledge that this evidence alone may not be sufficient to justify bus lane implementation, as it does not account for other factors such traffic conditions, roadway capacity, or public acceptance.
+We acknowledge that this evidence alone may not be sufficient to justify bus lane implementation, as it does not account for other factors such traffic conditions, roadway capacity, physical limitations, or public acceptance.
 
 
 # Acknowledgements {.unnumbered}
