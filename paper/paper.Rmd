@@ -113,9 +113,6 @@ gtfs_carris = load_feed("https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS") 
 gtfs_carrismetro = load_feed("https://api.carrismetropolitana.pt/gtfs") # 638 MB
 ```
 ```{r hiddenmanipulation, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
-# create missing calendar.txt
-gtfs_carrismetro$calendar = create_calendar(gtfs_carrismetro)
-
 # remove last 6 digits of shape_id for CM - every release has a different suffix
 library(dplyr)
 gtfs_carrismetro$shapes = gtfs_carrismetro$shapes |> 
@@ -125,16 +122,7 @@ gtfs_carrismetro$trips = gtfs_carrismetro$trips |>
 ```
 ```{r unify, cache=TRUE, message=FALSE, warning=FALSE}
 # unify the feeds in a single GTFS feed
-gtfs_lisbon = unify(gtfs_carris, gtfs_carrismetro, create_transfers = FALSE)
-```
-```{r include=FALSE}
-## TO-DO: REMOVE THIS AFTER OSM UPDATE
-# remove the prefix .x and .y from the variable shape_id
-gtfs_lisbon$shapes = gtfs_lisbon$shapes |> 
-  mutate(shape_id = gsub("\\.x|\\.y", "", shape_id))
-gtfs_lisbon$trips = gtfs_lisbon$trips |> 
-  mutate(shape_id = gsub("\\.x|\\.y", "", shape_id))
-
+gtfs_lisbon = unify(gtfs_carris, gtfs_carrismetro)
 ```
 
 Next, the hourly bus frequency is estimated for each route, for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
@@ -193,8 +181,6 @@ We acknowledge that this evidence alone may not be sufficient to justify bus lan
 
 
 # Acknowledgements {.unnumbered}
-
-The authors acknowledge Francisco Costa for valuable discussion on the further developments.
 
 The authors gratefully acknowledges the support for this research by the Portuguese Foundation for Science and Technology (FCT) funding [PTDC/ECI-TRA/3120/2021](https://doi.org/10.54499/PTDC/ECI-TRA/3120/2021) from STREETS4ALL Project.
 R Félix and F Moura are grateful for the FCT support through funding UIDB/04625/2025 from the research unit CERIS.
