@@ -156,6 +156,7 @@ mapview::mapview(
 )
 ```
 ```{r maprendernobuttnons, eval=FALSE, include=FALSE}
+# removing mapview controls for a nicer rendering
 m = mapview::mapview(
   frequencies_segment_8,
   zcol = "frequency",
@@ -163,13 +164,13 @@ m = mapview::mapview(
   layer.name = "Bus frequency",
   homebutton = FALSE
 )
-m2 = removeMapJunk(m, junk = c("zoomControl", "layersControl"))
+m2 = mapview::removeMapJunk(m, junk = c("zoomControl", "layersControl"))
 m2
 ```
 
-```{r MapResults, echo=FALSE, eval=TRUE, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_8h.html"}
+```{r MapResults, echo=FALSE, eval=TRUE, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_cm_8h.html"}
 # include figure
-knitr::include_graphics("map_bus_lisbon2.png")
+knitr::include_graphics("map_bus_lisbon3.png")
 ```
 
 Relying on OSM network data allows to cross with other information available in this open geographical database. 
