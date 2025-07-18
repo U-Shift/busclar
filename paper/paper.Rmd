@@ -42,22 +42,21 @@ knitr::opts_chunk$set(eval = FALSE,
 
 Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
 <!-- without additional material or human resources -->
-These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015].
+These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
 <!-- See also @szarata2022;  -->
 However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
 
 Common criteria for implementing bus lanes include:
-<!-- improve this points -->
 
 -   Frequency of buses (and trams) per hour and direction, at a peak hour;
 -   Number of lanes in the same direction;
 -   Existing traffic conditions;
 -   Existing bus lanes in the area (from a network continuity perspective).
 
-For instance, NACTO suggests that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
+For instance, NACTO reccomends that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
 Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the demand for public transport in the area.
 
-@vuchic1981 defends that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
+@vuchic1981 suggests that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
 
 This paper focuses on estimating hourly bus frequency for each road segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
 Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
