@@ -118,7 +118,7 @@
 
 \title{Bus lane prioritization using GTFS data}
 \author{Rosa Félix, Gonçalo Matos, Filipe Moura}
-\date{May 18, 2025}
+\date{May 08, 2025}
 
 \begin{document}
 \maketitle
@@ -171,6 +171,7 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
   It extends the functionality of \href{https://ipeagit.github.io/gtfstools/reference/merge_gtfs.html}{\texttt{gtfstools::merge\_gtfs()}} by enabling the identification of transfers between agencies.
 \item
   \href{https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html}{\texttt{get\_route\_frequency\_hourly()}}: Calculates the hourly frequency of bus routes for a given day, considering its geometries.
+  It assumes the time of departure at the first stop as a reference for each trip geometry.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
   The \texttt{overline} parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per street segment, using \href{https://docs.ropensci.org/stplanr/reference/overline.html}{\texttt{stplanr::overline2()}} \citep{stplanr}.
   Optionally, using \texttt{use\_osm\_routes} parameter, it retrieves the geometries from \emph{OpenStreetMap} (OSM) by matching the tag \texttt{gtfs:shape\_id}, overwriting the original GTFS \texttt{shapes.txt}.

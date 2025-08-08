@@ -76,6 +76,7 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
   It extends the functionality of [`gtfstools::merge_gtfs()`](https://ipeagit.github.io/gtfstools/reference/merge_gtfs.html) by enabling the identification of transfers between agencies. <!-- VER WORDING -->
 
 - [`get_route_frequency_hourly()`](https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html): Calculates the hourly frequency of bus routes for a given day, considering its geometries.
+  It assumes the time of departure at the first stop as a reference for each trip geometry.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
   The `overline` parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per street segment, using [`stplanr::overline2()`](https://docs.ropensci.org/stplanr/reference/overline.html) [@stplanr].
   Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* (OSM) by matching the tag `gtfs:shape_id`, overwriting the original GTFS `shapes.txt`. 
@@ -172,7 +173,7 @@ m2
 knitr::include_graphics("map_bus_lisbon3.png")
 ```
 
-Relying on OSM network data allows to cross with other information available in this open geographical database. 
+By relying on OSM network data, this method allows to cross with other information available in this open geographical database. 
 For instance, we can easily compare the results with existing bus lanes and identify high-frequency segments lacking dedicated infrastructure, which should be prioritized.
 Note that for two-way segments, frequency is aggregated.
 
