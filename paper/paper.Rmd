@@ -1,6 +1,9 @@
 ---
-title: "Bus lane prioritization using GTFS data"
+# title: "Bus lane prioritization using GTFS data"
+# title: "Bus lane prioritization using GTFShift and open data"
 # title: "GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation"
+title: "GTFShift for bus lane prioritization using GTFS and OSM data"
+
 author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
 date: "`r format(Sys.Date(), 'May %d, %Y')`" # %B for locale full month name
 bibliography: bibliography.bib
