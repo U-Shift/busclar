@@ -1,11 +1,11 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.7.18)  8 AUG 2025 14:57
+This is XeTeX, Version 3.141592653-2.6-0.999997 (TeX Live 2025) (preloaded format=xelatex 2025.8.8)  8 AUG 2025 15:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-07-11>
+L3 programming layer <2025-07-20>
 (/home/rosa/.TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
 (/home/rosa/.TinyTeX/texmf-dist/tex/latex/base/size10.clo
@@ -97,7 +97,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 )) (/home/rosa/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ) (/home/rosa/.TinyTeX/texmf-dist/tex/latex/unicode-math/unicode-math.sty (/home/rosa/.TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2025-07-11 L3 programming layer (loader) 
+Package: expl3 2025-07-20 L3 programming layer (loader) 
 (/home/rosa/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2025-06-09 L3 backend support: XeTeX
 \g__graphics_track_int=\count291
@@ -346,7 +346,7 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@layoutvoffset=\dimen168
 \Gm@dimlist=\toks23
 ) (/home/rosa/.TinyTeX/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
-Package: fancyvrb 2024/01/20 4.5c verbatim text (tvz,hv)
+Package: fancyvrb 2025/07/28 4.6 verbatim text (tvz,hv)
 \FV@CodeLineNo=\count311
 \FV@InFile=\read2
 \FV@TabBox=\box55
@@ -1054,14 +1054,14 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 [5] (./paper.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
-L3 programming layer <2025-07-11>
+L3 programming layer <2025-07-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 21939 strings out of 470473
- 391570 string characters out of 5491616
- 990086 words of memory out of 5000000
- 49934 multiletter control sequences out of 15000+600000
+ 21939 strings out of 470458
+ 391570 string characters out of 5491275
+ 990388 words of memory out of 5000000
+ 49949 multiletter control sequences out of 15000+600000
  633374 words of font info for 93 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  90i,9n,114p,413b,579s stack positions out of 10000i,1000n,20000p,200000b,200000s

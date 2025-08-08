@@ -5,7 +5,7 @@
 title: "GTFShift for bus lane prioritization using GTFS and OSM data"
 
 author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
-date: "`r format(Sys.Date(), 'May %d, %Y')`" # %B for locale full month name
+date: "`r format(Sys.Date(), 'Aug %d, %Y')`" # %B for locale full month name
 bibliography: bibliography.bib
 biblio-style: apacite
 output: 
@@ -185,7 +185,7 @@ m2
 # include figure
 knitr::include_graphics("map_bus_lisbon3.png")
 ```
-```{r tabresults, echo=FALSE, eval=TRUE, cache=TRUE}
+```{r tabresults, echo=FALSE, eval=TRUE}
 frequencies_segment = sf::st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_cm_frequency_osm_052025.gpkg", quiet = TRUE) 
 frequencies_segment_8 = frequencies_segment |> 
   dplyr::filter(hour == 8)
@@ -194,7 +194,8 @@ frequencies_segment_8 = frequencies_segment |>
 knitr::kable(tail(frequencies_segment_8, 8), 
              caption = "Data preview of the aggregated bus frequency per road segment (linestring) per hour.",
              format = "latex",
-             booktabs = TRUE
+             booktabs = TRUE,
+             linesep = ""
              ) |>
  kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
