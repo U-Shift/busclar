@@ -200,9 +200,10 @@ We acknowledge that this evidence alone may not be sufficient to justify bus lan
 The authors gratefully acknowledges the support for this research by the Portuguese Foundation for Science and Technology (FCT) funding [PTDC/ECI-TRA/3120/2021](https://doi.org/10.54499/PTDC/ECI-TRA/3120/2021) from STREETS4ALL Project.
 R Félix and F Moura are grateful for the FCT support through funding UIDB/04625/2025 from the research unit CERIS.
 
-# Reproducibility
+# Reproducibility {.unnumbered}
 
 For this article, we used `GTFShift` version v0.7 and `R` version v4.5.
 To reproduce the results presented in this paper, refer to [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository.
+<!-- TO-DO: improve -->
 
 # References {.unnumbered}

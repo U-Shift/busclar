@@ -106,7 +106,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={Bus lane prioritization using GTFS data},
+  pdftitle={GTFShift for bus lane prioritization using GTFS and OSM data},
   pdfauthor={Rosa Félix, Gonçalo Matos, Filipe Moura},
   pdfkeywords={abs, def},
   colorlinks=true,
@@ -116,14 +116,14 @@
   urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 
-\title{Bus lane prioritization using GTFS data}
+\title{GTFShift for bus lane prioritization using GTFS and OSM data}
 \author{Rosa Félix, Gonçalo Matos, Filipe Moura}
 \date{May 08, 2025}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-Identifying the streets with the highest bus frequency can help in planning and prioritizing the implementation or expansion of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit supply over a given territory.
+Identifying the road network segments with the highest bus frequency per hour can help in planning and prioritizing the implementation or expansion of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit supply over a given territory.
 \end{abstract}
 
 \textit{Keywords:} Bus lanes, GTFS, Transit planning, Network prioritization, Decision support tool, R package.
@@ -153,7 +153,7 @@ Nevertheless, the decision should be based on a more detailed analysis of the ne
 
 \citet{vuchic1981} suggests that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
 
-This paper focuses on estimating hourly bus frequency for each road segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
+This paper focuses on estimating hourly bus frequency for each road network segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
 Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
 
 For this, we present \href{https://u-shift.github.io/GTFShift/}{\texttt{GTFShift}}, an open-source R package \citep{gshift2025} that extends the functionality of other R libraries that deal with GTFS, such as \texttt{tidytransit} \citep{tidytransit} and \texttt{gtfstools} \citep{gtfstools}.
@@ -162,7 +162,9 @@ This tool helps prioritize bus lanes in a given territory to improve transit eff
 \section{Methods}\label{methods}
 
 \texttt{GTFShift} is an open-source R package that provides methods for the entire workflow of bus network frequency analysis.
-It can be used to get GTFS data for a given territory, and estimate the aggregated bus frequency per street segment at each hour of a given day.
+It can be used to get GTFS data for a given territory, and estimate the aggregated bus frequency per road network segment at each hour of a given day.
+
+For this analysis, two main methods are used:
 
 \begin{itemize}
 \item
@@ -173,7 +175,7 @@ It can be used to get GTFS data for a given territory, and estimate the aggregat
   \href{https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html}{\texttt{get\_route\_frequency\_hourly()}}: Calculates the hourly frequency of bus routes for a given day, considering its geometries.
   It assumes the time of departure at the first stop as a reference for each trip geometry.
   By default, it estimates the next business Wednesday, relevant for the peak hour.
-  The \texttt{overline} parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per street segment, using \href{https://docs.ropensci.org/stplanr/reference/overline.html}{\texttt{stplanr::overline2()}} \citep{stplanr}.
+  The \texttt{overline} parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per road segment, using \href{https://docs.ropensci.org/stplanr/reference/overline.html}{\texttt{stplanr::overline2()}} \citep{stplanr}.
   Optionally, using \texttt{use\_osm\_routes} parameter, it retrieves the geometries from \emph{OpenStreetMap} (OSM) by matching the tag \texttt{gtfs:shape\_id}, overwriting the original GTFS \texttt{shapes.txt}.
 \end{itemize}
 
@@ -185,12 +187,9 @@ Alternatively, the \href{https://u-shift.github.io/GTFShift/reference/osm_shapes
 
 The case study is Lisbon, Portugal, where the bus network is operated by \emph{Carris} and \emph{Carris Metropolitana}, respectively, the urban and sub-urban bus operators in the area.
 
-For this article, we used \texttt{GTFShift} version v0.7 and \texttt{R} version v4.5.
-To reproduce the results presented in this paper, refer to \href{https://github.com/U-Shift/busclar}{U-Shift/busclar} code repository.
-
 \section{Findings}\label{findings}
 
-We load the R libraries, the static GTFS feeds for both bus agencies, and unify them.
+We load the \href{https://u-shift.github.io/GTFShift/}{\texttt{GTFShift}} R library, the static GTFS feeds for both bus agencies, and unify them.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -228,7 +227,7 @@ Next, the hourly bus frequency is estimated for each route, for the next busines
 \end{Highlighting}
 \end{Shaded}
 
-The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the street segments with higher bus transit frequency, at morning peak hour.
+The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the road segments with higher bus transit frequency, at morning peak hour.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -251,10 +250,10 @@ The results, presented in Figure \ref{fig:MapResults}, allow for the identificat
 
 }
 
-\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the streets with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
+\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the road segments with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
 \end{figure}
 
-Relying on OSM network data allows to cross with other information available in this open geographical database.
+By relying on OSM network data, this method allows to cross with other information available in this open geographical database.
 For instance, we can easily compare the results with existing bus lanes and identify high-frequency segments lacking dedicated infrastructure, which should be prioritized.
 Note that for two-way segments, frequency is aggregated.
 
@@ -275,6 +274,11 @@ We acknowledge that this evidence alone may not be sufficient to justify bus lan
 
 The authors gratefully acknowledges the support for this research by the Portuguese Foundation for Science and Technology (FCT) funding \href{https://doi.org/10.54499/PTDC/ECI-TRA/3120/2021}{PTDC/ECI-TRA/3120/2021} from STREETS4ALL Project.
 R Félix and F Moura are grateful for the FCT support through funding UIDB/04625/2025 from the research unit CERIS.
+
+\section{Reproducibility}\label{reproducibility}
+
+For this article, we used \texttt{GTFShift} version v0.7 and \texttt{R} version v4.5.
+To reproduce the results presented in this paper, refer to \href{https://github.com/U-Shift/busclar}{U-Shift/busclar} code repository.
 
 \renewcommand\refname{References}
   \bibliography{bibliography.bib}
