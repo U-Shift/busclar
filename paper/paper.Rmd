@@ -100,7 +100,7 @@ The case study is Lisbon, Portugal, where the bus network is operated by *Carris
 
 # Findings
 
-We load the R libraries, the static GTFS feeds for both bus agencies, and unify them.
+We load the [`GTFShift`](https://u-shift.github.io/GTFShift/) R library, the static GTFS feeds for both bus agencies, and unify them.
 
 ```{r load, cache=TRUE, message=FALSE, warning=FALSE}
 library(GTFShift)
