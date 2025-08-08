@@ -143,8 +143,16 @@ frequencies_segment = get_route_frequency_hourly(gtfs = gtfs_lisbon,
                                                  overline = TRUE, 
                                                  use_osm_routes = query)
 ```
+```{r export, include=FALSE}
+# save the result to a file and make available at repo assets
+sf::st_write(frequencies_segment, "data/carris_cm_frequency_osm_052025.gpkg", quiet = TRUE)
+piggyback::pb_upload("data/carris_cm_frequency_osm_052025.gpkg", 
+                     repo = "U-Shift/busclar",
+                     tag = "latest",
+                     overwrite = TRUE)
+```
 
-The results, presented in Figure \ref{fig:MapResults}, allow for the identification of the road segments with higher bus transit frequency, at morning peak hour.
+The results, presented in Figure \ref{fig:MapResults} and Table \ref{tab:tabresults}, allow for the identification of the road segments with higher bus transit frequency, at morning peak hour.
 
 ```{r map}
 # filter for the peak hour 8-9am
@@ -157,6 +165,8 @@ mapview::mapview(
   lwd = "frequency",
   layer.name = "Bus frequency"
 )
+
+tail(frequencies_segment_8) # show the last rows of this result
 ```
 ```{r maprendernobuttnons, eval=FALSE, include=FALSE}
 # removing mapview controls for a nicer rendering
@@ -171,9 +181,22 @@ m2 = mapview::removeMapJunk(m, junk = c("zoomControl", "layersControl"))
 m2
 ```
 
-```{r MapResults, echo=FALSE, eval=TRUE, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the road segments with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_cm_8h.html"}
+```{r MapResults, echo=FALSE, eval=TRUE, fig.cap="Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the road segments with higher hourly bus frequency. Carto basemap.", fig.link="http://www.rosafelix.bike/transit/carris_cm_8h.html", fig.pos="h"}
 # include figure
 knitr::include_graphics("map_bus_lisbon3.png")
+```
+```{r tabresults, echo=FALSE, eval=TRUE, cache=TRUE}
+frequencies_segment = sf::st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_cm_frequency_osm_052025.gpkg", quiet = TRUE) 
+frequencies_segment_8 = frequencies_segment |> 
+  dplyr::filter(hour == 8)
+# tail(frequencies_segment_8)
+# put this in a nice table with knitr and latex formatting
+knitr::kable(tail(frequencies_segment_8, 8), 
+             caption = "Data preview of the aggregated bus frequency per road segment (linestring) per hour.",
+             format = "latex",
+             booktabs = TRUE
+             ) |>
+ kableExtra::kable_styling(latex_options = "HOLD_position")
 ```
 
 By relying on OSM network data, this method allows to cross with other information available in this open geographical database. 
@@ -202,8 +225,11 @@ R Félix and F Moura are grateful for the FCT support through funding UIDB/04625
 
 # Reproducibility {.unnumbered}
 
-For this article, we used `GTFShift` version v0.7 and `R` version v4.5.
 To reproduce the results presented in this paper, refer to [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository.
-<!-- TO-DO: improve -->
+All the packages' versions used are listed in the `renv.lock` file.
+For this article, we used `GTFShift` version v0.7 and `R` version v4.5.1.
+
+Please refer to the assets available at [release version 0.8](https://github.com/U-Shift/busclar/releases/tag/0.8), to get the data and the results from this paper, for instance the used GTFS files, as they change periodically.
+
 
 # References {.unnumbered}
