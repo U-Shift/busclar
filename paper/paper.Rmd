@@ -26,7 +26,7 @@ header-includes:
 abstract: |
     Identifying the road network segments with the highest bus frequency per hour can help in planning and prioritizing the implementation or expansion of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit supply over a given territory.
     
-keywords: "abs, def" # define below
+keywords: "abs, def" # does not work here, define below
 ---
 
 ```{r setup, include=FALSE}
@@ -66,7 +66,6 @@ Identifying high-frequency corridors is essential for prioritizing and supportin
 
 For this, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package [@gshift2025] that extends the functionality of other R libraries that deal with GTFS, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
 This tool helps prioritize bus lanes in a given territory to improve transit efficiency.
-<!-- remove? -->
 
 
 # Methods
@@ -85,20 +84,12 @@ For this analysis, two main methods are used:
   By default, it estimates the next business Wednesday, relevant for the peak hour.
   The `overline` parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per road segment, using [`stplanr::overline2()`](https://docs.ropensci.org/stplanr/reference/overline.html) [@stplanr].
   Optionally, using `use_osm_routes` parameter, it retrieves the geometries from *OpenStreetMap* (OSM) by matching the tag `gtfs:shape_id`, overwriting the original GTFS `shapes.txt`. 
-<!-- overlapping line segments -->
 
 The parameter `use_osm_routes` is particularly useful if the GTFS shapes do not share the same geometry. 
 For instance, if the edges of the lines do not overlap or do not follow the same route-over-the-road – which is very common, even besides [GTFS recommendation](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) – geometries might not be aggregated correctly, causing inconsistent results.
 By relying on a common road network, such as OSM, it is possible to overcome this issue and aggregate the bus routes correctly. 
 Nevertheless, the [`gtfs:shape_id`](https://wiki.openstreetmap.org/wiki/Key:gtfs:shape_id) OSM tag is only present in 3.5% of the mapped bus networks.
 Alternatively, the [`osm_shapes_match_routes()`](https://u-shift.github.io/GTFShift/reference/osm_shapes_match_routes.html) method can be used to match GTFS shapes with OSM networks, considering their geometrical resemblance.
-
-<!-- To overcome this issue, Mobility Data, the organization behind the GTFS standard should provide guidelines or formal requirements to draw or generate the [`shapes.txt`](https://gtfs.org/documentation/schedule/schedule-best-practices/#shapestxt) file, so that they can be aggregated and analysed correctly. -->
-
-<!-- As an alternative, *GTFShift* provides the method `network_overline()`, that allows for a route aggregation. -->
-<!-- Given a simplified network (generated externally), it identifies the segments corresponding to each route and uses them to aggregate the attribute defined in the parameters. -->
-<!-- It can be used to aggregate the routes frequencies. -->
-
 
 The case study is Lisbon, Portugal, where the bus network is operated by *Carris* and *Carris Metropolitana*, respectively, the urban and sub-urban bus operators in the area.
 
