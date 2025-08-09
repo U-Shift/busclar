@@ -13,6 +13,8 @@ knitr::opts_chunk$set(eval = FALSE,
                       dpi = 300)
 ```
 
+For paper reproducibility please refer to [paper/paper.Rmd](paper/paper.Rmd).
+
 ## Introduction
 
 This is a method to support the prioritization of bus lanes.
@@ -34,11 +36,9 @@ And the data:
 
 In this paper we will use the Lisbon municipality as a case study.
 
-
 ## Get GTFS data
 
-Download and merge the existing GTFS for the Lisbon city.
-In this case there are 2 operators using the roadways: Carris and Carris Metropolitana.
+Download and merge the existing GTFS for the Lisbon city. In this case there are 2 operators using the roadways: Carris and Carris Metropolitana.
 
 ```{r load, cache=TRUE, message=FALSE, warning=FALSE}
 library(GTFShift)
@@ -47,6 +47,7 @@ library(GTFShift)
 gtfs_carris = load_feed("https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS") # 114 MB
 gtfs_carrismetro = load_feed("https://api.carrismetropolitana.pt/gtfs") # 638 MB
 ```
+
 ```{r hiddenmanipulation, include=FALSE, cache=TRUE, message=FALSE, warning=FALSE}
 # remove last 6 digits of shape_id for CM - every release has a different suffix
 library(dplyr)
@@ -55,6 +56,7 @@ gtfs_carrismetro$shapes = gtfs_carrismetro$shapes |>
 gtfs_carrismetro$trips = gtfs_carrismetro$trips |>
   mutate(shape_id = substring(shape_id, 1, nchar(shape_id)-6))
 ```
+
 ```{r unify, cache=TRUE, message=FALSE, warning=FALSE}
 # unify the feeds in a single GTFS feed
 gtfs_lisbon = unify(gtfs_carris, gtfs_carrismetro)

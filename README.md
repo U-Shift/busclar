@@ -1,6 +1,9 @@
 busclaR
 ================
 
+For paper reproducibility please refer to
+[paper/paper.Rmd](paper/paper.Rmd).
+
 ## Introduction
 
 This is a method to support the prioritization of bus lanes.
