@@ -181,7 +181,7 @@ frequencies_segment = sf::st_read("https://github.com/U-Shift/busclar/releases/d
 frequencies_segment_8 = frequencies_segment |> 
   dplyr::filter(hour == 8)
 # tail(frequencies_segment_8)
-# put this in a nice table with knitr and latex formatting
+# show this in a nice latex table
 knitr::kable(tail(frequencies_segment_8, 8), 
              caption = "Data preview of the aggregated bus frequency per road segment (linestring) per hour.",
              format = "latex",
