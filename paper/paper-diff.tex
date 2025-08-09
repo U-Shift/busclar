@@ -1,0 +1,428 @@
+% Options for packages loaded elsewhere
+%DIF LATEXDIFF DIFFERENCE FILE
+%DIF DEL paper-v1.tex   Fri Aug  8 13:49:54 2025
+%DIF ADD paper.tex      Fri Aug  8 15:09:12 2025
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
+\usepackage{apacite}
+\usepackage{subfig}
+%DIF 103a103-116
+\usepackage{booktabs} %DIF > 
+\usepackage{longtable} %DIF > 
+\usepackage{array} %DIF > 
+\usepackage{multirow} %DIF > 
+\usepackage{wrapfig} %DIF > 
+\usepackage{float} %DIF > 
+\usepackage{colortbl} %DIF > 
+\usepackage{pdflscape} %DIF > 
+\usepackage{tabu} %DIF > 
+\usepackage{threeparttable} %DIF > 
+\usepackage{threeparttablex} %DIF > 
+\usepackage[normalem]{ulem} %DIF > 
+\usepackage{makecell} %DIF > 
+\usepackage{xcolor} %DIF > 
+%DIF -------
+\usepackage[]{natbib}
+\bibliographystyle{apacite}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+%DIF 109c123
+%DIF <   pdftitle={Bus lane prioritization using GTFS data},
+%DIF -------
+  pdftitle={GTFShift for bus lane prioritization using GTFS and OSM data}, %DIF > 
+%DIF -------
+  pdfauthor={Rosa Félix, Gonçalo Matos, Filipe Moura},
+  pdfkeywords={abs, def},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{\DIFdelbegin \DIFdel{Bus }\DIFdelend \DIFaddbegin \DIFadd{GTFShift for bus }\DIFaddend lane prioritization using GTFS \DIFaddbegin \DIFadd{and OSM }\DIFaddend data}
+\author{Rosa Félix, Gonçalo Matos, Filipe Moura}
+\date{\DIFdelbegin \DIFdel{May 18}\DIFdelend \DIFaddbegin \DIFadd{Aug 08}\DIFaddend , 2025}
+%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
+%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
+\RequirePackage[normalem]{ulem} %DIF PREAMBLE
+\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{green}{rgb}{0,0.5,0} %DIF PREAMBLE
+\providecommand{\DIFadd}[1]{{\protect\color{green}{#1}}} %DIF PREAMBLE
+\providecommand{\DIFdel}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
+%DIF SAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
+\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFdelbegin}{} %DIF PREAMBLE
+\providecommand{\DIFdelend}{} %DIF PREAMBLE
+\providecommand{\DIFmodbegin}{} %DIF PREAMBLE
+\providecommand{\DIFmodend}{} %DIF PREAMBLE
+%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
+\providecommand{\DIFdelendFL}{} %DIF PREAMBLE
+\newcommand{\DIFscaledelfig}{0.5}
+%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
+% \RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{letltxmacro} %DIF PREAMBLE
+\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
+\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
+\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
+% store original definition of \includegraphics %DIF PREAMBLE
+\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
+\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
+\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
+\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
+% \settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+% \settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
+\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
+\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
+\begin{picture}(1,1)% %DIF PREAMBLE
+\thicklines\linethickness{2pt} %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
+{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
+\end{picture}% %DIF PREAMBLE
+}\hspace*{3pt}}} %DIF PREAMBLE
+} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
+\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
+\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
+%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+\RequirePackage{listings} %DIF PREAMBLE
+\RequirePackage{color} %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
+%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
+  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
+	language=DIFcode, %DIF PREAMBLE
+	basicstyle=\ttfamily, %DIF PREAMBLE
+	columns=fullflexible, %DIF PREAMBLE
+	keepspaces=true %DIF PREAMBLE
+} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
+%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Identifying the \DIFdelbegin \DIFdel{streets }\DIFdelend \DIFaddbegin \DIFadd{road network segments }\DIFaddend with the highest bus frequency \DIFaddbegin \DIFadd{per hour }\DIFaddend can help in planning and prioritizing the implementation or expansion of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit supply over a given territory.
+\end{abstract}
+
+\textit{Keywords:} Bus lanes, GTFS, Transit planning, Network prioritization, Decision support tool, R package.
+
+\section{Questions}\label{questions}
+
+Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion \citep{cesme2018}, reducing the variability of travel times \citep{surprenant-legault-2011}, and increasing the average commercial speed -- which can ultimately be used to increase service frequency \citep{basso-2011}.
+These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections \citep{truong-2015}, particularly if vehicles obtain right-of-way at traffic lights.
+However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space \citep{arasan-2010}, potentially jeopardizing public acceptance \citep{batty-2014}.
+
+Common criteria for implementing bus lanes include:
+
+\begin{itemize}
+\tightlist
+\item
+  Frequency of buses (and trams) per hour and direction, at a peak hour;
+\item
+  Number of lanes in the same direction;
+\item
+  Existing traffic conditions;
+\item
+  Existing bus lanes in the area (from a network continuity perspective).
+\end{itemize}
+
+For instance, NACTO reccomends that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» \citep{nacto2016transit}.
+Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the demand for public transport in the area.
+
+\citet{vuchic1981} suggests that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
+
+This paper focuses on estimating hourly bus frequency for each road \DIFaddbegin \DIFadd{network }\DIFaddend segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
+Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
+
+For this, we present \href{https://u-shift.github.io/GTFShift/}{\texttt{GTFShift}}, an open-source R package \citep{gshift2025} that extends the functionality of other R libraries that deal with GTFS, such as \texttt{tidytransit} \citep{tidytransit} and \texttt{gtfstools} \citep{gtfstools}.
+This tool helps prioritize bus lanes in a given territory to improve transit efficiency.
+
+\section{Methods}\label{methods}
+
+\texttt{GTFShift} is an open-source R package that provides methods for the entire workflow of bus network frequency analysis.
+It can be used to get GTFS data for a given territory, and estimate the aggregated bus frequency per \DIFdelbegin \DIFdel{street }\DIFdelend \DIFaddbegin \DIFadd{road network }\DIFaddend segment at each hour of a given day.
+
+\DIFaddbegin \DIFadd{For this analysis, two main methods are used:
+}
+
+\DIFaddend \begin{itemize}
+\item
+  \href{https://u-shift.github.io/GTFShift/reference/unify.html}{\texttt{unify()}}: Merges multiple GTFS feeds into a single entity, enabling an aggregated analysis.
+  This method is relevant, for instance, when considering more than one bus operator in the same territory.
+  It extends the functionality of \href{https://ipeagit.github.io/gtfstools/reference/merge_gtfs.html}{\texttt{gtfstools::merge\_gtfs()}} by enabling the identification of transfers between agencies.
+\item
+  \href{https://u-shift.github.io/GTFShift/reference/get_route_frequency_hourly.html}{\texttt{get\_route\_frequency\_hourly()}}: Calculates the hourly frequency of bus routes for a given day, considering its geometries.
+  \DIFaddbegin \DIFadd{It assumes the time of departure at the first stop as a reference for each trip geometry.
+  }\DIFaddend By default, it estimates the next business Wednesday, relevant for the peak hour.
+  The \texttt{overline} parameter enables the aggregation of bus routes that share common line segments, returning a sum of frequencies per \DIFdelbegin \DIFdel{street }\DIFdelend \DIFaddbegin \DIFadd{road }\DIFaddend segment, using \href{https://docs.ropensci.org/stplanr/reference/overline.html}{\texttt{stplanr::overline2()}} \citep{stplanr}.
+  Optionally, using \texttt{use\_osm\_routes} parameter, it retrieves the geometries from \emph{OpenStreetMap} (OSM) by matching the tag \texttt{gtfs:shape\_id}, overwriting the original GTFS \texttt{shapes.txt}.
+\end{itemize}
+
+The parameter \texttt{use\_osm\_routes} is particularly useful if the GTFS shapes do not share the same geometry.
+For instance, if the edges of the lines do not overlap or do not follow the same route-over-the-road -- which is very common, even besides \href{https://gtfs.org/documentation/schedule/schedule-best-practices/\#shapestxt}{GTFS recommendation} -- geometries might not be aggregated correctly, causing inconsistent results.
+By relying on a common road network, such as OSM, it is possible to overcome this issue and aggregate the bus routes correctly.
+Nevertheless, the \href{https://wiki.openstreetmap.org/wiki/Key:gtfs:shape_id}{\texttt{gtfs:shape\_id}} OSM tag is only present in 3.5\% of the mapped bus networks.
+Alternatively, the \href{https://u-shift.github.io/GTFShift/reference/osm_shapes_match_routes.html}{\texttt{osm\_shapes\_match\_routes()}} method can be used to match GTFS shapes with OSM networks, considering their geometrical resemblance.
+
+The case study is Lisbon, Portugal, where the bus network is operated by \emph{Carris} and \emph{Carris Metropolitana}, respectively, the urban and sub-urban bus operators in the area.
+
+\DIFdelbegin \DIFdel{For this article, we used }\texttt{\DIFdel{GTFShift}} %DIFAUXCMD
+\DIFdel{version v0.7 and }\texttt{\DIFdel{R}} %DIFAUXCMD
+\DIFdel{version v4.5.
+To reproduce the results presented in this paper, refer to }\href{https://github.com/U-Shift/busclar}{\DIFdel{U-Shift/busclar}} %DIFAUXCMD
+\DIFdel{code repository.
+}%DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend \section{Findings}\label{findings}
+
+We load the \DIFdelbegin \DIFdel{R libraries}\DIFdelend \DIFaddbegin \href{https://u-shift.github.io/GTFShift/}{\texttt{\DIFadd{GTFShift}}} \DIFadd{R library}\DIFaddend , the static GTFS feeds for both bus agencies, and unify them.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(GTFShift)}
+
+\CommentTok{\# loaf GTFS feeds}
+\NormalTok{gtfs\_carris }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS"}\NormalTok{) }\CommentTok{\# 114 MB}
+\NormalTok{gtfs\_carrismetro }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://api.carrismetropolitana.pt/gtfs"}\NormalTok{) }\CommentTok{\# 638 MB}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# unify the feeds in a single GTFS feed}
+\NormalTok{gtfs\_lisbon }\OtherTok{=} \FunctionTok{unify}\NormalTok{(gtfs\_carris, gtfs\_carrismetro)}
+\end{Highlighting}
+\end{Shaded}
+
+Next, the hourly bus frequency is estimated for each route, for the next business Wednesday, and the geometries are overlined, considering the correspondent OSM routes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# OSM query for bus networks in Lisbon}
+\FunctionTok{library}\NormalTok{(osmdata)}
+\NormalTok{query }\OtherTok{=} \FunctionTok{opq}\NormalTok{(}\StringTok{"Lisbon"}\NormalTok{)  }\SpecialCharTok{|\textgreater{}}
+        \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"route"}\NormalTok{,}
+                        \AttributeTok{value =} \StringTok{"bus"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+        \FunctionTok{add\_osm\_feature}\NormalTok{(}\AttributeTok{key =} \StringTok{"network"}\NormalTok{,}
+                        \AttributeTok{value =} \FunctionTok{c}\NormalTok{(}\StringTok{"Carris"}\NormalTok{, }\StringTok{"Carris Metropolitana"}\NormalTok{)) }\CommentTok{\# operators}
+
+\CommentTok{\# get hourly frequency by shape}
+\NormalTok{frequencies\_segment }\OtherTok{=} \FunctionTok{get\_route\_frequency\_hourly}\NormalTok{(}\AttributeTok{gtfs =}\NormalTok{ gtfs\_lisbon, }
+                                                 \AttributeTok{overline =} \ConstantTok{TRUE}\NormalTok{, }
+                                                 \AttributeTok{use\_osm\_routes =}\NormalTok{ query)}
+\end{Highlighting}
+\end{Shaded}
+
+The results, presented in Figure \ref{fig:MapResults} \DIFaddbegin \DIFadd{and Table \ref{tab:tabresults}}\DIFaddend , allow for the identification of the \DIFdelbegin \DIFdel{street }\DIFdelend \DIFaddbegin \DIFadd{road }\DIFaddend segments with higher bus transit frequency, at morning peak hour.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# filter for the peak hour 8{-}9am}
+\NormalTok{frequencies\_segment\_8 }\OtherTok{=}\NormalTok{ frequencies\_segment }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(hour }\SpecialCharTok{==} \DecValTok{8}\NormalTok{) }\CommentTok{\# the hour with the highest frequency}
+
+\NormalTok{mapview}\SpecialCharTok{::}\FunctionTok{mapview}\NormalTok{(}
+\NormalTok{  frequencies\_segment\_8,}
+  \AttributeTok{zcol =} \StringTok{"frequency"}\NormalTok{,}
+  \AttributeTok{lwd =} \StringTok{"frequency"}\NormalTok{,}
+  \AttributeTok{layer.name =} \StringTok{"Bus frequency"}
+\NormalTok{)}
+\DIFaddbegin 
+
+\DIFadd{\FunctionTok{tail}\NormalTok{(frequencies\_segment\_8) }\CommentTok{\# show the last rows of this result}
+}\DIFaddend \end{Highlighting}
+\end{Shaded}
+
+\DIFdelbegin %DIFDELCMD < \begin{figure}
+%DIFDELCMD < %%%
+\DIFdelendFL \DIFaddbeginFL \begin{figure}[h]
+\DIFaddendFL 
+
+{\centering \href{http://www.rosafelix.bike/transit/carris_cm_8h.html}{\includegraphics[width=1\linewidth]{map_bus_lisbon3} }
+
+}
+
+\caption{Road segments with higher bus frequency, in Lisbon, at 8 am. The larger and yellowish lines represent the \DIFdelbeginFL \DIFdelFL{streets }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{road segments }\DIFaddendFL with higher hourly bus frequency. Carto basemap.}\label{fig:MapResults}
+\end{figure}
+\DIFaddbegin \begin{table}[H]
+\centering
+\caption{\label{tab:tabresults}\DIFaddFL{Data preview of the aggregated bus frequency per road segment (linestring) per hour.}}
+\centering
+\begin{tabular}[t]{lrrl}
+\toprule
+  & \DIFaddFL{frequency }& \DIFaddFL{hour }& \DIFaddFL{geom}\\
+\midrule
+\DIFaddFL{13220 }& \DIFaddFL{86 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.104201 38.76...}\\
+\DIFaddFL{13221 }& \DIFaddFL{87 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197361 38.76...}\\
+\DIFaddFL{13222 }& \DIFaddFL{93 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197317 38.76...}\\
+\DIFaddFL{13223 }& \DIFaddFL{95 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197275 38.76...}\\
+\DIFaddFL{13224 }& \DIFaddFL{97 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197238 38.76...}\\
+\DIFaddFL{13225 }& \DIFaddFL{99 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.178286 38.70...}\\
+\DIFaddFL{13226 }& \DIFaddFL{100 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197197 38.76...}\\
+\DIFaddFL{13227 }& \DIFaddFL{111 }& \DIFaddFL{8 }& \DIFaddFL{LINESTRING (-9.197473 38.75...}\\
+\bottomrule
+\end{tabular}
+\end{table}
+\DIFaddend 
+
+\DIFdelbegin \DIFdel{Relying }\DIFdelend \DIFaddbegin \DIFadd{By relying }\DIFaddend on OSM network data\DIFaddbegin \DIFadd{, this method }\DIFaddend allows to cross with other information available in this open geographical database.
+For instance, we can easily compare the results with existing bus lanes and identify high-frequency segments lacking dedicated infrastructure, which should be prioritized.
+Note that for two-way segments, frequency is aggregated.
+
+Additionally, filtering the road network segments by the number of lanes in the same direction (two or more), can further support decisions on implementing bus corridors.
+However, policies may also favour bus lanes on single-lane streets, for example, to create transit-priority streets.
+
+Further enhancements of the method may include passenger capacity per hour instead of just frequency. Routes with articulated or double-deck buses (around 100 passengers) could be given more weight than neighbourhood minibuses (up to 25 passengers).
+
+This method supports not only static bus lanes but also dynamic bus lanes, by analyzing hourly frequency -- providing evidence for decision on which hours to allocate road lanes for bus.
+
+The presented replicable approach offers a feasible methodology to generate evidence for decision-making on the implementation or expansion of bus lane networks.
+Required data is commonly available for most cities, as GTFS feeds are widely used by public transport agencies.
+
+We acknowledge that this evidence alone may not be sufficient to justify bus lane implementation, as it does not account for other factors such traffic conditions, roadway capacity, physical limitations, or public acceptance.
+
+\section*{Acknowledgements}\label{acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+The authors gratefully acknowledges the support for this research by the Portuguese Foundation for Science and Technology (FCT) funding \href{https://doi.org/10.54499/PTDC/ECI-TRA/3120/2021}{PTDC/ECI-TRA/3120/2021} from STREETS4ALL Project.
+R Félix and F Moura are grateful for the FCT support through funding UIDB/04625/2025 from the research unit CERIS\DIFaddbegin \DIFadd{.
+}
+
+\section*{\DIFadd{Reproducibility}}\label{reproducibility}
+\addcontentsline{toc}{section}{\DIFadd{Reproducibility}}
+
+\DIFadd{To reproduce the results presented in this paper, refer to }\href{https://github.com/U-Shift/busclar}{\DIFadd{U-Shift/busclar}} \DIFadd{code repository.
+All the packages' versions used are listed in the }\texttt{\DIFadd{renv.lock}} \DIFadd{file.
+For this article, we used }\texttt{\DIFadd{GTFShift}} \DIFadd{version v0.7 and }\texttt{\DIFadd{R}} \DIFadd{version v4.5.1.
+}
+
+\DIFadd{Please refer to the assets available at }\href{https://github.com/U-Shift/busclar/releases/tag/0.8}{\DIFadd{release version 0.8}}\DIFadd{, to get the data and the results from this paper, for instance the used GTFS files, as they change periodically}\DIFaddend .
+
+\renewcommand\refname{References}
+  \bibliography{bibliography.bib}
+
+\end{document}

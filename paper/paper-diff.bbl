@@ -1,0 +1,333 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Arasan%
+\ \BBA {} Vedagiri%
+}{%
+Arasan%
+\ \BBA {} Vedagiri%
+}{%
+{\protect \APACyear {2010}}%
+}]{%
+arasan-2010}
+\APACinsertmetastar {%
+arasan-2010}%
+\begin{APACrefauthors}%
+Arasan, V\BPBI T.%
+\BCBT {}\ \BBA {} Vedagiri, P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{5}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Study of the impact of exclusive bus lane under highly heterogeneous traffic condition}} {{Study of the impact of exclusive bus lane under highly heterogeneous traffic condition}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Public Transport}{2}{1-2}{135--155}.
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s12469-010-0021-x} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Basso%
+, Guevara%
+, Gschwender%
+\BCBL {}\ \BBA {} Fuster%
+}{%
+Basso%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+basso-2011}
+\APACinsertmetastar {%
+basso-2011}%
+\begin{APACrefauthors}%
+Basso, L\BPBI J.%
+, Guevara, C\BPBI A.%
+, Gschwender, A.%
+\BCBL {}\ \BBA {} Fuster, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{2}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Congestion pricing, transit subsidies and dedicated bus lanes: Efficient and practical solutions to congestion}} {{Congestion pricing, transit subsidies and dedicated bus lanes: Efficient and practical solutions to congestion}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Transport Policy}{18}{5}{676--684}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.tranpol.2011.01.002} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Batty%
+, Palacin%
+\BCBL {}\ \BBA {} González-Gil%
+}{%
+Batty%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2014}}%
+}]{%
+batty-2014}
+\APACinsertmetastar {%
+batty-2014}%
+\begin{APACrefauthors}%
+Batty, P.%
+, Palacin, R.%
+\BCBL {}\ \BBA {} González-Gil, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{12}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Challenges and opportunities in developing urban modal shift}} {{Challenges and opportunities in developing urban modal shift}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Travel Behaviour and Society}{2}{2}{109--123}.
+\newblock
+\begin{APACrefDOI} \doi{10.1016/j.tbs.2014.12.001} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cesme%
+\ \protect \BOthers {.}}{%
+Cesme%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2018}}%
+}]{%
+cesme2018}
+\APACinsertmetastar {%
+cesme2018}%
+\begin{APACrefauthors}%
+Cesme, B.%
+, Roisman, R.%
+, Burns, R.%
+, List, K.%
+, Koudounas, A.%
+, Cuellar, J.%
+\BDBL {}Miller, D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{12}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Strategies and Barriers in Effective Bus Lane Implementation and Management: Best Practices for Use in the Greater Washington, D.C. Region} {Strategies and barriers in effective bus lane implementation and management: Best practices for use in the greater washington, d.c. region}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Transportation Research Record: Journal of the Transportation Research Board}{2672}{8}{29--40}.
+\newblock
+\begin{APACrefDOI} \doi{10.1177/0361198118791914} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Herszenhut%
+, Pereira%
+, Andrade%
+\BCBL {}\ \BBA {} Bazzo%
+}{%
+Herszenhut%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2025}}%
+}]{%
+gtfstools}
+\APACinsertmetastar {%
+gtfstools}%
+\begin{APACrefauthors}%
+Herszenhut, D.%
+, Pereira, R\BPBI H\BPBI M.%
+, Andrade, P\BPBI R.%
+\BCBL {}\ \BBA {} Bazzo, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {gtfstools: General Transit Feed Specification ({GTFS}) Editing and Analysing Tools} {gtfstools: General transit feed specification ({GTFS}) editing and analysing tools}{\BBCQ}\ [\bibcomputersoftwaremanual].
+\newblock
+\begin{APACrefURL} \url{https://ipeagit.github.io/gtfstools/} \end{APACrefURL}
+\newblock
+\APACrefnote{R package version 1.4.0, https://github.com/ipeaGIT/gtfstools}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lovelace%
+\ \BBA {} Ellison%
+}{%
+Lovelace%
+\ \BBA {} Ellison%
+}{%
+{\protect \APACyear {2018}}%
+}]{%
+stplanr}
+\APACinsertmetastar {%
+stplanr}%
+\begin{APACrefauthors}%
+Lovelace, R.%
+\BCBT {}\ \BBA {} Ellison, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2018}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {stplanr: A Package for Transport Planning} {stplanr: A package for transport planning}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{{The R Journal}}{10}{2}{10}.
+\newblock
+\begin{APACrefDOI} \doi{10.32614/RJ-2018-053} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Matos%
+\ \BBA {} Félix%
+}{%
+Matos%
+\ \BBA {} Félix%
+}{%
+{\protect \APACyear {2025}}%
+}]{%
+gshift2025}
+\APACinsertmetastar {%
+gshift2025}%
+\begin{APACrefauthors}%
+Matos, G.%
+\BCBT {}\ \BBA {} Félix, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{GTFShift}: Explore and Analyse General Transit Feed Specification ({GTFS}) Files With a Focus on Urban Mobility} {{GTFShift}: Explore and analyse general transit feed specification ({GTFS}) files with a focus on urban mobility}{\BBCQ}\ [\bibcomputersoftwaremanual].
+\newblock
+\begin{APACrefURL} \url{https://github.com/U-Shift/GTFShift} \end{APACrefURL}
+\newblock
+\APACrefnote{R package version 0.6.0}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+NACTO%
+}{%
+NACTO%
+}{%
+{\protect \APACyear {2016}}%
+}]{%
+nacto2016transit}
+\APACinsertmetastar {%
+nacto2016transit}%
+\begin{APACrefauthors}%
+NACTO.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2016}.
+\newblock
+\APACrefbtitle {{Transit Street Design Guide}} {{Transit Street Design Guide}}.
+\newblock
+\APACaddressPublisher{}{Island Press}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Poletti%
+, Herszenhut%
+, Padgham%
+, Buckley%
+\BCBL {}\ \BBA {} Noriega-Goodwin%
+}{%
+Poletti%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2025}}%
+}]{%
+tidytransit}
+\APACinsertmetastar {%
+tidytransit}%
+\begin{APACrefauthors}%
+Poletti, F.%
+, Herszenhut, D.%
+, Padgham, M.%
+, Buckley, T.%
+\BCBL {}\ \BBA {} Noriega-Goodwin, D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {tidytransit: Read, Validate, Analyze, and Map GTFS Feeds} {tidytransit: Read, validate, analyze, and map gtfs feeds}{\BBCQ}\ [\bibcomputersoftwaremanual].
+\newblock
+\begin{APACrefURL} \url{https://github.com/r-transit/tidytransit} \end{APACrefURL}
+\newblock
+\APACrefnote{R package version 1.7.0}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Surprenant-Legault%
+\ \BBA {} El-Geneidy%
+}{%
+Surprenant-Legault%
+\ \BBA {} El-Geneidy%
+}{%
+{\protect \APACyear {2011}}%
+}]{%
+surprenant-legault-2011}
+\APACinsertmetastar {%
+surprenant-legault-2011}%
+\begin{APACrefauthors}%
+Surprenant-Legault, J.%
+\BCBT {}\ \BBA {} El-Geneidy, A\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{1}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Introduction of reserved bus lane}} {{Introduction of reserved bus lane}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Transportation Research Record Journal of the Transportation Research Board}{2218}{1}{10--18}.
+\newblock
+\begin{APACrefDOI} \doi{10.3141/2218-02} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Truong%
+, Sarvi%
+\BCBL {}\ \BBA {} Currie%
+}{%
+Truong%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+truong-2015}
+\APACinsertmetastar {%
+truong-2015}%
+\begin{APACrefauthors}%
+Truong, L\BPBI T.%
+, Sarvi, M.%
+\BCBL {}\ \BBA {} Currie, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{1}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Exploring multiplier effects generated by bus lane combinations}} {{Exploring multiplier effects generated by bus lane combinations}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Transportation Research Record Journal of the Transportation Research Board}{2533}{1}{68--77}.
+\newblock
+\begin{APACrefDOI} \doi{10.3141/2533-08} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Vuchic%
+}{%
+Vuchic%
+}{%
+{\protect \APACyear {1981}}%
+}]{%
+vuchic1981}
+\APACinsertmetastar {%
+vuchic1981}%
+\begin{APACrefauthors}%
+Vuchic, V\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{1981}.
+\newblock
+\APACrefbtitle {{Urban Public Transportation - Systems and Technology}} {{Urban Public Transportation - Systems and Technology}}.
+\newblock
+\APACaddressPublisher{}{Prentice-Hall, Inc.}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
