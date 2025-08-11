@@ -1,7 +1,7 @@
 % Options for packages loaded elsewhere
 %DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL paper-v1.tex   Fri Aug  8 13:49:54 2025
-%DIF ADD paper.tex      Fri Aug  8 15:09:12 2025
+%DIF DEL paper-v1.tex   Mon Aug 11 13:25:32 2025
+%DIF ADD paper.tex      Mon Aug 11 14:59:44 2025
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -141,7 +141,7 @@
 
 \title{\DIFdelbegin \DIFdel{Bus }\DIFdelend \DIFaddbegin \DIFadd{GTFShift for bus }\DIFaddend lane prioritization using GTFS \DIFaddbegin \DIFadd{and OSM }\DIFaddend data}
 \author{Rosa Félix, Gonçalo Matos, Filipe Moura}
-\date{\DIFdelbegin \DIFdel{May 18}\DIFdelend \DIFaddbegin \DIFadd{Aug 08}\DIFaddend , 2025}
+\date{\DIFdelbegin \DIFdel{May 18}\DIFdelend \DIFaddbegin \DIFadd{Aug 11}\DIFaddend , 2025}
 %DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
 %DIF UNDERLINE PREAMBLE %DIF PREAMBLE
 \RequirePackage[normalem]{ulem} %DIF PREAMBLE
@@ -164,7 +164,7 @@
 \providecommand{\DIFdelendFL}{} %DIF PREAMBLE
 \newcommand{\DIFscaledelfig}{0.5}
 %DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
-% \RequirePackage{settobox} %DIF PREAMBLE
+\RequirePackage{settobox} %DIF PREAMBLE
 \RequirePackage{letltxmacro} %DIF PREAMBLE
 \newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
 \newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
@@ -174,8 +174,8 @@
 \newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
 \newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
 \sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
-% \settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
-% \settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
+\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
 \scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
 \parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
 \setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
@@ -305,8 +305,9 @@ We load the \DIFdelbegin \DIFdel{R libraries}\DIFdelend \DIFaddbegin \href{https
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(GTFShift)}
 
-\CommentTok{\# loaf GTFS feeds}
-\NormalTok{gtfs\_carris }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS"}\NormalTok{) }\CommentTok{\# 114 MB}
+\DIFdelbegin \DIFdel{\CommentTok{\# loaf GTFS feeds}
+}\DIFdelend \DIFaddbegin \DIFadd{\CommentTok{\# load GTFS feeds}
+}\DIFaddend \NormalTok{gtfs\_carris }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS"}\NormalTok{) }\CommentTok{\# 114 MB}
 \NormalTok{gtfs\_carrismetro }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://api.carrismetropolitana.pt/gtfs"}\NormalTok{) }\CommentTok{\# 638 MB}
 \end{Highlighting}
 \end{Shaded}
@@ -415,9 +416,9 @@ R Félix and F Moura are grateful for the FCT support through funding UIDB/04625
 \section*{\DIFadd{Reproducibility}}\label{reproducibility}
 \addcontentsline{toc}{section}{\DIFadd{Reproducibility}}
 
-\DIFadd{To reproduce the results presented in this paper, refer to }\href{https://github.com/U-Shift/busclar}{\DIFadd{U-Shift/busclar}} \DIFadd{code repository.
-All the packages' versions used are listed in the }\texttt{\DIFadd{renv.lock}} \DIFadd{file.
-For this article, we used }\texttt{\DIFadd{GTFShift}} \DIFadd{version v0.7 and }\texttt{\DIFadd{R}} \DIFadd{version v4.5.1.
+\DIFadd{All code, data snapshots, and environment descriptors required to reproduce these results are archived at }\href{https://github.com/U-Shift/busclar}{\DIFadd{U-Shift/busclar}} \DIFadd{code repository }\citep{busclar0825}\DIFadd{.
+The R and packages' versions used are listed in the }\texttt{\DIFadd{renv.lock}} \DIFadd{file.
+For this article, we used }\texttt{\DIFadd{GTFShift}} \DIFadd{version v0.7.
 }
 
 \DIFadd{Please refer to the assets available at }\href{https://github.com/U-Shift/busclar/releases/tag/0.8}{\DIFadd{release version 0.8}}\DIFadd{, to get the data and the results from this paper, for instance the used GTFS files, as they change periodically}\DIFaddend .

@@ -116,6 +116,35 @@ Cesme, B.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Félix%
+\ \BBA {} Matos%
+}{%
+Félix%
+\ \BBA {} Matos%
+}{%
+{\protect \APACyear {2025}}%
+}]{%
+busclar0825}
+\APACinsertmetastar {%
+busclar0825}%
+\begin{APACrefauthors}%
+Félix, R.%
+\BCBT {}\ \BBA {} Matos, G.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2025}{{\APACmonth{08}}}{}.
+\newblock
+\APACrefbtitle {U-Shift/busclar: Paper.} {U-shift/busclar: Paper.}
+\newblock
+\APACaddressPublisher{}{Zenodo}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.5281/zenodo.16794719} \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.5281/zenodo.16794719} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Herszenhut%
 , Pereira%
 , Andrade%
