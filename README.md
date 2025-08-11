@@ -1,6 +1,8 @@
 busclaR
 ================
 
+[![DOI](https://zenodo.org/badge/961470584.svg)](https://doi.org/10.5281/zenodo.16794718)
+
 For paper reproducibility please refer to
 [paper/paper.Rmd](paper/paper.Rmd) and
 [paper/paper-code.R](paper/paper-code.R)
