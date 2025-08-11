@@ -101,7 +101,7 @@ We load the [`GTFShift`](https://u-shift.github.io/GTFShift/) R library, the sta
 ```{r load, cache=TRUE, message=FALSE, warning=FALSE}
 library(GTFShift)
 
-# loaf GTFS feeds
+# load GTFS feeds
 gtfs_carris = load_feed("https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS") # 114 MB
 gtfs_carrismetro = load_feed("https://api.carrismetropolitana.pt/gtfs") # 638 MB
 ```
