@@ -208,11 +208,11 @@ R Félix and F Moura are grateful for the FCT support through funding UIDB/04625
 
 # Reproducibility {.unnumbered}
 
-To reproduce the results presented in this paper, refer to [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository.
-All the R and packages' versions used are listed in the `renv.lock` file.
+All code, data snapshots, and environment descriptors required to reproduce these results are archived at [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository [@busclar0825].
+The R and packages' versions used are listed in the `renv.lock` file.
 For this article, we used `GTFShift` version v0.7.
 
-Please refer to the assets available at [release version 0.8](https://github.com/U-Shift/busclar/releases/tag/0.8) [@busclar0825], to get the data and the results from this paper, for instance the used GTFS files, as they change periodically.
+Please refer to the assets available at [release version 0.8](https://github.com/U-Shift/busclar/releases/tag/0.8), to get the data and the results from this paper, for instance the used GTFS files, as they change periodically.
 
 
 # References {.unnumbered}
