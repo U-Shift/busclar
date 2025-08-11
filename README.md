@@ -2,7 +2,8 @@ busclaR
 ================
 
 For paper reproducibility please refer to
-[paper/paper.Rmd](paper/paper.Rmd).
+[paper/paper.Rmd](paper/paper.Rmd) and
+[paper/paper-code.R](paper/paper-code.R)
 
 ## Introduction
 
