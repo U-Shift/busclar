@@ -132,7 +132,7 @@
 
 \title{GTFShift for bus lane prioritization using GTFS and OSM data}
 \author{Rosa Félix, Gonçalo Matos, Filipe Moura}
-\date{Aug 08, 2025}
+\date{Aug 11, 2025}
 
 \begin{document}
 \maketitle
@@ -209,7 +209,7 @@ We load the \href{https://u-shift.github.io/GTFShift/}{\texttt{GTFShift}} R libr
 \begin{Highlighting}[]
 \FunctionTok{library}\NormalTok{(GTFShift)}
 
-\CommentTok{\# loaf GTFS feeds}
+\CommentTok{\# load GTFS feeds}
 \NormalTok{gtfs\_carris }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://gateway.carris.pt/gateway/gtfs/api/v2.8/GTFS"}\NormalTok{) }\CommentTok{\# 114 MB}
 \NormalTok{gtfs\_carrismetro }\OtherTok{=} \FunctionTok{load\_feed}\NormalTok{(}\StringTok{"https://api.carrismetropolitana.pt/gtfs"}\NormalTok{) }\CommentTok{\# 638 MB}
 \end{Highlighting}
@@ -314,8 +314,8 @@ R Félix and F Moura are grateful for the FCT support through funding UIDB/04625
 \addcontentsline{toc}{section}{Reproducibility}
 
 To reproduce the results presented in this paper, refer to \href{https://github.com/U-Shift/busclar}{U-Shift/busclar} code repository.
-All the packages' versions used are listed in the \texttt{renv.lock} file.
-For this article, we used \texttt{GTFShift} version v0.7 and \texttt{R} version v4.5.1.
+All the R and packages' versions used are listed in the \texttt{renv.lock} file.
+For this article, we used \texttt{GTFShift} version v0.7.
 
 Please refer to the assets available at \href{https://github.com/U-Shift/busclar/releases/tag/0.8}{release version 0.8}, to get the data and the results from this paper, for instance the used GTFS files, as they change periodically.
 

@@ -170,6 +170,7 @@ knitr::include_graphics("map_bus_lisbon3.png")
 ```
 ```{r tabresults, echo=FALSE, eval=TRUE}
 frequencies_segment_8 = readRDS(url("https://github.com/U-Shift/busclar/releases/download/0.8/carris_cm_frequency_osm_052025_8h.rds"))
+frequencies_segment_8 = sf::st_as_sf(frequencies_segment_8)
 # tail(frequencies_segment_8)
 # show this in a nice latex table
 knitr::kable(tail(frequencies_segment_8, 8), 
@@ -208,8 +209,8 @@ R Félix and F Moura are grateful for the FCT support through funding UIDB/04625
 # Reproducibility {.unnumbered}
 
 To reproduce the results presented in this paper, refer to [U-Shift/busclar](https://github.com/U-Shift/busclar) code repository.
-All the packages' versions used are listed in the `renv.lock` file.
-For this article, we used `GTFShift` version v0.7 and `R` version v4.5.1.
+All the R and packages' versions used are listed in the `renv.lock` file.
+For this article, we used `GTFShift` version v0.7.
 
 Please refer to the assets available at [release version 0.8](https://github.com/U-Shift/busclar/releases/tag/0.8), to get the data and the results from this paper, for instance the used GTFS files, as they change periodically.
 
