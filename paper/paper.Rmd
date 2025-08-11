@@ -134,14 +134,6 @@ frequencies_segment = get_route_frequency_hourly(gtfs = gtfs_lisbon,
                                                  overline = TRUE, 
                                                  use_osm_routes = query)
 ```
-```{r export, include=FALSE}
-# save the result to a file and make available at repo assets
-sf::st_write(frequencies_segment, "data/carris_cm_frequency_osm_052025.gpkg", quiet = TRUE)
-piggyback::pb_upload("data/carris_cm_frequency_osm_052025.gpkg", 
-                     repo = "U-Shift/busclar",
-                     tag = "latest",
-                     overwrite = TRUE)
-```
 
 The results, presented in Figure \ref{fig:MapResults} and Table \ref{tab:tabresults}, allow for the identification of the road segments with higher bus transit frequency, at morning peak hour.
 
@@ -177,9 +169,7 @@ m2
 knitr::include_graphics("map_bus_lisbon3.png")
 ```
 ```{r tabresults, echo=FALSE, eval=TRUE}
-frequencies_segment = sf::st_read("https://github.com/U-Shift/busclar/releases/download/latest/carris_cm_frequency_osm_052025.gpkg", quiet = TRUE) 
-frequencies_segment_8 = frequencies_segment |> 
-  dplyr::filter(hour == 8)
+frequencies_segment_8 = readRDS(url("https://github.com/U-Shift/busclar/releases/download/0.8/carris_cm_frequency_osm_052025_8h.rds"))
 # tail(frequencies_segment_8)
 # show this in a nice latex table
 knitr::kable(tail(frequencies_segment_8, 8), 
