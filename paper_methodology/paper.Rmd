@@ -1,11 +1,8 @@
 ---
-# title: "Bus lane prioritization using GTFS data"
-# title: "Bus lane prioritization using GTFShift and open data"
-# title: "GTFShift: A Data-Driven Tool for Prioritizing Bus Lane Implementation"
-title: "GTFShift for bus lane prioritization using GTFS and OSM data"
+title: "Harmonizing GTFS geometries for transit network analysis using open data with GTFShift package"
 
 author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
-date: "`r format(Sys.Date(), 'Aug %d, %Y')`" # %B for locale full month name
+date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
 bibliography: bibliography.bib
 biblio-style: apacite
 output: 
@@ -24,9 +21,43 @@ header-includes:
   - \usepackage{apacite}
     
 abstract: |
-    Identifying the road network segments with the highest bus frequency per hour can help in planning and prioritizing the implementation or expansion of bus lanes. GTFShift R package uses the General Transit Feed Specification (GTFS) to perform this analysis, allowing for an aggregated overview of the transit supply over a given territory.
+    ...
     
-keywords: "abs, def" # does not work here, define below
+keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, R package" # does not work here, define below
 ---
 
-\textit{Keywords:} Bus lanes, GTFS, Transit planning, Network prioritization, Decision support tool, R package.
+\textit{Keywords:} GTFS, OpenStreetMaps, Transit planning, Network analysis, R package.
+
+# Introduction
+
+
+
+![](charts/osm_gtfs/osm_bus_growth.png)
+
+![](figures/intro/transitland_global_gtfs_map.png)
+
+<!-- Add graph of gtfs povision on mobility data -->
+
+<!-- Explain GTFS structure and OSM bus relation topology -->
+
+<!-- Show example of geometry mismatch between shapes of same operator: Carris Metropolitana and two different ones -->
+
+# Related work
+
+## Using GTFS for spatial analysis
+
+<!-- Mention case specific analysis, mostly graph oriented -->
+
+## Associating GTFS and OSM data 
+
+<!-- Mention papers that associate GTFS and OSM data and their limitations -->
+
+# Methodology
+
+# Application
+
+<!-- Show frequency map, number of lanes, bus lanes --> 
+
+<!-- Elaborate on aggregated analysis unlocking new planning instruments, such as bus lane prioritization, preparing next paper -->
+
+# Conclusion

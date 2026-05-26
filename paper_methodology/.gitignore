@@ -1,2 +1,4 @@
 *.pdf
 *.tex
+*.html
+paper_files/*
