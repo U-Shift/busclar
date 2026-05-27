@@ -1,5 +1,5 @@
 ---
-title: "Harmonizing GTFS geometries for transit network analysis using open data with GTFShift package"
+title: "Harmonizing GTFS geometries for transit network analysis using open data with GTFShift R package"
 
 author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
@@ -12,6 +12,9 @@ output:
     citation_package: natbib
     latex_engine: xelatex
     extra_dependencies: "subfig"
+format:
+  html: 
+    lightbox: true # abrir imagens popup
 urlcolor: blue
 citecolor: blue
 linkcolor: blue
@@ -30,13 +33,30 @@ keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, R package" 
 
 # Introduction
 
+Twenty years after its conception by Trimet and Google [@goldstein_pioneering_2013], the General Transit Feed Specification (GTFS) is growing into a widespread language for the diffusion of public transport data. It consists of a simple open data standard that uses plain text files to describe the service offered by public transport agencies, such as routes, stops, trips, their schedules and geometrical shapes [@mobilitydata_what_nodate].
+
+The adoption of this standard by transport agencies has been increasing steadily in the past years, as seen in @fig-gtfs-growth, with Transitland reporting almost 6,000 publicly available GTFS feeds in 2026 [@transitland_atlas_repo]. Its coverage, illustrated in @fig-gtfs-coverage, is centered in North America, Europe, Thailand, Japan, Australia and New Zealand [@transitland_map]. Nevertheless, there are GTFS feeds in other regions, with a more limited geographical scope, not visible at this scale. Some examples are Bogotá (Colombia), Managua (Nicaragua), or Algoa (South Africa). 
+
+::: {layout-ncol=2}
+![Total number of GTFS feeds indexed by Transitland, since 2016 [@transitland_atlas_repo]](charts/transitland_atlas/feed_counts_by_year.png){#fig-gtfs-growth}
+
+![Coverage of GTFS feeds in Transitland Atlas [@transitland_map]](figures/intro/transitland_global_gtfs_map.png){#fig-gtfs-coverage}
+:::
+
+This progressively increasing availability of detailed public transport data has been promoting the diversity and quality of trip planning apps and services, improving the travelling experience for passengers [@goldstein_pioneering_2013], but also feeding a growing body of academic research [@web_of_science_citation_nodate], namely focused on spatial analysis of public transport networks. An analysis that ranges from simple visualization techniques [@prommaharaj_visualizing_2020] to more complex models that aggregate information from multiple agencies and relate them with other dimensions, such as the built infrastructure [@perrine_map_matching_2015; @vuurstaek_gtfs_2020].
+
+A relation that seems obvious, but that is hampered by the lack of standardization of GTFS shapes geometries...
+
+<!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
+
+<!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
 
 
 ![](charts/osm_gtfs/osm_bus_growth.png)
 
-![](figures/intro/transitland_global_gtfs_map.png)
 
-<!-- Add graph of gtfs povision on mobility data -->
+
+
 
 <!-- Explain GTFS structure and OSM bus relation topology -->
 
