@@ -47,6 +47,11 @@ This progressively increasing availability of detailed public transport data has
 
 A relation that seems obvious, but that is hampered by the lack of standardization of GTFS shapes geometries...
 
+<!-- Mention GTFSS isssues-->
+<!-- https://github.com/google/transit/issues?q=is%3Aissue%20state%3Aopen%20shapes -->
+<!-- https://github.com/google/transit/issues/477 -->
+<!-- https://github.com/google/transit/issues/459 -->
+
 <!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
 
 <!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
