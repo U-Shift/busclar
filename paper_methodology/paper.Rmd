@@ -45,12 +45,15 @@ The adoption of this standard by transport agencies has been increasing steadily
 
 This progressively increasing availability of detailed public transport data has been promoting the diversity and quality of trip planning apps and services, improving the travelling experience for passengers [@goldstein_pioneering_2013], but also feeding a growing body of academic research [@web_of_science_citation_nodate], namely focused on spatial analysis of public transport networks. An analysis that ranges from simple visualization techniques [@prommaharaj_visualizing_2020] to more complex models that aggregate information from multiple agencies and relate them with other dimensions, such as the built infrastructure [@perrine_map_matching_2015; @vuurstaek_gtfs_2020].
 
-A relation that seems obvious, but that is hampered by the lack of standardization of GTFS shapes geometries...
+However, the lack of standardization in GTFS shapes geometries still presents some challenges for a proper spatial analysis, as seen in @fig-gtfs-shapes-mess-tcb. In this figure, we can see the OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal. 
 
 <!-- Mention GTFSS isssues-->
 <!-- https://github.com/google/transit/issues?q=is%3Aissue%20state%3Aopen%20shapes -->
 <!-- https://github.com/google/transit/issues/477 -->
 <!-- https://github.com/google/transit/issues/459 -->
+
+![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb}
+
 
 <!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
 

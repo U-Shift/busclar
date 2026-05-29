@@ -58,5 +58,5 @@ p <- ggplot(df_filtered, aes(x = year, y = total_feeds)) +
 
 # Save the plot
 out_path <- file.path(out_dir, "feed_counts_by_year.png")
-ggsave(out_path, plot = p, width = 7, height = 4.5, dpi = 300)
+ggsave(out_path, plot = p, width = 7, height = 4.3, dpi = 300)
 cat("Plot successfully saved to:", out_path, "\n")
