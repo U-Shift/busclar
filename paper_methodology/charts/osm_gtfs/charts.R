@@ -130,15 +130,15 @@ p_combined <- ggplot(df_final, aes(x = date)) +
         )
     ) +
     labs(
-        title = "Growth of Public Transit Routes and GTFS Integration in OpenStreetMap",
-        subtitle = "Comparing total transit relations (bus, train, light_rail, subway, tram, ferry) with GTFS tagging over time",
+        # title = "Growth of Public Transit Routes and GTFS Integration in OpenStreetMap",
+        # subtitle = "Comparing total transit relations (bus, train, light_rail, subway, tram, ferry) with GTFS tagging over time",
         x = "Year"
         # caption = paste("Data source: OpenStreetMap Taginfo API | Date until:", max(df_final$date))
     ) +
     theme_minimal(base_family = "sans") +
     theme(
-        plot.title = element_text(face = "bold", size = 12, margin = margin(b = 8)),
-        plot.subtitle = element_text(size = 9, color = "gray30", margin = margin(b = 12)),
+        #plot.title = element_text(face = "bold", size = 12, margin = margin(b = 8)),
+        #plot.subtitle = element_text(size = 9, color = "gray30", margin = margin(b = 12)),
         legend.position = "bottom",
         legend.title = element_text(face = "bold", size = 9),
         legend.text = element_text(size = 9),

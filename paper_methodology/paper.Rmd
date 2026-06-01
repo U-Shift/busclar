@@ -45,7 +45,11 @@ The adoption of this standard by transport agencies has been increasing steadily
 
 This progressively increasing availability of detailed public transport data has been promoting the diversity and quality of trip planning apps and services, improving the travelling experience for passengers [@goldstein_pioneering_2013], but also feeding a growing body of academic research [@web_of_science_citation_nodate], namely focused on spatial analysis of public transport networks. An analysis that ranges from simple visualization techniques [@prommaharaj_visualizing_2020] to more complex models that aggregate information from multiple agencies and relate them with other dimensions, such as the built infrastructure [@perrine_map_matching_2015; @vuurstaek_gtfs_2020].
 
-However, the lack of standardization in GTFS shapes geometries still presents some challenges for a proper spatial analysis, as seen in @fig-gtfs-shapes-mess-tcb. In this figure, we can see the OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal. 
+<!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
+
+<!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
+
+However, the lack of standardization in GTFS shapes geometries still presents some challenges for a proper spatial analysis. @fig-gtfs-shapes-mess-tcb illustrates an example of this issue for the Transportes Coletivos do Barreiro (Barreiro, Portugal) GTFS feed, where the geometries for different shapes that follow the same path do not overlap among them, neither with the OpenStreetMap (OSM) road network. An issue that has been identified in the GTFS community [@gtfs_shapes_github_discussion], but that remains unresolved.
 
 <!-- Mention GTFSS isssues-->
 <!-- https://github.com/google/transit/issues?q=is%3Aissue%20state%3Aopen%20shapes -->
@@ -54,13 +58,14 @@ However, the lack of standardization in GTFS shapes geometries still presents so
 
 ![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb}
 
+The literature acknowledges this problem and some authors have tryed to address it. @vuurstaek_gtfs_2020 has developed a methodology to map GTFS bus geometries to the OSM network, but limited to bus stops. @perrine_map_matching_2015 has proposed a more complex approach that maps both the bus stops and the routes geometries by projecting GTFS points to the OSM network and performing shortest path algorithms. However, the latter also acknowledges its limitations when "the track points or the underlying map coordinates are biased, (...) possibly causing selection of adjacent roads in central disticts or service roads instead of freeways".
 
-<!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
+To overcome this challenge, we developed GTFShift, an R package that provides an alternative methodology to harmonize GTFS geometries with the OSM network. Instead of complex path-finding algorithms that are prone to errors in dense areas, GTFShift leverages the detailed route geometries that already exist in the OSM database as route relations, a set of OSM stop nodes and road ways that describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate].
 
-<!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
+These 
 
 
-![](charts/osm_gtfs/osm_bus_growth.png)
+![Growth of public transport routes and GTFS integration in OpenStreetMap](charts/osm_gtfs/osm_bus_growth.png){#fig-osm-gtfs-growth}
 
 
 
