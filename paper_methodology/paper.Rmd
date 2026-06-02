@@ -26,10 +26,10 @@ header-includes:
 abstract: |
     ...
     
-keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, R package" # does not work here, define below
+keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, Conflation, R package" # does not work here, define below
 ---
 
-\textit{Keywords:} GTFS, OpenStreetMaps, Transit planning, Network analysis, R package.
+\textit{Keywords:} GTFS, OpenStreetMaps, Transit planning, Network analysis, Conflation, R package.
 
 # Introduction
 
@@ -43,54 +43,124 @@ The adoption of this standard by transport agencies has been increasing steadily
 ![Coverage of GTFS feeds in Transitland Atlas [@transitland_map]](figures/intro/transitland_global_gtfs_map.png){#fig-gtfs-coverage}
 :::
 
-This progressively increasing availability of detailed public transport data has been promoting the diversity and quality of trip planning apps and services, improving the travelling experience for passengers [@goldstein_pioneering_2013], but also feeding a growing body of academic research [@web_of_science_citation_nodate], namely focused on spatial analysis of public transport networks. An analysis that ranges from simple visualization techniques [@prommaharaj_visualizing_2020] to more complex models that aggregate information from multiple agencies and relate them with other dimensions, such as the built infrastructure [@perrine_map_matching_2015; @vuurstaek_gtfs_2020].
+This progressively increasing availability of detailed public transport data has been promoting the diversity and quality of trip planning apps and services, improving the travelling experience for passengers [@goldstein_pioneering_2013], but also feeding a growing body of academic research [@web_of_science_citation_nodate], namely focused on spatial analysis of public transport networks. An analysis that ranges from simple visualization techniques to more complex models that aggregate information from multiple agencies and relate them with other dimensions, such as the built infrastructure. 
 
 <!--A quick search in Web of Science database for "GTFS" related papers shows a clear increasing trend in publications and citations in the past years, reaching 22 papers in 2025, mostly from Transportation (58.79%), Computer Science (39.87%) and Geography (25.00%) research areas [@web_of_science_citation_nodate]^[Search for authoer keywords, keyword plus, topic or title containing "GTFS" word].-->
 
 <!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
 
-However, the lack of standardization in GTFS shapes geometries still presents some challenges for a proper spatial analysis. @fig-gtfs-shapes-mess-tcb illustrates an example of this issue for the Transportes Coletivos do Barreiro (Barreiro, Portugal) GTFS feed, where the geometries for different shapes that follow the same path do not overlap among them, neither with the OpenStreetMap (OSM) road network. An issue that has been identified in the GTFS community [@gtfs_shapes_github_discussion], but that remains unresolved.
+However, the lack of standardization in GTFS shapes geometries still presents some challenges for a proper spatial analysis. @fig-gtfs-shapes-mess-tcb illustrates an example of this issue for the Transportes Coletivos do Barreiro (Barreiro, Portugal) GTFS feed, where the geometries for different shapes that follow the same path do not overlap with each other, neither with the OpenStreetMap (OSM) road network. An issue that has been identified in the GTFS community [@gtfs_shapes_github_discussion] and in the literature [@vuurstaek_gtfs_2020], but that remains unresolved.
 
 <!-- Mention GTFSS isssues-->
 <!-- https://github.com/google/transit/issues?q=is%3Aissue%20state%3Aopen%20shapes -->
 <!-- https://github.com/google/transit/issues/477 -->
 <!-- https://github.com/google/transit/issues/459 -->
 
-![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb}
+![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb width="75%"}
 
-The literature acknowledges this problem and some authors have tryed to address it. @vuurstaek_gtfs_2020 has developed a methodology to map GTFS bus geometries to the OSM network, but limited to bus stops. @perrine_map_matching_2015 has proposed a more complex approach that maps both the bus stops and the routes geometries by projecting GTFS points to the OSM network and performing shortest path algorithms. However, the latter also acknowledges its limitations when "the track points or the underlying map coordinates are biased, (...) possibly causing selection of adjacent roads in central disticts or service roads instead of freeways".
+As an alternative, OSM provides its own public transport geometries through route relations. Made up of a set of OSM stop nodes and road ways, route relations describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate]. Their availability has been growing, with more than 300,000 public transport route relations documented in OSM until May 2026, as shown in @fig-osm-gtfs-growth. Nevertheless and despite the OSM including attributes to associate relations to the GTFS feed, such as `gtfs:shape_id` and `gtfs:route_id`[@openstreetmap_gtfs_nodate], their usage is still minimal, accounting for only 4.52% and 11.46% of the route relations.
 
-To overcome this challenge, we developed GTFShift, an R package that provides an alternative methodology to harmonize GTFS geometries with the OSM network. Instead of complex path-finding algorithms that are prone to errors in dense areas, GTFShift leverages the detailed route geometries that already exist in the OSM database as route relations, a set of OSM stop nodes and road ways that describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate].
+![Growth of public transport routes and GTFS integration in OpenStreetMap](charts/osm_gtfs/osm_bus_growth.png){#fig-osm-gtfs-growth width="75%"}
 
-These 
+Therefore, associating GTFS and OSM data requires conflation. This process, also known as map matching, is defined as the combination of "geographic information from overlapping sources so as to retain accurate data, minimize redundancy, and reconcile data conflicts" [@longley_geographic_2001]. Howewver, this is not a trivial process. When the input data comes from different sources, conflation may lead to several challenges, such as the loss of data quality, topological inconsistencies, or the mismatch of geometries [@vuurstaek_gtfs_2020].
 
-
-![Growth of public transport routes and GTFS integration in OpenStreetMap](charts/osm_gtfs/osm_bus_growth.png){#fig-osm-gtfs-growth}
-
-
-
-
-
-<!-- Explain GTFS structure and OSM bus relation topology -->
-
-<!-- Show example of geometry mismatch between shapes of same operator: Carris Metropolitana and two different ones -->
+GTFShift was developed to address these challenges. It is an R package that provides an alternative methodology to harmonize GTFS shapes with the OSM network. Instead of complex path-finding algorithms that are prone to errors in dense areas, it leverages the detailed route geometries that already exist in the OSM database as route relations, overcoming the missing attributes to associate them with the GTFS feed through a geometrical match algorithm. It encompasses the full pipeline to read, filter, manipulate, analyse and match shapes with OSM geometries, enabling the conversion of any GTFS feed to the OSM network. This paper presents GTFShift methodology, through an example of application to the Lisbon Metropolitan Area, in Portugal.
 
 # Related work
 
 ## Using GTFS for spatial analysis
 
-<!-- Mention case specific analysis, mostly graph oriented -->
+GTFS has been used to perform a diversity of spatial analysis. Some authors used GTFS data to visualize and analyse operational characteristics such as speed, flow, density, headways or even stop spacing [@prommaharaj_visualizing_2020; @devunuri_gtfs_2024; @cirreltpolytechnique_montreal_innovative_2016]. Others have related it with sociodemographic data to assess access to opportunities [@karner_assessing_2018; @goliszek_potential_2020; @ivan_spatio_temporal_2017; @falchetta_comparing_2021; @kim_more_2019; @kujala_travel_2018]. Then, there are also authors that extended the previous analyses with real-time information, either to compute operational performance metrics such as on-time performance, schedule adherence, or service reliability [@godfrid_analyzing_2022; @aemmer_measurement_2022], but also to analyse the effective accessibility provided the travel time innaccuracy and variability [@braga_evaluating_2023; @liu_realizable_2023]. However, all of these analysis are restricted to the GTFS feed context, considering either their geometries or generating a graph of stops and connections, without explicitly taking into consideration the actual road network.
+
 
 ## Associating GTFS and OSM data 
 
-<!-- Mention papers that associate GTFS and OSM data and their limitations -->
+Some authors have tryed to address the OSM-GTFS association problem. @vuurstaek_gtfs_2020 has developed a methodology to map GTFS bus geometries to the OSM network, but limited to bus stops. @perrine_map_matching_2015 has proposed a more complex approach that maps both the bus stops and the routes geometries by projecting GTFS points to the OSM network and performing shortest path algorithms. However, the authors acknowledge its limitations when "the track points or the underlying map coordinates are biased, (...) possibly causing selection of adjacent roads in central disticts or service roads instead of freeways".
+
+Outside of the academic sphere, there are several tools that connect GTFS and OSM data. OSM wiki [@openstreetmap_gtfs_nodate] lists some of these tools, grouping them in two main categories:
+
+- **OSM \rightarrow GTFS**: This category gathers tools mainly oriented to generate GTFS feeds from OSM data, either computing approximate stop times from the OSM attributes on service frequency [@noauthor_jungle_busprism_2025] or requiring the manual provision of more complete schedules [@grote_groteosm2gtfs_2026; @noauthor_hiposfero2g_2026; @gamma_gammapopolamosm2gtfs_2025];
+
+- **GTFS \rightarrow OSM**: Focused on comparing GTFS and OSM data to identify mismatches [@kokanovic_stalker314314gtfs_osm_validator_2024; @horner_tjhornergtfs_janitor_2026] and providing bus route geometries to the OSM network by using different routing algorithms [@hubsch_whubschgtfstoosm_2026; @gabriele_gabboxlgtfs_osm_import_2026].
+
+These tools, specially those in the second category, provide useful methodologies for GTFS-OSM association. However, the ones that generate geometries rely on routing algorithms, ignoring the database of already existing route relations in OSM.
 
 # Methodology
 
+GTFShift R package provides a pipeline for the complete workflow of GTFS-OSM conflation. The tutorial, documented at [https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html](https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html), follows a workflow illustrated in @fig-gtfsshift-workflow, encompassing the following steps:
+
+1. `GTFShift::load_feed()`: Read GTFS feed, fixing integrity errors;
+2. `GTFShift::osm_shapes_match_routes()`: Match GTFS shapes with OSM relations, based on geometrical correspondence;
+3. `GTFShift::create_shapes_from_sf()`: Build shapes table from OSM geomerties.
+
+![Workflow of GTFShift R package](figures/methodology/gtfsshift_workflow.png){#fig-gtfsshift-workflow width="50%"}
+
+## Data loading and integrity fixes
+
+The first step of the workflow is to load the GTFS feed using the `GTFShift::load_feed()` function. This function orchestrates several methods from GTFShift and other packages to read the feed and fix integrity errors. It starts by loading the feed using `tidytransit::load_feed()` [@r_tidytransit]. Then, it verifies the feed's integrity and corrects any errors found, such as empty `stop_times`, that would otherwise lead to errors in the subsequent steps. 
+
+If the `shapes` table is missing or empty, it is generated using `GTFShift::create_shapes_from_stops()`. This function builds the `shapes` by grouping trips with the same stop sequence and assigning them the same `shape_id`. The resulting shapes are a simplified version of the original ones, as they do not take into account the actual path followed by the vehicles, but only the stop sequence. However, they are a good enough proxy to enable the geometrical match with OSM relations in the next step.
+
+Finally, the method also includes an optional flag to construct the `transfers` table, which calls `gtfsrouter::gtfs_transfer_table()` [@r_gtfsrouter] and enables the specification of stops where transfers are fasible, to optimize routing analysis that might be performed over the generated GTFS feed.
+
+## Match GTFS shapes with OSM relations
+
+The `GTFShift::osm_shapes_match_routes()` function enables the matching of GTFS shapes with OSM relations based on geometrical correspondence. For that, it requires a GTFS feed (loaded in the previous step) and a query that specifies the OSM public transport network over which the shapes will be matched (a filter for OSM route relations using parameters such as [`network`](https://wiki.openstreetmap.org/wiki/Key:network) or [`operator`](https://wiki.openstreetmap.org/wiki/Key:operator)) defined using `osmdata::opq()` [@r_osmdata].
+
+Internally, after fetching the OSM public transport network data that matches the query (a set of OSM route relations), the algorithm identifies the subset of OSM routes relations that match each GTFS route (based on the route identifier). Then, for each shape, the geometrical match is performed considering the OSM route $j$ that minimizes the closeness metric $C(i, j)$ for GTFS shape $i$:
+
+$$C(i, j) = d(\text{init}_{GTFS, i}, \text{init}_{OSM, j}) + d(\text{fin}_{GTFS, i}, \text{fin}_{OSM, j}) + |L_{GTFS, i} - L_{OSM, j}| + \frac{L_{GTFS, i}}{N_{stops, i}} \cdot |N_{stops, i} - N_{stops, j}|$$
+
+Where:
+
+-  $d(\text{init}_{GTFS, i}, \text{init}_{OSM, j})$ is the distance between the starting points/stops of the GTFS shape $i$ and the OSM route $j$.
+-  $d(\text{fin}_{GTFS, i}, \text{fin}_{OSM, j})$ is the distance between the ending points/stops of the GTFS shape $i$ and the OSM route $j$.
+-  $L_{GTFS, i}$ and $L_{OSM, j}$ are the total lengths of the GTFS shape $i$ and the OSM route $j$, respectively.
+-  $N_{stops, i}$ and $N_{stops, j}$ are the number of stops on the GTFS shape $i$ and the OSM route $j$, respectively. The term $\frac{L_{GTFS, i}}{N_{stops, i}}$ represents the average distance between stops on the GTFS shape, serving as a scale factor for the difference in the number of stops.
+
+During the algorithm execution, logs are prompted to the console to indicate any potential issues, such as GTFS routes without any OSM relation match or OSM relations with entry/exit stops that do not respect the GTFS order (which might indicate OSM data integrity issues).
+
+The result is a `data.frame` that associates each GTFS `shape_id` with an OSM route relation `osm_id` and its respective geometry. Additionally, it includes the heuristic values for the closeness metric, which can be used to evaluate the quality of the match (columns `distance_diff`, `points_diff` and `stops_diff`).
+
+
+## Build shapes table from OSM geometries
+
+Despite having the GTFS-OSM association performed, it is still necessary to convert the OSM geometry into the GTFS `shapes` table format. `GTFShift::create_shapes_from_sf()` implements this functionality, supporting either LINESTRING or MULTILINESTRING geometries (most common as bus route relations are a collection of OSM ways). 
+
+Internally, it uses `GTFShift::multiline_to_sorted_linestring()` to standardize all geometries into a single LINESTRING. The sorting criteria is based on the following procedure:
+
+Let $\mathcal{L} = \{L_1, \dots, L_n\}$ be the set of individual LINESTRING components.
+Each component $L_i$ is characterized by its start point $S(L_i)$ and end point $E(L_i)$.
+
+**1. Initialization:**
+Let $P_{\text{start}}$ be the starting point, corresponding to the location of the first GTFS stop for that route relation. The first segment $L^{(1)}$ in the sorted sequence is selected as:
+$$L^{(1)} = \operatorname{argmin}_{L \in \mathcal{L}} d(P_{\text{start}}, L)$$
+where $d(\cdot)$ is the Euclidean distance. If $d(P_{\text{start}}, S(L^{(1)})) > d(P_{\text{start}}, E(L^{(1)}))$, the component's geometry is reversed so that it starts near $P_{\text{start}}$.
+
+The set of remaining segments is initialized as $\mathcal{R}^{(1)} = \mathcal{L} \setminus \{L^{(1)}\}$.
+
+**2. Iterative Step:**
+For each step $k \ge 1$, let $L^{(k)}$ be the current segment and $E^{(k)} = E(L^{(k)})$ its endpoint.
+The algorithm searches the remaining components $\mathcal{R}^{(k)}$ for the closest segment:
+$$L_{\text{start}} = \operatorname{argmin}_{L \in \mathcal{R}^{(k)}} d(E^{(k)}, S(L))$$
+$$L_{\text{end}} = \operatorname{argmin}_{L \in \mathcal{R}^{(k)}} d(E^{(k)}, E(L))$$
+Let $d_{\text{start}} = d(E^{(k)}, S(L_{\text{start}}))$ and $d_{\text{end}} = d(E^{(k)}, E(L_{\text{end}}))$.
+The candidate segment $L^*$ is:
+$$L^* = \begin{cases} L_{\text{start}} & \text{if } d_{\text{start}} < d_{\text{end}} \\ L_{\text{end}} & \text{otherwise} \end{cases}$$
+
+**3. Verification & Assembly:**
+If the distance between the current segment and the candidate exceeds their combined length:
+$$d(L^{(k)}, L^*) > \text{len}(L^{(k)}) + \text{len}(L^*)$$
+then $L^*$ is discarded, $\mathcal{R}^{(k+1)} = \mathcal{R}^{(k)} \setminus \{L^*\}$ and we find the next candidate.
+Otherwise, $L^{(k+1)} = L^*$ (reversed if $L^* = L_{\text{end}}$) and $\mathcal{R}^{(k+1)} = \mathcal{R}^{(k)} \setminus \{L^*\}$. This prevents disconnected segments from being included in the final geometry.
+
+The process repeats until no segments remain, and the components are merged into a single `LINESTRING`.
+
+Once the geometry is standardized into sorted linestrings, it is convert into the GTFS `shapes` table using `gtfstools::convert_sf_to_shapes()` [@r_gtfstools]. 
+
+
 # Application
 
-<!-- Show frequency map, number of lanes, bus lanes --> 
 
-<!-- Elaborate on aggregated analysis unlocking new planning instruments, such as bus lane prioritization, preparing next paper -->
 
 # Conclusion
