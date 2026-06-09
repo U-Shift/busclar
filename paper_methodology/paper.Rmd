@@ -24,7 +24,7 @@ header-includes:
   - \usepackage{apacite}
     
 abstract: |
-    ...
+  The General Transit Feed Specification (GTFS) is a widely adopted open data standard for public transport data, but its lack of standardization in shapes geometries presents challenges for spatial analysis. This paper introduces GTFShift, an R package that harmonizes GTFS shapes with OpenStreetMap (OSM) road network geometries. The methodology involves loading GTFS feeds, matching GTFS shapes with OSM route relations based on geometrical correspondence, and converting OSM geometries into GTFS shapes format. The application of this methodology to the bus services in the Lisbon Metropolitan Area demonstrates a high match rate between GTFS shapes and OSM routes, improving the quality of GTFS geometries and enabling more accurate spatial analysis of the public transport network. The release of GTFShift as an open-source R package provides a tool for researchers and practitioners to perform GTFS-OSM conflation globally, supporting transport planning and policy making.
     
 keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, Conflation, R package" # does not work here, define below
 ---
