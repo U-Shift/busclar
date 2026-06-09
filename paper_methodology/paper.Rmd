@@ -56,11 +56,11 @@ However, the lack of standardization in GTFS shapes geometries still presents so
 <!-- https://github.com/google/transit/issues/477 -->
 <!-- https://github.com/google/transit/issues/459 -->
 
-![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb width="75%"}
+![OSM road network overlapped with GTFS shapes geometries for TCB, Barreiro, Portugal](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb }
 
 As an alternative, OSM provides its own public transport geometries through route relations. Made up of a set of OSM stop nodes and road ways, route relations describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate]. Their availability has been growing, with more than 300,000 public transport route relations documented in OSM until May 2026, as shown in @fig-osm-gtfs-growth. Nevertheless and despite the OSM including attributes to associate relations to the GTFS feed, such as `gtfs:shape_id` and `gtfs:route_id`[@openstreetmap_gtfs_nodate], their usage is still minimal, accounting for only 4.52% and 11.46% of the route relations.
 
-![Growth of public transport routes and GTFS integration in OpenStreetMap](charts/osm_gtfs/osm_bus_growth.png){#fig-osm-gtfs-growth width="75%"}
+![Growth of public transport routes and GTFS integration in OpenStreetMap](charts/osm_gtfs/osm_bus_growth.png){#fig-osm-gtfs-growth }
 
 Therefore, associating GTFS and OSM data requires conflation. This process, also known as map matching, is defined as the combination of "geographic information from overlapping sources so as to retain accurate data, minimize redundancy, and reconcile data conflicts" [@longley_geographic_2001]. Howewver, this is not a trivial process. When the input data comes from different sources, conflation may lead to several challenges, such as the loss of data quality, topological inconsistencies, or the mismatch of geometries [@vuurstaek_gtfs_2020].
 
@@ -87,13 +87,12 @@ These tools, specially those in the second category, provide useful methodologie
 
 # Methodology
 
-GTFShift R package provides a pipeline for the complete workflow of GTFS-OSM conflation. The tutorial, documented at [https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html](https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html), follows a workflow illustrated in @fig-gtfsshift-workflow, encompassing the following steps:
+GTFShift R package provides a pipeline for the complete workflow of GTFS-OSM conflation. The tutorial, documented at [https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html](https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html), follows a workflow encompassing the following steps:
 
 1. `GTFShift::load_feed()`: Read GTFS feed, fixing integrity errors;
 2. `GTFShift::osm_shapes_match_routes()`: Match GTFS shapes with OSM relations, based on geometrical correspondence;
 3. `GTFShift::create_shapes_from_sf()`: Build shapes table from OSM geomerties.
 
-![Workflow of GTFShift R package](figures/methodology/gtfsshift_workflow.png){#fig-gtfsshift-workflow width="50%"}
 
 ## Data loading and integrity fixes
 
@@ -139,6 +138,8 @@ where $d(\cdot)$ is the Euclidean distance. If $d(P_{\text{start}}, S(L^{(1)})) 
 
 The set of remaining segments is initialized as $\mathcal{R}^{(1)} = \mathcal{L} \setminus \{L^{(1)}\}$.
 
+![Initialization for TCB OSM relation 18957440 (shape_id 1-VA-TERM). Starting point in gray, first segment in red.](figures/methodology/multiline_to_sorted_linestring_1.png)
+
 **2. Iterative Step:**
 For each step $k \ge 1$, let $L^{(k)}$ be the current segment and $E^{(k)} = E(L^{(k)})$ its endpoint.
 The algorithm searches the remaining components $\mathcal{R}^{(k)}$ for the closest segment:
@@ -148,13 +149,17 @@ Let $d_{\text{start}} = d(E^{(k)}, S(L_{\text{start}}))$ and $d_{\text{end}} = d
 The candidate segment $L^*$ is:
 $$L^* = \begin{cases} L_{\text{start}} & \text{if } d_{\text{start}} < d_{\text{end}} \\ L_{\text{end}} & \text{otherwise} \end{cases}$$
 
+![First iteration for TCB OSM relation 18957440 (shape_id 1-VA-TERM). Starting point in gray, current segment endpoint in orange.](figures/methodology/multiline_to_sorted_linestring_2.png)
+
 **3. Verification & Assembly:**
 If the distance between the current segment and the candidate exceeds their combined length:
 $$d(L^{(k)}, L^*) > \text{len}(L^{(k)}) + \text{len}(L^*)$$
 then $L^*$ is discarded, $\mathcal{R}^{(k+1)} = \mathcal{R}^{(k)} \setminus \{L^*\}$ and we find the next candidate.
 Otherwise, $L^{(k+1)} = L^*$ (reversed if $L^* = L_{\text{end}}$) and $\mathcal{R}^{(k+1)} = \mathcal{R}^{(k)} \setminus \{L^*\}$. This prevents disconnected segments from being included in the final geometry.
 
-The process repeats until no segments remain, and the components are merged into a single `LINESTRING`.
+The process repeats until no segments remain, and the components are merged into a single `LINESTRING`. 
+
+![Final iteration for TCB OSM relation 18957440 (shape_id 1-VA-TERM). Segments before the starting points (in gray) are discarded, as they do not meet the distance criteria, preventing geometrical inconsistencies.](figures/methodology/multiline_to_sorted_linestring_3.png)
 
 Once the geometry is standardized into sorted linestrings, it is convert into the GTFS `shapes` table using `gtfstools::convert_sf_to_shapes()` [@r_gtfstools]. 
 
@@ -234,17 +239,50 @@ To discard outliers and ensure the quality of the matched routes, a filtering pr
 
 > The code script executed to generate the outputs presented in this section is available at [https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R)
 
-<!-- TODO! Display example of TCB shape 1-VA-TERM for steps 1,2,3 and final result.  -->
+The geometries of the OSM route relations matched in the previous step were converted into GTFS `shapes` table format using `GTFShift::create_shapes_from_sf()`. @fig-shapes-aml presents the original GTFS shapes and the OSM geometries for each operator. Visually, the greatest improvements are observed for Carris, with some original shapes (@fig-shapes-lisboa-original) clearly outside the road network being replaced by OSM geometries (@fig-shapes-lisboa-osm) that follow its topology. On the other hand, for MobiCascais, a missing part of the network is evident in the west of the municipality (@fig-shapes-mobicascais-osm), corresponding to a GTFS shape that did not have a proper match with the OSM data. 
+
+
+:::{#fig-shapes-aml layout="[[50,50], [50,50], [50,50], [50,50]]"}
+
+![Carris original shapes](figures/results/shapes_lisboa_original.png){#fig-shapes-lisboa-original}
+
+![Carris OSM shapes](figures/results/shapes_lisboa_osm.png){#fig-shapes-lisboa-osm}
+
+![TCB original shapes](figures/results/shapes_tcb_original.png){#fig-shapes-tcb-original}
+
+![TCB OSM shapes](figures/results/shapes_tcb_osm.png){#fig-shapes-tcb-osm}
+
+![MobiCascais original shapes](figures/results/shapes_cascais_original.png){#fig-shapes-mobicascais-original}
+
+![MobiCascais OSM shapes](figures/results/shapes_cascais_osm.png){#fig-shapes-mobicascais-osm}
+
+![Carris Metropolitana original shapes](figures/results/shapes_cm_original.png){#fig-shapes-tcb-original}
+
+![Carris Metropolitana OSM shapes](figures/results/shapes_cm_osm.png){#fig-shapes-tcb-osm}
+
+GTFS shapes for AML operators before and after conversion to OSM geometries
+:::
 
 ## Results
 
-<!-- TODO! Map with all networks -->
+The application of the GTFS-OSM conflation process to the bus services in the Lisbon Metropolitan Area enabled the harmonization of GTFS shapes geometries with the OSM road network, improving the quality of the GTFS geometries.
+
+@fig-gtfs-shapes-mess-tcb-fixed illustrates the improvement achieved at Barreiro municipality, where the GTFS shapes for TCB that did not overlap with each other nor with the OSM network (@fig-gtfs-shapes-mess-tcb) were replaced by OSM geometries that follow the road network and overlap with each other. Actually, they also overlap with Carris Metropolitana, which is not visible in the figure because they have the exact same (OSM) geometries.
+
+![GTFS shapes geometries harmonized over OSM network for TCB and Carris Metropolitana, Barreiro, Portugal](figures/results/gtfs_shapes_mess_tcb_fixed.png){#fig-gtfs-shapes-mess-tcb-fixed }
+
+The aggregated view of the GTFS shapes for all operators in the LMA, presented in @fig-shapes-aml-osm, illustrates the potential of the GTFS-OSM conflation, generating a cohesive and geometrically consistent representation of the bus network in the LMA, where the shapes for different operators overlap with each other and with the OSM road network, enabling a more accurate spatial analysis of the public transport network, within and between different operators. 
+
+![AML unified GTFS OSM shapes](figures/results/shapes_aml_osm.png){#fig-shapes-aml-osm}
+
 
 
 # Conclusion
 
-<!-- Disclaim OSM controbutions -->
+The GTFS-OSM conflation process described in this paper enabled the harmonization of GTFS shapes geometries with the OSM road network for the bus services in the Lisbon Metropolitan Area, improving the quality of the GTFS geometries and enabling a more accurate spatial analysis of the public transport network, within and between different operators.
 
-<!-- Mention future work: bus lane prioritization -->
+The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence for more than 95% of all trips at peak hour, which enables a realistic analysis of the public transport network. Despite not reaching a 100% match, the unlatched association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure. This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making. Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
+It is also worth noting that the outcomes of this paper outreach the methodology proposed. The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM road network in different contexts and for different purposes. Additionally, the encapsulation of each step of the workflow in its own function simplifies the usage of specific steps of the process and its application to address other problems. For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required.
 
+Finally, the development of this work has also contributed to the improvement of the OSM database, with more than 6.000 bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [https://www.openstreetmap.org/user/Gonçalo Matos/history](https://www.openstreetmap.org/user/Gon%C3%A7alo%20Matos/history)].
