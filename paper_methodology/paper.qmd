@@ -122,16 +122,34 @@ Finally, the method also includes an optional flag to construct the `transfers` 
 
 The `GTFShift::osm_shapes_match_routes()` function enables the matching of GTFS shapes with OSM relations based on geometrical correspondence. For that, it requires a GTFS feed (loaded in the previous step) and a query that specifies the OSM public transport network over which the shapes will be matched (a filter for OSM route relations using parameters such as [`network`](https://wiki.openstreetmap.org/wiki/Key:network) or [`operator`](https://wiki.openstreetmap.org/wiki/Key:operator)) defined using `osmdata::opq()` [@r_osmdata].
 
-Internally, after fetching the OSM public transport network data that matches the query (a set of OSM route relations), the algorithm identifies the subset of OSM routes relations that match each GTFS route (based on the route identifier). Then, for each shape, the geometrical match is performed considering the OSM route $j$ that minimizes the closeness metric $C(i, j)$ for GTFS shape $i$:
+Internally, after fetching the OSM public transport network data that matches the query (a set of OSM route relations), the algorithm identifies the subset of OSM routes relations that match each GTFS route (based on the route identifier). Then, for each shape, the geometrical match is performed considering the OSM route $j$ that minimizes the closeness metric $C(i, j)$ for GTFS shape $i$. The matching algorithm is formulated as follows:
+
+**1. Filtering and Base Data Selection:** Let $R$ be a GTFS route identifier and $\mathcal{O}_R = \{O_1, \dots, O_m\}$ be the set of candidate OSM route relations matching $R$. The set of GTFS shapes associated with route $R$ is also retrieved, denoted as $\mathcal{S}_R = \{S_1, \dots, S_n\}$.
+
+**2. Feature Extraction:** For each GTFS shape $S_i \in \mathcal{S}_R$:
+
+* Extract the start and end coordinates of its trips' first and last stops: $\text{init}_{GTFS, i}$ and $\text{fin}_{GTFS, i}$.
+* Compute the shape's total length $L_{GTFS, i}$ and the number of stop times $N_{stops, i}$.
+
+For each candidate OSM route relation $O_j \in \mathcal{O}_R$:
+
+* Extract the coordinates of the first and last stops: $\text{init}_{OSM, j}$ and $\text{fin}_{OSM, j}$.
+* Compute the relation's geometry length $L_{OSM, j}$ and the number of stop nodes $N_{stops, j}$.
+
+**3. Closeness Metric Evaluation:** For each GTFS shape $S_i$, the closeness metric $C(i, j)$ is calculated for all candidate OSM routes $O_j \in \mathcal{O}_R$:
 
 $$C(i, j) = d(\text{init}_{GTFS, i}, \text{init}_{OSM, j}) + d(\text{fin}_{GTFS, i}, \text{fin}_{OSM, j}) + |L_{GTFS, i} - L_{OSM, j}| + \frac{L_{GTFS, i}}{N_{stops, i}} \cdot |N_{stops, i} - N_{stops, j}|$$
 
-Where:
+where:
 
--  $d(\text{init}_{GTFS, i}, \text{init}_{OSM, j})$ is the distance between the starting points/stops of the GTFS shape $i$ and the OSM route $j$.
--  $d(\text{fin}_{GTFS, i}, \text{fin}_{OSM, j})$ is the distance between the ending points/stops of the GTFS shape $i$ and the OSM route $j$.
--  $L_{GTFS, i}$ and $L_{OSM, j}$ are the total lengths of the GTFS shape $i$ and the OSM route $j$, respectively.
--  $N_{stops, i}$ and $N_{stops, j}$ are the number of stops on the GTFS shape $i$ and the OSM route $j$, respectively. The term $\frac{L_{GTFS, i}}{N_{stops, i}}$ represents the average distance between stops on the GTFS shape, serving as a scale factor for the difference in the number of stops.
+* $d(\cdot)$ is the Euclidean distance.
+* The term $\frac{L_{GTFS, i}}{N_{stops, i}}$ represents the average distance between stops on the GTFS shape, serving as a scale factor for the difference in the number of stops.
+
+Shape $S_i$ is associated with the OSM route $O_{j^*}$ that minimizes the closeness metric:
+
+$$j^* = \operatorname{argmin}_{j} C(i, j)$$
+
+**4. Conflict Resolution:** If multiple GTFS shapes are associated with the same OSM route $O_j$, only the shape $S_i$ that minimizes the closeness metric is retained. The other conflicting shapes are ignored and a warning is triggered.
 
 During the algorithm execution, logs are prompted to the console to indicate any potential issues, such as GTFS routes without any OSM relation match or OSM relations with entry/exit stops that do not respect the GTFS order (which might indicate OSM data integrity issues).
 
