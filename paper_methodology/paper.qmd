@@ -1,35 +1,53 @@
 ---
 title: "Harmonizing GTFS geometries for transit network analysis using open data with GTFShift R package"
 
-author: "Rosa Félix, Gonçalo Matos, Filipe Moura"
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
+
+author:
+  - name: Gonçalo F. Matos
+    email: goncaloafmatos@tecnico.ulisboa.pt
+    affiliations: 
+        - id: ist
+          name: CERIS
+          department: Instituto Superior Técnico - University of Lisbon
+          address: Av Rovisco Pais 1
+          postal-code: 1049-001, Lisboa, Portugal
+    attributes:
+        corresponding: true      
+  - name: Rosa Félix
+    email: rosamfelix@tecnico.ulisboa.pt
+    affiliations: 
+        - ref: ist
+  - name: Filipe Moura
+    email: fmoura@tecnico.ulisboa.pt
+    affiliations: 
+        - ref: ist
+
 bibliography: bibliography.bib
-biblio-style: apacite
-output: 
-  bookdown::pdf_document2:
-    keep_tex: true
-    toc: false
-    citation_package: natbib
-    latex_engine: xelatex
-    extra_dependencies: "subfig"
 format:
   html: 
     lightbox: true # abrir imagens popup
-urlcolor: blue
-citecolor: blue
-linkcolor: blue
-indent: true
-header-includes:
-  - \usepackage[figurename=Fig.,labelfont=bf,labelsep=period]{caption}
-  - \usepackage{apacite}
+  pdf: default
+  elsevier-pdf:
+    keep_tex: true
+    journal:
+      name: Computers, Environment and Urban Systems
+      model: 3p
+      layout: onecolumn
+      fomatting: review
+      cite-style: authoryear
     
 abstract: |
   The General Transit Feed Specification (GTFS) is a widely adopted open data standard for public transport data, but its lack of standardization in shapes geometries presents challenges for spatial analysis. This paper introduces GTFShift, an R package that harmonizes GTFS shapes with OpenStreetMap (OSM) road network geometries. The methodology involves loading GTFS feeds, matching GTFS shapes with OSM route relations based on geometrical correspondence, and converting OSM geometries into GTFS shapes format. The application of this methodology to the bus services in the Lisbon Metropolitan Area demonstrates a high match rate between GTFS shapes and OSM routes, improving the quality of GTFS geometries and enabling more accurate spatial analysis of the public transport network. The release of GTFShift as an open-source R package provides a tool for researchers and practitioners to perform GTFS-OSM conflation globally, supporting transport planning and policy making.
     
-keywords: "GTFS, OpenStreetMaps, Transit planning, Network analysis, Conflation, R package" # does not work here, define below
+keywords: 
+  - GTFS
+  - OpenStreetMaps
+  - Transit planning
+  - Network analysis
+  - Conflation
+  - R package
 ---
-
-\textit{Keywords:} GTFS, OpenStreetMaps, Transit planning, Network analysis, Conflation, R package.
 
 # Introduction
 
