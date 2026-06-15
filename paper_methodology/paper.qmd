@@ -25,17 +25,18 @@ author:
 
 bibliography: bibliography.bib
 format:
-  html: 
-    lightbox: true # abrir imagens popup
+  # html: 
+  #   lightbox: true # abrir imagens popup
   pdf: default
   elsevier-pdf:
     keep_tex: true
     journal:
-      name: Computers, Environment and Urban Systems
+      name: "Computers, Environment and Urban Systems"
       model: 3p
       layout: onecolumn
-      fomatting: review
+      fomatting: review #doubleblind
       cite-style: authoryear
+      csl: https://www.zotero.org/styles/computers-environment-and-urban-systems
     
 abstract: |
   The General Transit Feed Specification (GTFS) is a widely adopted open data standard for public transport data, but its lack of standardization in shapes presents challenges for spatial analysis. This paper introduces GTFShift, an R package that harmonizes GTFS shapes with OpenStreetMap (OSM) road network geometries. The methodology involves loading GTFS feeds, matching GTFS shapes with OSM route relations based on geometrical correspondence, and converting OSM geometries into GTFS shapes format. The application of this methodology to the bus services in the Lisbon Metropolitan Area demonstrates a high match rate between GTFS shapes and OSM routes, improving the quality of GTFS geometries and enabling more accurate spatial analysis of the public transport network. The release of GTFShift as an open-source R package provides a tool for researchers and practitioners to perform GTFS-OSM conflation globally, supporting transport planning and policy making.
@@ -86,7 +87,7 @@ GTFShift was developed to address these challenges. It is an R package that prov
 
 ## Using GTFS for spatial analysis
 
-GTFS has been used to perform a diversity of spatial analysis. Some authors used GTFS data to visualize and analyse operational characteristics such as speed, flow, density, headways or even stop spacing [@prommaharaj_visualizing_2020; @devunuri_gtfs_2024; @cirreltpolytechnique_montreal_innovative_2016]. Others have related it with sociodemographic data to assess access to opportunities [@karner_assessing_2018; @goliszek_potential_2020; @ivan_spatio_temporal_2017; @falchetta_comparing_2021; @kim_more_2019; @kujala_travel_2018]. Then, there are also authors that extended the previous analyses with real-time information, either to compute operational performance metrics such as on-time performance, schedule adherence, or service reliability [@godfrid_analyzing_2022; @aemmer_measurement_2022], but also to analyse the effective accessibility provided the travel time innaccuracy and variability [@braga_evaluating_2023; @liu_realizable_2023]. However, all of these analysis are restricted to the GTFS feed context, considering either their geometries or generating a graph of stops and connections, without explicitly taking into consideration the actual road network.
+GTFS has been used to perform a diversity of spatial analysis. Some authors used GTFS data to visualize and analyse operational characteristics such as speed, flow, density, headways or even stop spacing [@prommaharaj_visualizing_2020; @devunuri_gtfs_2024; @cirreltpolytechnique_montreal_innovative_2016]. Others have related it with sociodemographic data to assess access to opportunities [@karner_assessing_2018; @goliszek_potential_2020; @ivan_spatio_temporal_2017; @falchetta_comparing_2021; @kim_more_2019; @kujala_travel_2018]. Then, there are also authors that extended the previous analyses with real-time information, either to compute operational performance metrics such as on-time performance, schedule adherence, or service reliability [@godfrid_analyzing_2022; @aemmer_measurement_2022], but also to analyse the effective accessibility provided the travel time innaccuracy and variability [@braga_evaluating_2023; @liu_realizable_2023]. However, all of these analysis are restricted to the GTFS feed context, considering either their geometries or generating a graph of stops and connections, without explicitly taking into consideration the actual road network - relevant for _bus_ mode.
 
 
 ## Associating GTFS and OSM data 
@@ -103,7 +104,7 @@ These tools, specially those in the second category, provide useful methodologie
 
 # Methodology
 
-GTFShift R package provides a pipeline for the complete workflow of GTFS-OSM conflation. The tutorial, documented at [https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html](https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html), follows a workflow encompassing the following steps:
+GTFShift R package provides a pipeline for the complete workflow of GTFS-OSM conflation. The tutorial, documented at [https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html](https://u-shift.github.io/GTFShift/articles/gtfs_from_osm.html), follows a workflow encompassing the following steps, further detailed:
 
 1. `GTFShift::load_feed()`: Read GTFS feed, fixing integrity errors;
 2. `GTFShift::osm_shapes_match_routes()`: Match GTFS shapes with OSM relations, based on geometrical correspondence;
@@ -116,7 +117,7 @@ The first step of the workflow is to load the GTFS feed using the `GTFShift::loa
 
 If the `shapes` table is missing or empty, it is generated using `GTFShift::create_shapes_from_stops()`. This function builds the `shapes` by grouping trips with the same stop sequence and assigning them the same `shape_id`. The resulting shapes are a simplified version of the original ones, as they do not take into account the actual path followed by the vehicles, but only the stop sequence. However, they are a good enough proxy to enable the geometrical match with OSM relations in the next step.
 
-Finally, the method also includes an optional flag to construct the `transfers` table, which calls `gtfsrouter::gtfs_transfer_table()` [@r_gtfsrouter] and enables the specification of stops where transfers are fasible, to optimize routing analysis that might be performed over the generated GTFS feed.
+Finally, the method also includes an optional flag to construct the `transfers` table, which calls `gtfsrouter::gtfs_transfer_table()` [@r_gtfsrouter] and enables the specification of stops where transfers are feasible, to optimize routing analysis that might be performed over the generated GTFS feed, allowing for transfers.
 
 ## Match GTFS shapes with OSM relations
 
@@ -200,7 +201,7 @@ Once the geometry is standardized into sorted linestrings, it is convert into th
 
 # Application
 
-Lisbon Metropolitan Area (LMA) was chosen as study area to demonstrate and validate the application of the GTFShift methodology presented in this paper. With a population of 2,870,208 inhabitants [@ine_populacao_2022], it is served by a dense public transport network that covers its 18 municipalities, built up on rail, fluvial and road services provided by nine private and public operators [@tml_transportes_nodate]. This analysis will focus on the bus mode and its four operators, condering the GTFS feeds for the month of May 2026:
+Lisbon Metropolitan Area (LMA) was chosen as study area to demonstrate and validate the application of the GTFShift methodology presented in this paper. With a population of 2,870,208 inhabitants [@ine_populacao_2022], it is served by a dense public transport network that covers its 18 municipalities, built up on rail, fluvial and road services provided by nine private and public operators [@tml_transportes_nodate]. This analysis will focus on the bus mode and its four operators, considering the GTFS feeds available for the month of May 2026:
 
 - **Carris**, the urban operator for the municipality of Lisbon;
 - **TCB**, the urban operator for the municipality of Barreiro;
@@ -212,7 +213,7 @@ After loading the GTFS feeds for each operator without relevant integrity issues
 The results, presented at @tbl-osm-match-results, demonstrate a high match rate, above 90% for all operators, that increases when considering the services at peak hour. This filter enables to evaluate the match quality for the moment when there is the highest concentration of service provision (usually the focus of aggregated analysis), disregarding route variations and shortenings that tend to occur outside peak hours, are less frequent and therefore less prone to be mapped to OSM. Additionally, the analysis considering the number of trips covered by the match is also presented, with a higher match rate, suggesting that the geometries matched are the ones with highest frequencies. 
 
 | Operator | GTFS shapes (#) | Matched shapes (%) | Matched shapes peak¹ (%) | GTFS trips², peak¹ (#) | Matched trips peak¹ (%) |
-| :---- | ---- | ---- | ---- | ---- | ---- | 
+| :----- | ----: | ----: | ----: | ----: | ----: | 
 | Carris | 287 | 98.26 | 98.86 | 1235 | 99.11 | 
 | TCB | 76 | 90.79 |  100 | 111 | 100 | 
 | MobiCascais | 139 | 95.68 | 97.73 | 242 | 99.17 |
@@ -222,11 +223,12 @@ The results, presented at @tbl-osm-match-results, demonstrate a high match rate,
 
 <small>
 
-> **Notes:** ¹ Considering GTFS filtered for 27/05/2026 between 08:00 and 09:00. ² Only displaying number of trips for peak hour because GTFS feeds from diferent operators cover different timespans and therefore the total number of trips is not comparable.
+> **Notes:** ¹ Considering GTFS filtered for 27/05/2026 (working day) between 08:00 and 09:00. ² Only displaying number of trips for peak hour because GTFS feeds from diferent operators cover different timespans and therefore the total number of trips is not comparable.
 
 </small>
 
 @tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence. Its analysis reveals that the heuristic performance varies significantly across operators, highlighting distinct challenges in network sizes and data consistency. Notably, Carris Metropolitana exhibits the highest deviations across all spatial metrics, with a massive mean route length difference (6590.1 $\pm$ 187237 m) and the largest start/end point discrepancy (209.5 $\pm$ 909.9 m). This massive standard deviation suggests a highly heterogeneous network with severe outlier routes that skewed the matching process. In contrast, urban operators like TCB and MobiCascais demonstrate much tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference at 108 m. 
+To be noted that Carris Metropolitana operates on a much larger area (whole metropolitan area), while the remaining operators run at municipality level, which justify these differences.
 
 Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 25.5 and 35.3 stops. A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
 
@@ -247,10 +249,10 @@ Interestingly, despite these spatial variances, the discrepancy in the number of
 </small>
 
 
-To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed. @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour. MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the latest having dropped 13 percentage points in the number of shapes matched. On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
+To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed. @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour. MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the latest having dropped 13 p.p. in the number of shapes matched. On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
 
 | Operator | Shapes after filtering (#) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
-| :---- | ---- | ---- | ---- | 
+| :----- | ---- | ---- | ---- | 
 | Carris | 270 | 94.89 | 95.95 |
 | TCB | 66 | 90.32 | 96.39 |
 | MobiCascais | 121 | 86.36 | 89.66 |
@@ -264,6 +266,8 @@ To discard outliers and ensure the quality of the matched routes, a filtering pr
 
 </small>
 
+When investigating which shapes do not reach a full match, these are the ones usually as shortness, first or last of the day trips that depart from or end at the dispatcher, or variants that are rarely running.
+
 Finally, the geometries of the OSM route relations matched in the previous step were converted into GTFS `shapes` table format using `GTFShift::create_shapes_from_sf()`. 
 
 The application of the GTFS-OSM conflation process to the bus services in the Lisbon Metropolitan Area enabled the harmonization of GTFS shapes with the OSM road network, improving the quality of the GTFS geometries.
@@ -274,6 +278,7 @@ The application of the GTFS-OSM conflation process to the bus services in the Li
 
 > The code script executed to generate the outputs presented in this section is available at [https://github.com/U-Shift/GTFShift-web/blob/main/scripts/01_osm_match/osm_match.R](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/01_osm_match/osm_match.R) and [https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R)
 
+> (alternative) All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/blob/main/scripts/](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/)
 
 # Conclusion
 
@@ -281,9 +286,14 @@ The GTFS-OSM conflation process described in this paper enabled the harmonizatio
 
 The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence for more than 95% of all trips at peak hour, which enables a realistic analysis of the public transport network. Despite not reaching a 100% match, the unlatched association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure. This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making. Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
-It is also worth noting that the outcomes of this paper outreach the methodology proposed. The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM road network in different contexts and for different purposes. The encapsulation of each step of the workflow in its own function simplifies the usage of specific steps of the process and its application to address other problems. For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required. Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method that enables an even simpler GTFS-OSM match, based on the `gtfs:shape_id` attribute, provided it exists in the OSM database. 
+It is also worth noting that the outcomes of this paper outreach the methodology proposed. The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM road network in different contexts and for different purposes. The encapsulation of each step of the workflow in its own function simplifies the usage of specific steps of the process and its application to address other problems. For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required. Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method that enables an even simpler GTFS-OSM match, based on the `gtfs:shape_id` attribute, provided if exists in the OSM database. 
 
 Finally, the development of this work has also contributed to the improvement of this open database, with more than 6.000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [https://www.openstreetmap.org/user/Gonçalo Matos/history](https://www.openstreetmap.org/user/Gon%C3%A7alo%20Matos/history)]. Porto (Portugal), Madrid (Spain) or Toulouse (France) are some examples of cities that have had their public transport bus relations improved on OSM thanks to this work. 
+
+# Acknowledgment {.unnumbered}
+
+[_blind_]
+<!-- This research was funded in part by the Fundação para a Ciência e a Tecnologia, I.P. ([FCT](https://ror.org/00snfqn58)) under Grant [UID/6438/2025](https://doi.org/10.54499/UID/06438/2025) of the research unit CERIS. -->
 
 # References {.unnumbered}
 
