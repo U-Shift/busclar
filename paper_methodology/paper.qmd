@@ -1,5 +1,5 @@
 ---
-title: "Harmonizing GTFS geometries for transit network analysis using open data with GTFShift R package"
+title: "Harmonizing GTFS shapes for transit network analysis using open data with GTFShift R package"
 
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
 
