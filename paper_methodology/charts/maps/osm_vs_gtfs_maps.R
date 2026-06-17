@@ -1,7 +1,8 @@
 library(mapview)
 library(dplyr)
 
-gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_aml_1_manipulated.zip"
+gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_aml_1_manipulated.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_cascais.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_lisboa_osm.zip"
@@ -10,6 +11,7 @@ gtfs_original_url_3 <- "https://github.com/U-Shift/GTFShift/releases/download/v0
 gtfs_original_url_4 <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_aml_4_manipulated.zip"
 
 gtfs_osm_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_bus_unified_osm.zip"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_bus_unified_osm.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_aml_1_osm.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_lisboa_osm.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_cascais_osm.zip"
@@ -46,7 +48,7 @@ mapview(shapes_original, color="#440154", layer.name="GTFS with original shapes"
   mapview(shapes_osm_4, color="#70cf57", layer.name="GTFS with OSM geometries (4)", legend=FALSE, homebutton=FALSE)
 
 # Match OSM 
-go_gtfs_conversion <- read.csv("paper_methodology/charts/go_gtfs_conversion.csv")
+go_gtfs_conversion <- read.csv("charts/go_gtfs_conversion.csv")
 
 shapes_osm_with_agency <- shapes_osm |>
     mutate(
@@ -66,4 +68,13 @@ shapes_osm_with_agency <- shapes_osm |>
 shapes_osm_with_agency <- shapes_osm_with_agency |>
   mutate(agency_name = ifelse(is.na(agency_name), "Carris Metropolitana", agency_name))
 
-mapview(shapes_osm_with_agency, zcol="agency_name", layer.name="GTFS with OSM geometries", legend=TRUE, homebutton=FALSE)
+# Sort by agency, with order: 49, 8, 1, 21
+shapes_osm_with_agency <- shapes_osm_with_agency[order(match(shapes_osm_with_agency$agency, c("49", "8", "1", "21", "Unknown"))), ]
+View(shapes_osm_with_agency)
+
+mapview(
+  shapes_osm_with_agency, 
+  zcol="agency_name", layer.name="GTFS with OSM geometries", 
+  legend=TRUE, homebutton=FALSE,
+  color = rev(viridis::viridis(4, option = "D"))
+)
