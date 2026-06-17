@@ -3,3 +3,6 @@
 !**/_extensions/**/*.tex
 *.html
 paper_files/*s
+
+paper.*
+!paper.qmd

@@ -217,7 +217,7 @@ The results, presented at @tbl-osm-match-results, demonstrate a high match rate,
 | Carris | 287 | 98.26 | 98.86 | 1235 | 99.11 | 
 | TCB | 76 | 90.79 |  100 | 111 | 100 | 
 | MobiCascais | 139 | 95.68 | 97.73 | 242 | 99.17 |
-| Carris Metropolitana | 1632 | 93.01 | 94.89 | 2904 | 95.73 |
+| Carris Metropolitana | 1533 | 97.39 | 98.20 | 2900 | 98.62 |
 
 : Results of the match between GTFS routes shapes and OSM route relations for each operator {#tbl-osm-match-results}
 
@@ -227,17 +227,16 @@ The results, presented at @tbl-osm-match-results, demonstrate a high match rate,
 
 </small>
 
-@tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence. Its analysis reveals that the heuristic performance varies significantly across operators, highlighting distinct challenges in network sizes and data consistency. Notably, Carris Metropolitana exhibits the highest deviations across all spatial metrics, with a massive mean route length difference (6590.1 $\pm$ 187237 m) and the largest start/end point discrepancy (209.5 $\pm$ 909.9 m). This massive standard deviation suggests a highly heterogeneous network with severe outlier routes that skewed the matching process. In contrast, urban operators like TCB and MobiCascais demonstrate much tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference at 108 m. 
-To be noted that Carris Metropolitana operates on a much larger area (whole metropolitan area), while the remaining operators run at municipality level, which justify these differences.
+@tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence. Its analysis reveals that the heuristic performance varies across operators, highlighting distinct challenges in network sizes and data consistency. Carris Metropolitana consistently exhibits the highest deviations, particularly in route length (336.1 ± 1113.1 m) and start/end point discrepancy (227.4 ± 937.3 m), which is expected given its broader metropolitan coverage. In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference (108 ± 363.4 m), reflecting greater geometry consistency at the municipality level.
 
-Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 25.5 and 35.3 stops. A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
+Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 25.5 and 35.2 stops. A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
 
 | Operator | Heuristic<br/>length<br/>(m)¹ | Heuristic<br/>points<br/>(m)¹ | Heuristic<br/>stops<br/>(#)¹ |
 | :---- | ---- | ---- | ---- |
 | Carris | 230.5 ± 1135.5 | 73.2 ± 236.7 | 27.9 ± 11.2 |
 | TCB | 151 ± 205.9 | 73.7 ± 322.9 | 25.5 ± 9.6 |
 | MobiCascais | 108 ± 363.4 | 118.5 ± 264.8 | 33.2 ± 15.7 |
-| Carris Metropolitana | 6590.1 ± 187237 | 209.5 ± 909.9 | 35.3 ± 16.6 |
+| Carris Metropolitana | 336.1 ± 1113.1 | 227.4 ± 937.3 | 35.2 ± 16.5 |
 
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
 
@@ -249,14 +248,14 @@ Interestingly, despite these spatial variances, the discrepancy in the number of
 </small>
 
 
-To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed. @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour. MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the latest having dropped 13 p.p. in the number of shapes matched. On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
+To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed. @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour. MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the latest having dropped 14.3 p.p. in the number of shapes matched. On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
 
 | Operator | Shapes after filtering (#) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
 | Carris | 270 | 94.89 | 95.95 |
 | TCB | 66 | 90.32 | 96.39 |
 | MobiCascais | 121 | 86.36 | 89.66 |
-| Carris Metropolitana | 1286 | 81.84 | 80.27 |
+| Carris Metropolitana | 886 | 83.90 | 82.10 |
 
 : Shapes matched between GTFS routes shapes and OSM route relations for each operator after filtering for outliers {#tbl-osm-match-results-filtered}
 

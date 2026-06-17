@@ -1,15 +1,17 @@
 library(dplyr)
 
-gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
-  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_20260506.zip"
+gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_2026-05-27_manipulated.zip"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_2026-05-27_manipulated.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_cascais_20260507.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
-match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260518_run20260518.csv"
-  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs20260506_run20260506.csv"
+  # OLD VERSION "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_20260506.zip"
+match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260507_run20260507.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260518_run20260518.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs20260519_run20260519.csv"
+  # OLD VERSION "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs20260506_run20260506.csv"
 
 gtfs_original <- tidytransit::read_gtfs(gtfs_original_url)
 summary(gtfs_original)
