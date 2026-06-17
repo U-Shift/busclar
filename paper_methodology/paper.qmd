@@ -275,9 +275,7 @@ The application of the GTFS-OSM conflation process to the bus services in the Li
 
 ![GTFS shapes harmonized over OSM network for TCB and Carris Metropolitana, Barreiro, Portugal](figures/results/gtfs_shapes_mess_tcb_fixed.png){#fig-gtfs-shapes-mess-tcb-fixed width="75%"}
 
-> The code script executed to generate the outputs presented in this section is available at [https://github.com/U-Shift/GTFShift-web/blob/main/scripts/01_osm_match/osm_match.R](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/01_osm_match/osm_match.R) and [https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/03_create_gtfs/osm_match_create_gtfs.R)
-
-> (alternative) All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/blob/main/scripts/](https://github.com/U-Shift/GTFShift-web/blob/main/scripts/)
+> All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/busclar/tree/main/paper_methodology/scripts](https://github.com/U-Shift/busclar/tree/main/paper_methodology/scripts)
 
 # Conclusion
 
