@@ -1,4 +1,5 @@
 *.pdf
 *.tex
+!**/_extensions/**/*.tex
 *.html
-paper_files/*
+paper_files/*s
