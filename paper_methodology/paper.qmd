@@ -20,11 +20,13 @@ author:
         - ref: ist
 
 bibliography: bibliography.bib
+# csl: https://www.zotero.org/styles/computers-environment-and-urban-systems
+
 format:
   html: 
     toc: true
     lightbox: true # abrir imagens popup
-  pdf: default
+#  pdf: default
   elsevier-pdf:
     keep_tex: true
     include-in-header: 
@@ -36,9 +38,9 @@ format:
       name: "Computers, Environment and Urban Systems"
       model: 3p
       layout: onecolumn
-      fomatting: review #doubleblind
+      formatting: review # doubleblind
       cite-style: authoryear
-      csl: https://www.zotero.org/styles/computers-environment-and-urban-systems
+
     
 abstract: |
   The General Transit Feed Specification (GTFS) is a widely adopted open data standard for public transport data, but its lack of standardization in shapes presents challenges for spatial analysis.
