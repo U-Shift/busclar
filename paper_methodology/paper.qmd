@@ -317,11 +317,11 @@ This analysis will focus on the services for a working day, considering the bus 
 
 : Operator network characteristics based on GTFS data {#tbl-operator-network-characteristics}
 
-<small>
+\begin{quote}
+\footnotesize
+\textbf{Notes:} GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. ² Mean value and standard deviation.
+\end{quote}
 
-> **Notes:** GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. ² Mean value and standard deviation.
-
-</small>
 
 ![Bus network for Lisbon Metropolitan Area](figures/results/shapes_aml_osm.png){#fig-aml-shapes-osm width="75%"}
 
@@ -344,12 +344,12 @@ Additionally, the analysis considering the number of trips covered by the match 
 
 : Results of the match between GTFS routes shapes and OSM route relations for each operator {#tbl-osm-match-results}
 
-<small>
-
-> **Notes:** GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
+\begin{quote}
+\footnotesize
+\textbf{Notes:} GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
 ² Only displaying number of trips for peak hour because GTFS feeds from diferent operators cover different timespans and therefore the total number of trips is not comparable.
+\end{quote}
 
-</small>
 
 @tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence.
 Its analysis reveals that the heuristic performance varies across operators, highlighting distinct challenges in network sizes and data consistency.
@@ -369,11 +369,11 @@ A manual validation of several routes was performed to understand the reason beh
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
 
 
-<small>
+\begin{quote}
+\footnotesize
+\textbf{Notes:} ¹ Mean value and standard deviation of heuristic that measures shape length, start/end points distance and number of stops difference, respectively.
+\end{quote}
 
-> **Notes:** ¹ Mean value and standard deviation of heuristic that measures shape length, start/end points distance and number of stops difference, respectively.
-
-</small>
 
 
 To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed.
@@ -391,11 +391,10 @@ On the other hand, Carris reduced less than 4 percentage points, suggesting it i
 
 : Shapes matched between GTFS routes shapes and OSM route relations for each operator after filtering for outliers {#tbl-osm-match-results-filtered}
 
-<small>
-
-> **Notes:** ¹ Considering GTFS filtered for 27/05/2026 between 08:00 and 09:00.
-
-</small>
+\begin{quote}
+\footnotesize
+\textbf{Notes:} GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
+\end{quote}
 
 When investigating which shapes do not reach a full match, it revealed that they are mostly associated with shortenings related to the first or last trips of the day that depart from or end at the dispatcher, or variants that have less frequency and are therefore less likely to be mapped in OSM.
 
