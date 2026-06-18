@@ -6,7 +6,7 @@ gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
   # OLD VERSION "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_20260506.zip"
-match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
+match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260507_run20260507.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260507_run20260507.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260518_run20260518.csv"
@@ -32,12 +32,44 @@ gtfs_original$trips$shape_id <- gsub("^\\[[^]]*\\]\\s*", "", gtfs_original$trips
 summary(gtfs_original)
 length(unique(gtfs_original$shapes$shape_id))
 
-match <- read.csv(match_url)
+# Filter for working day 
+gtfs_original <- tidytransit::filter_feed_by_date(gtfs_original, extract_date = "2026-05-27")
+summary(gtfs_original)
+length(unique(gtfs_original$shapes$shape_id))
+length(unique(gtfs_original$trips$trip_id))
+
+gtfs_original_shapes <- tidytransit::shapes_as_sf(gtfs_original$shapes) |>
+  sf::st_transform(3857) |> # To get meters
+  dplyr::mutate(length_m = sf::st_length(geometry)) |>
+  dplyr::mutate(length_km = as.numeric(length_m) / 1000)
+mean(gtfs_original_shapes$length_km)
+sd(gtfs_original_shapes$length_km)
+
+gtfs_original_stops_per_trip <- gtfs_original$trips |>
+  left_join(gtfs_original$stop_times , by="trip_id") |> 
+  group_by(trip_id) |> summarise(n_stops = n())
+mean(gtfs_original_stops_per_trip$n_stops)
+sd(gtfs_original_stops_per_trip$n_stops)
+
+match <- read.csv(match_url) |> filter(shape_id %in% gtfs_original$shapes$shape_id)
 nrow(match)
 length(unique(match$shape_id))
 length(unique(match$shape_id)) / length(unique(gtfs_original$shapes$shape_id)) * 100
 # length(unique(match$route_id)) / length(unique(gtfs_original$routes$route_id)) * 100
 # length(unique(match$trip_id)) / length(unique(gtfs_original$trips$trip_id)) * 100
+
+shapes_day_match = gtfs_original$shapes |>
+  distinct(shape_id) |>
+  left_join(match |> select(shape_id, osm_id), by="shape_id")
+shapes_day_match
+nrow(shapes_day_match)
+nrow(shapes_day_match|>filter(!is.na(osm_id)))
+nrow(shapes_day_match|>filter(!is.na(osm_id))) / nrow(shapes_day_match) * 100
+
+trips_day_match <- gtfs_original$trips |> left_join(shapes_day_match, by="shape_id")
+nrow(trips_day_match)
+nrow(trips_day_match |> filter(!is.na(osm_id)))
+nrow(trips_day_match |> filter(!is.na(osm_id))) / nrow(trips_day_match) * 100
 
 # Get mean and SD for distance_diff, points_diff and stops_diff dispersion in whole dataset
 mean(match$distance_diff)
@@ -51,6 +83,8 @@ sd(match$stops_diff)
 # Get data for reference day, at peak
 gtfs_day_peak <- tidytransit::filter_feed_by_date(gtfs_original, extract_date = "2026-05-27", min_departure_time = "08:00:00", max_arrival_time = "09:00:00")
 summary(gtfs_day_peak)
+length(unique(gtfs_day_peak$shapes$shape_id))
+length(unique(gtfs_day_peak$trips$trip_id))
 
 shapes_day_peak_match = gtfs_day_peak$shapes |>
   distinct(shape_id) |>

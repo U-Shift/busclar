@@ -4,8 +4,7 @@ title: "Harmonizing GTFS shapes for transit network analysis using open data wit
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
 
 author:
-  - name: Gonçalo F.
-Matos
+  - name: Gonçalo F. Matos
     email: goncaloafmatos@tecnico.ulisboa.pt
     affiliations: 
         - id: ist
@@ -300,16 +299,31 @@ Once the geometry is standardized into sorted linestrings, it is convert into th
 
 Lisbon Metropolitan Area (LMA) was chosen as study area to demonstrate and validate the application of the GTFShift methodology presented in this paper.
 With a population of 2,870,208 inhabitants [@ine_populacao_2022], it is served by a dense public transport network that covers its 18 municipalities, built up on rail, fluvial and road services provided by nine private and public operators [@tml_transportes_nodate].
-This analysis will focus on the bus mode and its four operators, a network represented in @fig-aml-shapes-osm, considering the GTFS feeds available for the month of May 2026:
+This analysis will focus on the services for a working day, considering the bus mode and its four operators:
 
 - **Carris**, the urban operator for the municipality of Lisbon;
 - **TCB**, the urban operator for the municipality of Barreiro;
 - **MobiCascais**, the urban operator for the municipality of Cascais;
 - **Carris Metropolitana**, the urban operator for the remaining 15 municipalities in the LMA and the sub-urban connections among the 18.
 
-![Bus network for Lisbon Metropolitan Area](figures/results/shapes_aml_osm.png){#fig-aml-shapes-osm width="75%"}
+@tbl-operator-network-characteristics presentes some metrics regarding each operator's network and @fig-aml-shapes-osm depicts their spatial coverage. Carris Metropolitana is the operator with the largest network, presenting the highest values for all indicators, due to its metropolitan coverage and the sub-urban nature of most of its routes. The remainder operators have shorter routes and less stops per trip, as they operate mostly within their respective municipalities. Still, Carris presents a substantial number of trips, as it operates in the capital city of Lisbon, with a inherent higher demand for public transport.
 
-<!-- Add table with operator network characteristics, such as number of routes, avg length, nr of stops -->
+| Operator | Shapes (#) | Shapes peak¹ (#) | Trips (#) | Trips peak¹ (#) | Shapes length² (Km) | Stops per trip² (#) | 
+| :----- | ----: | ----: | ----: | ----: | ----: | ----: | 
+| Carris | 263 | 176 | 10100 | 1235 | 13.16 ± 6.06 | 29.29 ± 11.71 |
+| TCB | 60 | 31 | 964 | 111 | 13.71 ± 7.57 | 24.95 ± 8.99 |
+| MobiCascais | 130 | 86 | 2053 | 236 | 16.23 ± 6.88 | 30.98 ± 14.84 |
+| Carris Metropolitana | 1533 | 1056 | 21712 | 2900 | 22.37 ± 13.24 | 34.13 ± 16.17 |
+
+: Operator network characteristics based on GTFS data {#tbl-operator-network-characteristics}
+
+<small>
+
+> **Notes:** GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. ² Mean value and standard deviation.
+
+</small>
+
+![Bus network for Lisbon Metropolitan Area](figures/results/shapes_aml_osm.png){#fig-aml-shapes-osm width="75%"}
 
 After loading the GTFS feeds for each operator without relevant integrity issues^[Despite not representing integrity issues, MobiCascais GTFS feed was manipulated after loaded to adjust some attributes that were not adequate for the match with OSM route relations.
 Specifically, the `route_short_name` column of the `routes` table, in which route references were presented as integers, was adjusted to follow the format `M%02d` (e.g.
@@ -321,37 +335,35 @@ The results, presented at @tbl-osm-match-results, demonstrate a high match rate,
 This filter enables to evaluate the match quality for the moment when there is the highest concentration of service provision (usually the focus of aggregated analysis), disregarding route variations and shortenings that tend to occur outside peak hours, are less frequent and therefore less prone to be mapped to OSM.
 Additionally, the analysis considering the number of trips covered by the match is also presented, with a higher match rate, suggesting that the geometries matched are the ones with highest frequencies. 
 
-| Operator | GTFS shapes (#) | Matched shapes (%) | Matched shapes peak¹ (%) | GTFS trips², peak¹ (#) | Matched trips peak¹ (%) |
-| :----- | ----: | ----: | ----: | ----: | ----: | 
-| Carris | 287 | 98.26 | 98.86 | 1235 | 99.11 | 
-| TCB | 76 | 90.79 |  100 | 111 | 100 | 
-| MobiCascais | 139 | 95.68 | 97.73 | 242 | 99.17 |
-| Carris Metropolitana | 1533 | 97.39 | 98.20 | 2900 | 98.62 |
+| Operator | Matched shapes (%) | Matched shapes peak¹ (%) | Matched trips (%) | Matched trips peak¹ (%) |
+| :----- | ----: | ----: | ----: | ----: | 
+| Carris | 98.47 | 98.86 | 99.00 | 99.11 | 
+| TCB | 91.66 |  100 | 96.78 | 100 | 
+| MobiCascais | 95.45 | 97.73 | 99.10 | 99.17 |
+| Carris Metropolitana | 97.39 | 98.20 | 98.59 | 98.62 |
 
 : Results of the match between GTFS routes shapes and OSM route relations for each operator {#tbl-osm-match-results}
 
 <small>
 
-> **Notes:** ¹ Considering GTFS filtered for 27/05/2026 (working day) between 08:00 and 09:00.
+> **Notes:** GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
 ² Only displaying number of trips for peak hour because GTFS feeds from diferent operators cover different timespans and therefore the total number of trips is not comparable.
 
 </small>
 
-<!-- Add GTFS shapes (#) at peak -->
-
 @tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence.
 Its analysis reveals that the heuristic performance varies across operators, highlighting distinct challenges in network sizes and data consistency.
 Carris Metropolitana consistently exhibits the highest deviations, particularly in route length (336.1 ± 1113.1 m) and start/end point discrepancy (227.4 ± 937.3 m), which is expected given its broader metropolitan coverage.
-In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference (108 ± 363.4 m), reflecting greater geometry consistency at the municipality level.
+In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference (110.2 ± 375.7 m), reflecting greater geometry consistency at the municipality level.
 
-Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 25.5 and 35.2 stops.
+Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 24.8 and 35.2 stops.
 A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
 
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (#)¹ |
 | :---- | ---- | ---- | ---- |
-| Carris | 230.5 ± 1135.5 | 73.2 ± 236.7 | 27.9 ± 11.2 |
-| TCB | 151 ± 205.9 | 73.7 ± 322.9 | 25.5 ± 9.6 |
-| MobiCascais | 108 ± 363.4 | 118.5 ± 264.8 | 33.2 ± 15.7 |
+| Carris | 245.2 ± 1183.5 | 76.3 ± 246.4 | 28.2 ± 11.8 |
+| TCB | 157.4 ± 227.1 | 90.0 ± 360.5 | 24.8 ± 10.1 |
+| MobiCascais | 110.2 ± 375.7 | 117.8 ± 269.6 | 33.0 ± 15.7 |
 | Carris Metropolitana | 336.1 ± 1113.1 | 227.4 ± 937.3 | 35.2 ± 16.5 |
 
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
@@ -370,12 +382,12 @@ MobiCascais and Carris Metropolitana were the operators that presented the great
 in the number of shapes matched.
 On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
 
-| Operator | Shapes after filtering (#) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
+| Operator | Matched shapes after filtering (#) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
-| Carris | 270 | 94.89 | 95.95 |
-| TCB | 66 | 90.32 | 96.39 |
-| MobiCascais | 121 | 86.36 | 89.66 |
-| Carris Metropolitana | 886 | 83.90 | 82.10 |
+| Carris | 247 | 94.89 | 95.95 |
+| TCB | 52 | 90.32 | 96.39 |
+| MobiCascais | 113 | 86.36 | 89.67 |
+| Carris Metropolitana | 1249 | 83.90 | 82.10 |
 
 : Shapes matched between GTFS routes shapes and OSM route relations for each operator after filtering for outliers {#tbl-osm-match-results-filtered}
 
@@ -385,7 +397,7 @@ On the other hand, Carris reduced less than 4 percentage points, suggesting it i
 
 </small>
 
-When investigating which shapes do not reach a full match, these are the ones usually as shortness, first or last of the day trips that depart from or end at the dispatcher, or variants that are rarely running.
+When investigating which shapes do not reach a full match, it revealed that they are mostly associated with shortenings related to the first or last trips of the day that depart from or end at the dispatcher, or variants that have less frequency and are therefore less likely to be mapped in OSM.
 
 Finally, the geometries of the OSM route relations matched in the previous step were converted into GTFS `shapes` table format using `GTFShift::create_shapes_from_sf()`. 
 
