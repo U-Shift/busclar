@@ -6,7 +6,7 @@ gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
   # OLD VERSION "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_20260506.zip"
-match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260507_run20260507.csv"
+match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260507_run20260507.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260518_run20260518.csv"
