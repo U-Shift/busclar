@@ -18,10 +18,6 @@ author:
     email: rosamfelix@tecnico.ulisboa.pt
     affiliations: 
         - ref: ist
-  - name: Filipe Moura
-    email: fmoura@tecnico.ulisboa.pt
-    affiliations: 
-        - ref: ist
 
 bibliography: bibliography.bib
 format:
@@ -290,7 +286,7 @@ This prevents disconnected segments from being included in the final geometry.
 The process repeats until no segments remain, and the components are merged into a single `LINESTRING`. 
 
 ![Final iteration for TCB OSM relation 18957440 (shape_id 1-VA-TERM).
-Segments before the starting points (in gray) are discarded, as they do not meet the distance criteria, preventing geometrical inconsistencies.](figures/methodology/multiline_to_sorted_linestring_3.png){width="75%"}
+Segments before the starting points (in gray) are discarded, as they do not meet the distance criteria, preventing geometrical inconsistencies. Last segment endpoint in orange.](figures/methodology/multiline_to_sorted_linestring_3.png){width="75%"}
 
 Once the geometry is standardized into sorted linestrings, it is convert into the GTFS `shapes` table using `gtfstools::convert_sf_to_shapes()` [@r_gtfstools]. 
 
@@ -356,15 +352,12 @@ Its analysis reveals that the heuristic performance varies across operators, hig
 Carris Metropolitana consistently exhibits the highest deviations, particularly in route length (336.1 ± 1113.1 m) and start/end point discrepancy (227.4 ± 937.3 m), which is expected given its broader metropolitan coverage.
 In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference (110.2 ± 375.7 m), reflecting greater geometry consistency at the municipality level.
 
-Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 24.8 and 35.2 stops.
-A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
-
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
-| Carris | 245.2 ± 1183.5 | 76.3 ± 246.4 | 28.2 ± 11.8 |
-| TCB | 157.4 ± 227.1 | 90.0 ± 360.5 | 24.8 ± 10.1 |
-| MobiCascais | 110.2 ± 375.7 | 117.8 ± 269.6 | 33.0 ± 15.7 |
-| Carris Metropolitana | 336.1 ± 1113.1 | 227.4 ± 937.3 | 35.2 ± 16.5 |
+| Carris | 245.2 ± 1183.5 | 76.3 ± 246.4 | 0.38 ± 0.70 |
+| TCB | 157.4 ± 227.1 | 90.0 ± 360.5 | 0.00 ± 0.00 |
+| MobiCascais | 110.2 ± 375.7 | 117.8 ± 269.6 | 0.00 ± 0.00 |
+| Carris Metropolitana | 336.1 ± 1113.1 | 227.4 ± 937.3 | 0.40 ± 0.93 |
 
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
 
@@ -374,7 +367,7 @@ A manual validation of several routes was performed to understand the reason beh
 \textbf{Notes:} ¹ Mean value and standard deviation of heuristic that measures shape length, start/end points distance and number of stops difference, respectively.
 \end{quote}
 
-
+<!-- Add https://files.mobilitydatabase.org/mdb-2929/mdb-2929-202605210113/report_8.0.1.html -->
 
 To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed.
 @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour.
@@ -422,7 +415,7 @@ Despite not reaching a 100% match, the unlatched association with the OSM networ
 This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making.
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
-This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment.
+This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment. Eventually, using a common geographical information base, GTFS could include the segment ids instead of the detailed geometries for each route, potentially reducing the amount of information stored at the shapes file.
 
 It is also worth noting that the outcomes of this paper outreach the methodology proposed.
 The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM network in different contexts and for different purposes. 
@@ -432,8 +425,10 @@ The encapsulation of each step of the workflow in its own function simplifies th
 For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required.
 Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method that enables an even simpler GTFS-OSM match, based on the `gtfs:shape_id` attribute, provided it exists in the OSM database. 
 
-Finally, the development of this work has also contributed to the improvement of this open database, with more than 6.000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [https://www.openstreetmap.org/user/Gonçalo Matos/history](https://www.openstreetmap.org/user/Gon%C3%A7alo%20Matos/history)].
+Finally, the development of this work has also contributed to the improvement of this open database, with more than 6.000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [_blind_].
 Porto (Portugal), Madrid (Spain) or Toulouse (France) are some examples of cities that have had their public transport bus relations improved on OSM thanks to this work. 
+
+<!-- [https://www.openstreetmap.org/user/Gonçalo Matos/history](https://www.openstreetmap.org/user/Gon%C3%A7alo%20Matos/history)] -->
 
 # Acknowledgment {.unnumbered}
 
