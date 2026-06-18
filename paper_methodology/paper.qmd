@@ -308,8 +308,8 @@ This analysis will focus on the services for a working day, considering the bus 
 
 @tbl-operator-network-characteristics presentes some metrics regarding each operator's network and @fig-aml-shapes-osm depicts their spatial coverage. Carris Metropolitana is the operator with the largest network, presenting the highest values for all indicators, due to its metropolitan coverage and the sub-urban nature of most of its routes. The remainder operators have shorter routes and less stops per trip, as they operate mostly within their respective municipalities. Still, Carris presents a substantial number of trips, as it operates in the capital city of Lisbon, with a inherent higher demand for public transport.
 
-| Operator | Shapes (#) | Shapes peak¹ (#) | Trips (#) | Trips peak¹ (#) | Shapes length² (Km) | Stops per trip² (#) | 
-| :----- | ----: | ----: | ----: | ----: | ----: | ----: | 
+| Operator | Shapes (n) | Shapes peak¹ (n) | Trips (n) | Trips peak¹ (n) | Shapes length² (km) | Stops per trip² (n) | 
+| :---- | --: | ---: | --: | ---: | ----: | ----: | 
 | Carris | 263 | 176 | 10100 | 1235 | 13.16 ± 6.06 | 29.29 ± 11.71 |
 | TCB | 60 | 31 | 964 | 111 | 13.71 ± 7.57 | 24.95 ± 8.99 |
 | MobiCascais | 130 | 86 | 2053 | 236 | 16.23 ± 6.88 | 30.98 ± 14.84 |
@@ -359,7 +359,7 @@ In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCa
 Interestingly, despite these spatial variances, the discrepancy in the number of stop points remains relatively consistent across all four operators, ranging between a mean of 24.8 and 35.2 stops.
 A manual validation of several routes was performed to understand the reason behind this difference, revealing that OSM route relations tend to miss several intermediate stops, suggesting a higher effort from the community in mapping route geometries rather than the detailed stop itinerary.
 
-| Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (#)¹ |
+| Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
 | Carris | 245.2 ± 1183.5 | 76.3 ± 246.4 | 28.2 ± 11.8 |
 | TCB | 157.4 ± 227.1 | 90.0 ± 360.5 | 24.8 ± 10.1 |
@@ -382,7 +382,7 @@ MobiCascais and Carris Metropolitana were the operators that presented the great
 in the number of shapes matched.
 On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
 
-| Operator | Matched shapes after filtering (#) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
+| Operator | Matched shapes after filtering (n) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
 | Carris | 247 | 94.89 | 95.95 |
 | TCB | 52 | 90.32 | 96.39 |
@@ -415,20 +415,20 @@ Actually, they also overlap with Carris Metropolitana, which is not visible in t
 The GTFS-OSM conflation process described in this paper enabled the harmonization of GTFS shapes with the OSM road network for the bus services in the Lisbon Metropolitan Area.
 With an implementation that leverages OSM route relations to avoid complex path-finding or map matching algorithms, it offers a simple yet effective methodology to improve the quality of the GTFS shapes, enabling a more accurate spatial analysis of the public transport network, within and between different operators. 
 
-Additionally, the usage of an established base geometry has the potential to reduce the amount of information stored at shapes file, by discarding unnecessary intermediate vertices' cordinates, as shown in @fig-gtfs-shapes-mess-tcb, which can be relevant for the storage and processing of GTFS feeds, especially for large networks.
-For instance, in the case of TCB, the original GTFS shapes had a total of XXXXX vertices, taking XXX mb, while the result shape file generated with this method was reduced to XXXX vertices, taking only XX mb, which represents a reduction of XX% in the file size. 
+<!-- Additionally, the usage of an established base geometry has the potential to reduce the amount of information stored at shapes file, by discarding unnecessary intermediate vertices' cordinates, as shown in @fig-gtfs-shapes-mess-tcb, which can be relevant for the storage and processing of GTFS feeds, especially for large networks.
+For instance, in the case of TCB, the original GTFS shapes had a total of XXXXX vertices, taking XXX mb, while the result shape file generated with this method was reduced to XXXX vertices, taking only XX mb, which represents a reduction of XX% in the file size. -->
 
-<!-- TODO! preencher -->
-<!-- TODO! Future: Ser mais direto sobre bus lanes -->
-<!-- TODO! Future: GTFs with osm_id only -->
-
-The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence for more than 95% of all trips at peak hour, which enables a realistic analysis of the public transport network.
+The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence for more than 98% of all trips at peak hour, which enables a realistic analysis of the public transport network.
 Despite not reaching a 100% match, the unlatched association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure, providing indicators such as the number of lanes, maximum speed, type of pavement, parking existence, or the presence of bus lanes.
 This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making.
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
+This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment.
+
 It is also worth noting that the outcomes of this paper outreach the methodology proposed.
-The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM road network in different contexts and for different purposes.
+The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM network in different contexts and for different purposes. 
+A process that is not restricted to the bus mode, as it can be applied to any mode of transport that has its geometries mapped in OSM, such as rail or tram.
+
 The encapsulation of each step of the workflow in its own function simplifies the usage of specific steps of the process and its application to address other problems.
 For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required.
 Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method that enables an even simpler GTFS-OSM match, based on the `gtfs:shape_id` attribute, provided it exists in the OSM database. 

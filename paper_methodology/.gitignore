@@ -1,5 +1,6 @@
 *.pdf
 *.tex
+*.csv
 !**/_extensions/**/*.tex
 *.html
 paper_files/*s
