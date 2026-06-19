@@ -332,7 +332,7 @@ Specifically, the `shape_id` column of the `shapes` table was adjusted to remove
 
 The results, presented at @tbl-osm-match-results, demonstrate a high match rate, above 90% for all operators, that increases when considering the services at peak hour.
 This filter enables to evaluate the match quality for the moment when there is the highest concentration of service provision (usually the focus of aggregated analysis), disregarding route variations and shortenings that tend to occur outside peak hours, are less frequent and therefore less prone to be mapped to OSM.
-Additionally, the analysis considering the number of trips covered by the match is also presented, with a higher match rate, suggesting that the geometries matched are the ones with highest frequencies. 
+Additionally, the analysis considering the number of trips covered by the match is also presented, with a higher match rate for most operators, suggesting that the geometries matched are the ones with highest frequencies. 
 
 | Operator | Matched shapes (%) | Matched shapes peak¹ (%) | Matched trips (%) | Matched trips peak¹ (%) |
 | :----- | ----: | ----: | ----: | ----: | 
@@ -351,9 +351,13 @@ Additionally, the analysis considering the number of trips covered by the match 
 
 
 @tbl-osm-match-heuristic complements this analysis, disclosing the mean values and standard deviation for the route length, start/end points distance and number of stop points diffence.
-Its analysis reveals that the heuristic performance varies across operators, highlighting distinct challenges in network sizes and data consistency.
-Carris Metropolitana consistently exhibits the highest deviations, particularly in route length (336.1 ± 1113.1 m) and start/end point discrepancy (227.4 ± 937.3 m), which is expected given its broader metropolitan coverage.
-In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCascais achieving the lowest mean route length difference (110.2 ± 375.7 m), reflecting greater geometry consistency at the municipality level.
+Its analysis reveals that the heuristic performance varies across operators, highlighting distinct challenges in network sizes and data consistency. 
+The critical analysis of these values is essential to understand the quality of the match and the potential implications for subsequent spatial analyses.
+
+Manual validations on the outliers of each heuristic revealed interesting patterns. 
+Carris high deviation in route length difference is explained by the poor quality of its GTFS shapes, which have an inconsistent sequence of points, such as starting points in the middle of the route, leading to an invalid geometry that has much higher length than the actual route. 
+This issue has been flagged by MobilityData in their GTFS Validation Reports [@mobilitydata_gtfs_2026]. 
+MobiCascais, on the other hand, stands out for its high deviation in the number of stop points difference, caused by the high number of route variants that are not mapped in OSM, leading to a poorer match quality.
 
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
@@ -374,9 +378,8 @@ In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCa
 
 To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed.
 @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour.
-MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the latest having dropped 14.3 p.p.
-in the number of shapes matched.
-On the other hand, Carris reduced less than 4 percentage points, suggesting it is the operator with the best data quality on OSM.
+MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the first having dropped 12.9 p.p. in the number of shapes matched.
+On the other hand, Carris reduced less than 3 percentage points, suggesting it is the operator with the best data quality on OSM.
 
 | Operator | Matched shapes after filtering (n) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
