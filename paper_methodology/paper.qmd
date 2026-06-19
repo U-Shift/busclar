@@ -294,7 +294,7 @@ Once the geometry is standardized into sorted linestrings, it is convert into th
 
 # Application
 
-Lisbon Metropolitan Area (LMA) was chosen as study area to demonstrate and validate the application of the GTFShift methodology presented in this paper.
+Lisbon Metropolitan Area (LMA) was chosen as study area to demonstrate and validate the application of the GTFShift methodology presented in this paper^[All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/busclar/tree/main/paper_methodology/scripts](https://github.com/U-Shift/busclar/tree/main/paper_methodology/scripts)].
 With a population of 2,870,208 inhabitants [@ine_populacao_2022], it is served by a dense public transport network that covers its 18 municipalities, built up on rail, fluvial and road services provided by nine private and public operators [@tml_transportes_nodate].
 This analysis will focus on the services for a working day, considering the bus mode and its four operators:
 
@@ -403,8 +403,6 @@ The application of the GTFS-OSM conflation process to the bus services in the Li
 Actually, they also overlap with Carris Metropolitana, which is not visible in the figure because they have the exact same (OSM) geometries.
 
 ![GTFS shapes harmonized over OSM network for TCB and Carris Metropolitana, Barreiro, Portugal](figures/results/gtfs_shapes_mess_tcb_fixed.png){#fig-gtfs-shapes-mess-tcb-fixed width="75%"}
-
-> All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/busclar/tree/main/paper_methodology/scripts](https://github.com/U-Shift/busclar/tree/main/paper_methodology/scripts)
 
 # Conclusion
 
