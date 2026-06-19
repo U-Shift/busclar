@@ -1,8 +1,9 @@
-gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_2026-05-27_manipulated.zip"
+gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_cascais_20260507.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_2026-05-27_manipulated.zip"
-match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260618.gpkg" 
+match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs2026-05-27_run20260619.gpkg"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260618.gpkg" 
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs20260519_run20260519.gpkg"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs20260519_run20260519.gpkg"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260615.gpkg"
@@ -22,9 +23,10 @@ View(match |> sf::st_drop_geometry())
 
 library(mapview)
 
-shape_debug = "2805_0_1"
+shape_debug = "olum"
+  # MobiCascais "3i4g"
   # Carris "64_0_DESC_shp" "108_3_ASC_shp"
-  # Carris Metropolitana: "shp_4516_0_2" # "shp_4512_0_2"  "3120_0_2"
+  # Carris Metropolitana: "shp_4516_0_2" # "shp_4512_0_2"  "3120_0_2" "2805_0_1" "412"
 gtfs_original_shapes |> filter(shape_id == shape_debug)
 match |> filter(shape_id == shape_debug)
 (match |> filter(shape_id == shape_debug))$geom
