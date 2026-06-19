@@ -336,10 +336,10 @@ Additionally, the analysis considering the number of trips covered by the match 
 
 | Operator | Matched shapes (%) | Matched shapes peak¹ (%) | Matched trips (%) | Matched trips peak¹ (%) |
 | :----- | ----: | ----: | ----: | ----: | 
-| Carris | 98.47 | 98.86 | 99.00 | 99.11 | 
+| Carris | 99.24 | 99.43 | 99.27 | 99.27 | 
 | TCB | 91.66 |  100 | 96.78 | 100 | 
-| MobiCascais | 95.45 | 97.73 | 99.10 | 99.17 |
-| Carris Metropolitana | 97.39 | 98.20 | 98.59 | 98.62 |
+| MobiCascais | 93.85 | 95.35 | 96.10 | 95.76 |
+| Carris Metropolitana | 98.30 | 98.96 | 98.76 | 99.07 |
 
 : Results of the match between GTFS routes shapes and OSM route relations for each operator {#tbl-osm-match-results}
 
@@ -357,10 +357,10 @@ In contrast, TCB and MobiCascais demonstrate tighter spatial bounds, with MobiCa
 
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
-| Carris | 245.2 ± 1183.5 | 76.3 ± 246.4 | 0.38 ± 0.70 |
-| TCB | 157.4 ± 227.1 | 90.0 ± 360.5 | 0.00 ± 0.00 |
-| MobiCascais | 110.2 ± 375.7 | 117.8 ± 269.6 | 0.00 ± 0.00 |
-| Carris Metropolitana | 336.1 ± 1113.1 | 227.4 ± 937.3 | 0.40 ± 0.93 |
+| Carris | 359.3 ± 1672.3 | 99.5 ± 315.4 | 0.38 ± 0.70 |
+| TCB | 187.9 ± 259.0 | 115.4 ± 462.1 | 0.11 ± 0.31 |
+| MobiCascais | 167.7 ± 576.6 | 219.9 ± 906.6 | 0.46 ± 1.01 |
+| Carris Metropolitana | 403.9 ± 597.7 | 284.4 ± 1183.5 | 0.40 ± 0.93 |
 
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
 
@@ -380,10 +380,10 @@ On the other hand, Carris reduced less than 4 percentage points, suggesting it i
 
 | Operator | Matched shapes after filtering (n) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
-| Carris | 247 | 94.89 | 95.95 |
-| TCB | 52 | 90.32 | 96.39 |
-| MobiCascais | 113 | 86.36 | 89.67 |
-| Carris Metropolitana | 1249 | 83.90 | 82.10 |
+| Carris | 246 | 94.32 | 95.47 |
+| TCB | 51 | 87.10 | 87.39 |
+| MobiCascais | 108 | 82.56 | 85.17 |
+| Carris Metropolitana | 1175 | 79.92 | 79.10 |
 
 : Shapes matched between GTFS routes shapes and OSM route relations for each operator after filtering for outliers {#tbl-osm-match-results-filtered}
 
