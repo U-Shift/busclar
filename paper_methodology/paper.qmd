@@ -3,21 +3,21 @@ title: "Harmonizing GTFS shapes for transit network analysis using open data wit
 
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
 
-author:
-  - name: Gonçalo F. Matos
-    email: goncaloafmatos@tecnico.ulisboa.pt
-    affiliations: 
-        - id: ist
-          name: CERIS
-          department: Instituto Superior Técnico - University of Lisbon
-          address: Av Rovisco Pais 1
-          postal-code: 1049-001, Lisboa, Portugal
-    attributes:
-        corresponding: true      
-  - name: Rosa Félix
-    email: rosamfelix@tecnico.ulisboa.pt
-    affiliations: 
-        - ref: ist
+# author:
+#  - name: Gonçalo F. Matos
+#    email: goncaloafmatos@tecnico.ulisboa.pt
+#    affiliations: 
+#        - id: ist
+#          name: CERIS
+#          department: Instituto Superior Técnico - University of Lisbon
+#          address: Av Rovisco Pais 1
+#          postal-code: 1049-001, Lisboa, Portugal
+#    attributes:
+#        corresponding: true      
+#  - name: Rosa Félix
+#    email: rosamfelix@tecnico.ulisboa.pt
+#    affiliations: 
+#        - ref: ist
 
 bibliography: bibliography.bib
 # csl: https://www.zotero.org/styles/computers-environment-and-urban-systems
@@ -26,7 +26,6 @@ format:
   html: 
     toc: true
     lightbox: true # abrir imagens popup
-#  pdf: default
   elsevier-pdf:
     keep_tex: true
     include-in-header: 
@@ -40,7 +39,6 @@ format:
       layout: onecolumn
       formatting: review # doubleblind
       cite-style: authoryear
-
     
 abstract: |
   The General Transit Feed Specification (GTFS) is a widely adopted open data standard for public transport data, but its lack of standardization in shapes presents challenges for spatial analysis.
