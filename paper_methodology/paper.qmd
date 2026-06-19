@@ -395,7 +395,7 @@ On the other hand, Carris reduced less than 3 percentage points, suggesting it i
 \textbf{Notes:} GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
 \end{quote}
 
-When investigating which shapes do not reach a full match, it revealed that they are mostly associated with shortenings related to the first or last trips of the day that depart from or end at the dispatcher, or variants that have less frequency and are therefore less likely to be mapped in OSM.
+A deeper look into the shapes that do not lie in the filtering criteria reveals routes mostly associated with shortenings (usually the first or last trips of the day that depart from or end at the dispatcher), or variants that have less frequency and are therefore less likely to be mapped in OSM.
 
 Finally, the geometries of the OSM route relations matched in the previous step were converted into GTFS `shapes` table format using `GTFShift::create_shapes_from_sf()`. 
 
@@ -416,7 +416,7 @@ With an implementation that leverages OSM route relations to avoid complex path-
 <!-- Additionally, the usage of an established base geometry has the potential to reduce the amount of information stored at shapes file, by discarding unnecessary intermediate vertices' cordinates, as shown in @fig-gtfs-shapes-mess-tcb, which can be relevant for the storage and processing of GTFS feeds, especially for large networks.
 For instance, in the case of TCB, the original GTFS shapes had a total of XXXXX vertices, taking XXX mb, while the result shape file generated with this method was reduced to XXXX vertices, taking only XX mb, which represents a reduction of XX% in the file size. -->
 
-The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence for more than 98% of all trips at peak hour, which enables a realistic analysis of the public transport network.
+The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence of up to 97% of all trips at peak hour, which enables a realistic analysis of the public transport network.
 Despite not reaching a 100% match, the unlatched association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure, providing indicators such as the number of lanes, maximum speed, type of pavement, parking existence, or the presence of bus lanes.
 This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making.
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
