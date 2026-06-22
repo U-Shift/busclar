@@ -49,14 +49,58 @@ keywords:
 
 # Introduction
 
+In the context of a global urbanization trend, with growing traffic congestion and the inherent negative impacts on the economy, environment and citizens quality of life, cities urge to implement measures to dignify and improve public transport efficiency, as a way to reduce car dependency and promote a more equitable and sustainable mobility [@vuchic1981; @vargas_lopez_chapter_2023].
 
-# Related work
+Improving bus operations is a key aspect of this challenge, as buses are the most widely used public transport mode [??]. Yet, it is the one that presents the worst performance in terms of speed and reliability [??], mainly due to the impacts of traffic congestion when sharing the road with other vehicles [??].
+
+Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
+<!-- without additional material or human resources -->
+
+These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
+<!-- See also @szarata2022;  -->
+However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
+
+# Literature review
+
+<!-- Extend with https://www.scopus.com/pages/ai?conversationId=6a5ca91d-126b-44a9-9bb8-f309b81ce9d5 -->
+
+## Bus lanes benefits
+
+Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
+<!-- without additional material or human resources -->
+
+These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
+
+## Obstacles to bus lane implementation
+
+However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
+
+
+## Common criteria for implementing bus lanes
+
+Common criteria for implementing bus lanes include:
+
+-   Frequency of buses (and trams) per hour and direction, at a peak hour;
+-   Number of lanes in the same direction;
+-   Existing traffic conditions;
+-   Existing bus lanes in the area (from a network continuity perspective).
+
+For instance, NACTO reccomends that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
+Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the demand for public transport in the area.
+
+@vuchic1981 suggests that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
+
+This paper focuses on estimating hourly bus frequency for each road network segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
+Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
+
+For this, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package [@gshift2025] that extends the functionality of other R libraries that deal with GTFS, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
+This tool helps prioritize bus lanes in a given territory to improve transit efficiency.
 
 
 # Methodology
 
 
-# Application
+# Results
 
 
 # Conclusion
