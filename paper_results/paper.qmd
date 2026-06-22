@@ -1,0 +1,73 @@
+---
+title: "Bus lane prioritization using open data with GTFS R package"
+
+date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
+
+author:
+ - name: Gonçalo F. Matos
+   email: goncaloafmatos@tecnico.ulisboa.pt
+   affiliations: 
+       - id: ist
+         name: CERIS
+         department: Instituto Superior Técnico - University of Lisbon
+         address: Av Rovisco Pais 1
+         postal-code: 1049-001, Lisboa, Portugal
+   attributes:
+       corresponding: true      
+ - name: Rosa Félix
+   email: rosamfelix@tecnico.ulisboa.pt
+   affiliations: 
+       - ref: ist
+
+bibliography: bibliography.bib
+
+format:
+  html: 
+    toc: true
+    lightbox: true # abrir imagens popup
+  elsevier-pdf:
+    keep_tex: true
+    include-in-header: 
+       text: |
+         \usepackage{fvextra}
+         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+         \DefineVerbatimEnvironment{OutputCode}{Verbatim}{breaklines,commandchars=\\\{\}}
+    journal:
+      name: "Transportation Research Part A: Policy and Practice"
+      model: 3p
+      layout: onecolumn
+      formatting: review # doubleblind
+      cite-style: authoryear
+    
+abstract: "..."
+    
+keywords: 
+  - "..."
+  - "..."
+
+---
+
+# Introduction
+
+
+# Related work
+
+
+# Methodology
+
+
+# Application
+
+
+# Conclusion
+
+
+# Acknowledgment {.unnumbered}
+
+[_blind_]
+<!-- This research was funded in part by the Fundação para a Ciência e a Tecnologia, I.P.
+([FCT](https://ror.org/00snfqn58)) under Grant [UID/6438/2025](https://doi.org/10.54499/UID/06438/2025) of the research unit CERIS.
+-->
+
+# References {.unnumbered}
+
