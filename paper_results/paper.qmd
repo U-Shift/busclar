@@ -49,16 +49,18 @@ keywords:
 
 # Introduction
 
-In the context of a global urbanization trend, with growing traffic congestion and the inherent negative impacts on the economy, environment and citizens quality of life, cities urge to implement measures to dignify and improve public transport efficiency, as a way to reduce car dependency and promote a more equitable and sustainable mobility [@vuchic1981; @vargas_lopez_chapter_2023].
+In the context of a global urbanization trend, with growing traffic congestion and the inherent negative impacts on the economy, environment and citizens quality of life, cities urge to implement measures to dignify and improve public transport efficiency, as a way to reduce car dependency and promote a more equitable and sustainable mobility [@vuchic1981; @rodrigue_geography_2024].
 
-Improving bus operations is a key aspect of this challenge, as buses are the most widely used public transport mode [??]. Yet, it is the one that presents the worst performance in terms of speed and reliability [??], mainly due to the impacts of traffic congestion when sharing the road with other vehicles [??].
+Improving bus operations is a key aspect of this challenge, as they are one of the most widely used public transport mode [@uitp_bus_2025]. Yet, when sharing road space with other vehicles, their efficiency is seriously injured, increasing costs and travel time to users, which reduces the attractiveness of public transport [@vuchic1981].
 
-Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
-<!-- without additional material or human resources -->
+Bus lanes are a simple, yet often disputed solution, with the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
 
-These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
-<!-- See also @szarata2022;  -->
-However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
+They also contribute to a more equitable mobility. Considering the number of people each mode is able to move, @vuchic1981 advocates buses should be given between 5 to 50 times greater importance than a private vehicle. By prioritizing the movement of people over vehicles, bus lanes enable the capacity increase of a single lane from 1.000-1.400, up to 4.000 people/hour when segregation is implemented [@uitp_regions_2025].
+
+However, introducing them on road infrastructure still hampers other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014]. It is therefore crutial to underlie bus lane implementation on reliable and robust information. 
+
+To tackle this challenge, we present GTFShift, an open-source R package that implements the full pipeline to identify and prioritize bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This paper presents GTFShift methodology for bus lane prioritization and its application to the city of Lisbon, in Portugal, as a case study.
+
 
 # Literature review
 
@@ -70,6 +72,8 @@ Bus lanes (or transit priority lanes) have the potential to improve the reliabil
 <!-- without additional material or human resources -->
 
 These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
+<!-- See also @szarata2022;  -->
+
 
 ## Obstacles to bus lane implementation
 
@@ -98,6 +102,14 @@ This tool helps prioritize bus lanes in a given territory to improve transit eff
 
 
 # Methodology
+
+## Bus frequency
+
+## Number os lanes
+
+## Network continuity
+
+## Traffic conditions
 
 
 # Results
