@@ -414,7 +414,9 @@ For instance, in the case of TCB, the original GTFS shapes had a total of XXXXX 
 
 The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence of up to 97% of all trips at peak hour, which enables a realistic analysis of the public transport network.
 Despite not reaching a 100% match, the association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure, providing indicators such as the number of lanes, maximum speed, type of pavement, parking existence, or the presence of bus lanes.
-This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making.
+Analysis that rely on routing engines or catchment areas will benefit from having a common geometry, for instance, estimating travel distances or bus speeds in a more accurate and consistent way. 
+This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making. 
+
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
 This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment. Eventually, using a common geographical information base, GTFS could include the segment ids instead of the detailed geometries for each route, potentially reducing the amount of information stored at the shapes file.
