@@ -122,7 +122,7 @@ However, all of these analysis are restricted to the GTFS feed context, consider
 
 ## Associating GTFS and OSM data 
 
-Some authors have tryed to address the OSM-GTFS association problem.
+Some authors have tried to address the OSM-GTFS association problem.
 @vuurstaek_gtfs_2020 has developed a methodology to map GTFS bus geometries to the OSM network, but limited to bus stops.
 @perrine_map_matching_2015 has proposed a more complex approach that maps both the bus stops and the routes geometries by projecting GTFS points to the OSM network and performing shortest path algorithms.
 However, the authors acknowledge its limitations when "the track points or the underlying map coordinates are biased, (...) possibly causing selection of adjacent roads in central disticts or service roads instead of freeways".
@@ -246,7 +246,7 @@ Despite having the GTFS-OSM association performed, it is still necessary to conv
 `GTFShift::create_shapes_from_sf()` implements this functionality.
 
 It supports either LINESTRING or MULTILINESTRING geometries as in input, recurring internally to `GTFShift::multiline_to_sorted_linestring()` in order to standardize all geometries into a single LINESTRING.
-This is a crutial step, as OSM bus relations are MULTILINESTRING geometries, which consist of unordered collections of line segments (OSM ways), that if converted without a previous sorting process could lead to inconsistencies in the final GTFS shapes.
+This is a crucial step, as OSM bus relations are MULTILINESTRING geometries, which consist of unordered collections of line segments (OSM ways), that if converted without a previous sorting process could lead to inconsistencies in the final GTFS shapes.
 The sorting criteria is based on the following procedure:
 
 
@@ -289,7 +289,7 @@ The process repeats until no segments remain, and the components are merged into
 ![Final iteration for TCB OSM relation 18957440 (shape_id 1-VA-TERM).
 Segments before the starting points (in gray) are discarded, as they do not meet the distance criteria, preventing geometrical inconsistencies. Last segment endpoint in orange.](figures/methodology/multiline_to_sorted_linestring_3.png){width="75%"}
 
-Once the geometry is standardized into sorted linestrings, it is convert into the GTFS `shapes` table using `gtfstools::convert_sf_to_shapes()` [@r_gtfstools]. 
+Once the geometry is standardized into sorted linestrings, it is converted into the GTFS `shapes` table using `gtfstools::convert_sf_to_shapes()` [@r_gtfstools]. 
 
 
 # Application
@@ -301,9 +301,9 @@ This analysis will focus on the services for a working day, considering the bus 
 - **Carris**, the urban operator for the municipality of Lisbon;
 - **TCB**, the urban operator for the municipality of Barreiro;
 - **MobiCascais**, the urban operator for the municipality of Cascais;
-- **Carris Metropolitana**, the urban operator for the remaining 15 municipalities in the LMA and the sub-urban connections among the 18.
+- **Carris Metropolitana**, the urban operator for the remaining 15 municipalities in the LMA and the suburban connections among the 18.
 
-@tbl-operator-network-characteristics presentes some metrics regarding each operator's network and @fig-aml-shapes-osm depicts their spatial coverage. Carris Metropolitana is the operator with the largest network, presenting the highest values for all indicators, due to its metropolitan coverage and the sub-urban nature of most of its routes. The remainder operators have shorter routes and less stops per trip, as they operate mostly within their respective municipalities. Still, Carris presents a substantial number of trips, as it operates in the capital city of Lisbon, with a inherent higher demand for public transport.
+@tbl-operator-network-characteristics presents some metrics regarding each operator's network and @fig-aml-shapes-osm depicts their spatial coverage. Carris Metropolitana is the operator with the largest network, presenting the highest values for all indicators, due to its metropolitan coverage and the suburban nature of most of its routes. The remaining operators have shorter routes and less stops per trip, as they operate mostly within their respective municipalities. Still, Carris presents a substantial number of trips, as it operates in the capital city of Lisbon, with an inherent higher demand for public transport.
 
 | Operator | Shapes (n) | Shapes peak¹ (n) | Trips (n) | Trips peak¹ (n) | Shapes length² (km) | Stops per trip² (n) | 
 | :---- | --: | ---: | --: | ---: | ----: | ----: | 
@@ -344,7 +344,7 @@ Additionally, the analysis considering the number of trips covered by the match 
 \begin{quote}
 \footnotesize
 \textbf{Notes:} GTFS data filtered for 27/05/2026 (working day). ¹ Considering services between 08:00 and 09:00. 
-² Only displaying number of trips for peak hour because GTFS feeds from diferent operators cover different timespans and therefore the total number of trips is not comparable.
+² Only displaying number of trips for peak hour because GTFS feeds from different operators cover different timespans and therefore the total number of trips is not comparable.
 \end{quote}
 
 
@@ -413,13 +413,15 @@ With an implementation that leverages OSM route relations to avoid complex path-
 For instance, in the case of TCB, the original GTFS shapes had a total of XXXXX vertices, taking XXX mb, while the result shape file generated with this method was reduced to XXXX vertices, taking only XX mb, which represents a reduction of XX% in the file size. -->
 
 The match between GTFS shapes and OSM routes had a high match rate for all operators, finding a correspondence of up to 97% of all trips at peak hour, which enables a realistic analysis of the public transport network.
-Despite not reaching a 100% match, the unlatched association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure, providing indicators such as the number of lanes, maximum speed, type of pavement, parking existence, or the presence of bus lanes.
-This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making.
+Despite not reaching a 100% match, the association with the OSM network is highly relevant in the context of spatial analysis, as it allows to relate the public transport network with an open database of the built infrastructure, providing indicators such as the number of lanes, maximum speed, type of pavement, parking existence, or the presence of bus lanes.
+Analysis that rely on routing engines or catchment areas will benefit from having a common geometry, for instance, estimating travel distances or bus speeds in a more accurate and consistent way. 
+This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making. 
+
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
 
 This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment. Eventually, using a common geographical information base, GTFS could include the segment ids instead of the detailed geometries for each route, potentially reducing the amount of information stored at the shapes file.
 
-It is also worth noting that the outcomes of this paper outreach the methodology proposed.
+It is also worth noting that the outcomes of this paper extend beyond the methodology proposed.
 The release of the GTFShift as an open-source R package^[Available at [https://github.com/U-Shift/GTFShift](https://github.com/U-Shift/GTFShift)] provides the community with a tool that can be used by researchers and practitioners to perform the GTFS-OSM conflation process for any GTFS feed of any operator in the world, enabling the harmonization of GTFS geometries with the OSM network in different contexts and for different purposes. 
 A process that is not restricted to the bus mode, as it can be applied to any mode of transport that has its geometries mapped in OSM, such as rail or tram.
 
@@ -427,10 +429,10 @@ The encapsulation of each step of the workflow in its own function simplifies th
 For instance, the conversion of OSM geometries into GTFS shapes (`GTFShift::create_shapes_from_sf()`) calls a method that standardizes the geometries into a single linestring (`GTFShift::multiline_to_sorted_linestring()`) that can be used in other contexts where the standardization of geometries is required.
 Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method that enables an even simpler GTFS-OSM match, based on the `gtfs:shape_id` attribute, provided it exists in the OSM database. 
 
-Finally, the development of this work has also contributed to the improvement of this open database, with more than 6.000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [_blind_]].
+Finally, the development of this work has also contributed to the improvement of this open database, with more than 6,000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [_blind_]].
 Porto (Portugal), Madrid (Spain) or Toulouse (France) are some examples of cities that have had their public transport bus relations improved on OSM thanks to this work. 
 
-<!-- [https://www.openstreetmap.org/user/Gonçalo Matos/history](https://www.openstreetmap.org/user/Gon%C3%A7alo%20Matos/history)] -->
+The methods presented in this paper can be transposed beyond GTFS standard, such as NeTEx in Europe or TransXChange in the UK. Despite not supporting them natively, its open source nature allows for the extension of its functionalities to support other formats, enabling the harmonization of public transport data with OSM in different contexts and for different purposes with minimal effort.
 
 # Acknowledgment {.unnumbered}
 
