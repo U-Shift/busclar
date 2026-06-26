@@ -355,7 +355,7 @@ The critical analysis of these values is essential to understand the quality of 
 Manual validations on the outliers of each heuristic revealed interesting patterns. 
 Carris high deviation in route length difference is explained by the poor quality of its GTFS shapes, which have an inconsistent sequence of points, such as starting points in the middle of the route, leading to an invalid geometry that has much higher length than the actual route. 
 This issue has been flagged by MobilityData in their GTFS Validation Reports [@mobilitydata_gtfs_2026]. 
-MobiCascais, on the other hand, stands out for its high deviation in the number of stop points difference, caused by the high number of route variants that are not mapped in OSM, leading to a poorer match quality.
+MobiCascais, on the other hand, stands out for its high deviation in the start/end points distance difference, caused by the high number of route variants that are not mapped in OSM, leading to a poorer match quality.
 
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
@@ -376,7 +376,7 @@ MobiCascais, on the other hand, stands out for its high deviation in the number 
 
 To discard outliers and ensure the quality of the matched routes, a filtering process was applied, where routes with a length difference greater than 1000 meters or start/end point distance greater than 500 meters were removed.
 @tbl-osm-match-results-filtered presents the number of shapes that meet this criteria and the updated match rates at peak hour.
-MobiCascais and Carris Metropolitana were the operators that presented the greatest reduction, with the first having dropped 12.9 p.p. in the number of shapes matched.
+TCB and Carris Metropolitana were the operators that presented the greatest reduction, with the first having dropped 9.68 p.p. in the number of shapes matched.
 On the other hand, Carris reduced less than 3 percentage points, suggesting it is the operator with the best data quality on OSM.
 
 | Operator | Matched shapes after filtering (n) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
