@@ -97,7 +97,7 @@ As an alternative, OSM provides its own public transport geometries through rout
 Made up of a set of OSM stop nodes and road ways, route relations describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate].
 Their availability has been growing, with more than 300,000 public transport route relations documented in OSM until May 2026, as shown in @fig-osm-gtfs-growth.
 Nevertheless and despite the OSM including attributes to associate relations to the GTFS feed, such as `gtfs:shape_id` and `gtfs:route_id` [@openstreetmap_gtfs_nodate], their usage is still minimal, accounting for only 4.52% and 11.46% of the route relations.
-It is worth mentioning that adding a relation in OSM imply changing the geometries of OSM segments.
+It is worth mentioning that adding a relation in OSM does not imply changing the geometries of OSM segments.
 
 Therefore, associating GTFS and OSM data requires conflation.
 This process, also known as map matching, is defined as the combination of "geographic information from overlapping sources so as to retain accurate data, minimize redundancy, and reconcile data conflicts" [@longley_geographic_2001].
