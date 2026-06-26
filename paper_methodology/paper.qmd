@@ -169,6 +169,8 @@ Finally, the method also includes an optional flag to construct the `transfers` 
 The `GTFShift::osm_shapes_match_routes()` function enables the matching of GTFS shapes with OSM relations based on geometrical correspondence.
 For that, it requires a GTFS feed (loaded in the previous step) and a query that specifies the OSM public transport network over which the shapes will be matched (a filter for OSM route relations using parameters such as [`network`](https://wiki.openstreetmap.org/wiki/Key:network) or [`operator`](https://wiki.openstreetmap.org/wiki/Key:operator)) defined using `osmdata::opq()` [@r_osmdata].
 
+It is also important to define the projected CRS to consider for the geometrical match, to avoid distortions in the distance calculations. For this case study, EPSG:3763 was used, which is the most suitable for Portugal mainland.
+
 Internally, after fetching the OSM public transport network data that matches the query (a set of OSM route relations), the algorithm identifies the subset of OSM routes relations that match each GTFS route (based on the route identifier).
 Then, for each shape, the geometrical match is performed considering the OSM route $j$ that minimizes the closeness metric $C(i, j)$ for GTFS shape $i$.
 The matching algorithm is formulated as follows:
@@ -226,18 +228,18 @@ Additionally, it includes the heuristic values for the closeness metric, which c
 
 
 ```{#lst-match-result .r lst-cap="Sample of match result for TCB"}
-Simple feature collection with 69 features and 5 fields
+Simple feature collection with 55 features and 5 fields
 Geometry type: MULTILINESTRING
 Dimension:     XY
 Bounding box:  xmin: -9.084416 ymin: 38.5716 xmax: -9.011861 ymax: 38.6741
 Geodetic CRS:  WGS 84
 First 10 features:
        shape_id   osm_id distance_diff points_diff stops_diff                           geom
-1     1-TERM-FT 18957436         49.17       14.59         24 MULTILINESTRING ((-9.078279...
-2     1-TERM_EA 18957437         31.32       11.85         28 MULTILINESTRING ((-9.078279...
-3  1-QVB-TER_EA 18957438        281.71     2033.65         15 MULTILINESTRING ((-9.050197...
-4   1-QVBB-TERM 18957439        133.54      408.51         20 MULTILINESTRING ((-9.050197...
-5     1-VA-TERM 18957440         77.81       78.94         12 MULTILINESTRING ((-9.039743...
+1     1-TERM-FT 18957436         87.03       14.60          0 MULTILINESTRING ((-9.078279...
+2     1-TERM_EA 18957437          6.77       11.87          1 MULTILINESTRING ((-9.078279...
+3  1-QVB-TER_EA 18957438        281.88     2030.41          1 MULTILINESTRING ((-9.050197...
+4   1-QVBB-TERM 18957439        133.49      409.43          1 MULTILINESTRING ((-9.050197...
+5     1-VA-TERM 18957440         77.73       79.10          1 MULTILINESTRING ((-9.039743...
 ```
 
 ## Build shapes table from OSM geometries

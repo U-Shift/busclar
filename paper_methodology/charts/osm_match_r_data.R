@@ -3,7 +3,7 @@ aml_match = sf::st_read("https://github.com/U-Shift/GTFShift/releases/download/v
 aml_match
 View(aml_match)
 
-barreiro_match = sf::st_read("https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260518_run20260518.gpkg")
+barreiro_match = sf::st_read("https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260527_run20260626.gpkg")
 barreiro_match
 View(barreiro_match)
 
