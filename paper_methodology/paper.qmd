@@ -307,10 +307,10 @@ This analysis will focus on the services for a working day, considering the bus 
 
 | Operator | Shapes (n) | Shapes peak¹ (n) | Trips (n) | Trips peak¹ (n) | Shapes length² (km) | Stops per trip² (n) | 
 | :---- | --: | ---: | --: | ---: | ----: | ----: | 
-| Carris | 263 | 176 | 10100 | 1235 | 13.16 ± 6.06 | 29.29 ± 11.71 |
-| TCB | 60 | 31 | 964 | 111 | 13.71 ± 7.57 | 24.95 ± 8.99 |
-| MobiCascais | 130 | 86 | 2053 | 236 | 16.23 ± 6.88 | 30.98 ± 14.84 |
-| Carris Metropolitana | 1533 | 1056 | 21712 | 2900 | 22.37 ± 13.24 | 34.13 ± 16.17 |
+| Carris | 263 | 176 | 10100 | 1235 | 10.25 ± 4.72 | 29.29 ± 11.71 |
+| TCB | 60 | 31 | 964 | 111 | 10.70 ± 5.91 | 24.95 ± 8.99 |
+| MobiCascais | 130 | 86 | 2053 | 236 | 12.65 ± 5.36 | 30.98 ± 14.84 |
+| Carris Metropolitana | 1533 | 1056 | 21712 | 2900 | 17.44 ± 10.32 | 34.13 ± 16.17 |
 
 : Operator network characteristics based on GTFS data {#tbl-operator-network-characteristics}
 
@@ -337,7 +337,7 @@ Additionally, the analysis considering the number of trips covered by the match 
 | Carris | 99.62 | 100 | 99.96 | 100 | 
 | TCB | 91.66 |  100 | 96.78 | 100 | 
 | MobiCascais | 94.62 | 96.51 | 97.27 | 96.61 |
-| Carris Metropolitana | 98.96 | 99.53 | 98.63 | 99.76 |
+| Carris Metropolitana | 98.96 | 99.53 | 99.36 | 99.76 |
 
 : Results of the match between GTFS routes shapes and OSM route relations for each operator {#tbl-osm-match-results}
 
@@ -359,10 +359,10 @@ MobiCascais, on the other hand, stands out for its high deviation in the number 
 
 | Operator | Heuristic length (m)¹ | Heuristic points (m)¹ | Heuristic stops (n)¹ |
 | :---- | ---- | ---- | ---- |
-| Carris | 357.9 ± 1669.2 | 58.2 ± 226.9 | 0.38 ± 0.70 |
-| TCB | 187.9 ± 259.0 | 107.6 ± 460.5 | 0.11 ± 0.31 |
-| MobiCascais | 167.3 ± 574.3 | 206.5 ± 1110.7 | 0.46 ± 1.01 |
-| Carris Metropolitana | 403.4 ± 599.5 | 93.3 ± 834.3 | 0.40 ± 0.93 |
+| Carris | 278.9 ± 1300.6 | 45.4 ± 176.7 | 0.38 ± 0.70 |
+| TCB | 146.6 ± 202.4 | 84.0 ± 359.2 | 0.11 ± 0.31 |
+| MobiCascais | 130.5 ± 447.8 | 161.1 ± 866.6 | 0.46 ± 1.01 |
+| Carris Metropolitana | 314.0 ± 466.5 | 72.65 ± 649.3 | 0.40 ± 0.93 |
 
 : Heuristic values for the shapes matched for each operator {#tbl-osm-match-heuristic}
 
@@ -382,9 +382,9 @@ On the other hand, Carris reduced less than 3 percentage points, suggesting it i
 | Operator | Matched shapes after filtering (n) | Matched shapes peak¹ (%) | Matched trips peak¹ (%) |
 | :----- | ---- | ---- | ---- | 
 | Carris | 251 | 97.16 | 97.49 |
-| TCB | 51 | 87.10 | 87.39 |
-| MobiCascais | 116 | 90.69 | 93.22 |
-| Carris Metropolitana | 1290 | 87.88 | 90.48 |
+| TCB | 52 | 90.32 | 96.40 |
+| MobiCascais | 117 | 91.86 | 94.49 |
+| Carris Metropolitana | 1369 | 92.42 | 94.03 |
 
 : Shapes matched between GTFS routes shapes and OSM route relations for each operator after filtering for outliers {#tbl-osm-match-results-filtered}
 

@@ -6,7 +6,12 @@ gtfs_original_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_barreiro_20260518.zip"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_lisboa_20260519.zip"
   # OLD VERSION "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_AML_20260506.zip"
-match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs2026-05-27_run20260619.csv" 
+match_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs20260527_run20260626.csv"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs20260527_run20260626.csv"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs20260527_run20260626.csv"
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs20260527_run20260626.csv"
+  # Versions before CRS fix
+  # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_lisboa_gtfs2026-05-27_run20260619.csv" 
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_barreiro_gtfs2026-05-27_run20260619.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_cascais_gtfs2026-05-27_run20260619.csv"
   # "https://github.com/U-Shift/GTFShift/releases/download/v0.9/shapes_match_AML_gtfs2026-05-27_run20260619.csv"
@@ -34,11 +39,6 @@ trips_routes_bus <- gtfs_original$trips |>
   filter(route_id %in% routes_bus$route_id)
 gtfs_original <- tidytransit::filter_feed_by_trips(gtfs_original, trips_routes_bus$trip_id)
 
-# CARRIS METROPOLITANA ONLY
-# Rename all shapes that start with [.*], remove that part
-gtfs_original$shapes$shape_id <- gsub("^\\[[^]]*\\]\\s*", "", gtfs_original$shapes$shape_id)
-gtfs_original$trips$shape_id <- gsub("^\\[[^]]*\\]\\s*", "", gtfs_original$trips$shape_id)
-
 summary(gtfs_original)
 length(unique(gtfs_original$shapes$shape_id))
 
@@ -49,7 +49,7 @@ length(unique(gtfs_original$shapes$shape_id))
 length(unique(gtfs_original$trips$trip_id))
 
 gtfs_original_shapes <- tidytransit::shapes_as_sf(gtfs_original$shapes) |>
-  sf::st_transform(3857) |> # To get meters
+  sf::st_transform(3763) |> # To get meters (for PT CRS)
   dplyr::mutate(length_m = sf::st_length(geometry)) |>
   dplyr::mutate(length_km = as.numeric(length_m) / 1000)
 mean(gtfs_original_shapes$length_km)
