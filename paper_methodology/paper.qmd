@@ -132,7 +132,7 @@ OSM wiki [@openstreetmap_gtfs_nodate] lists some of these tools, grouping them i
 
 - **OSM \rightarrow GTFS**: This category gathers tools mainly oriented to generate GTFS feeds from OSM data, either computing approximate stop times from the OSM attributes on service frequency [@noauthor_jungle_busprism_2025] or requiring the manual provision of more complete schedules [@grote_groteosm2gtfs_2026; @noauthor_hiposfero2g_2026; @gamma_gammapopolamosm2gtfs_2025];
 
-- **GTFS \rightarrow OSM**: Focused on comparing GTFS and OSM data to identify mismatches [@kokanovic_stalker314314gtfs_osm_validator_2024; @horner_tjhornergtfs_janitor_2026] and providing bus route geometries to the OSM network by using different routing algorithms [@hubsch_whubschgtfstoosm_2026; @gabriele_gabboxlgtfs_osm_import_2026].
+- **GTFS \rightarrow OSM**: Focused on comparing GTFS and OSM data to identify mismatches [@kokanovic_stalker314314gtfs_osm_validator_2024; @horner_tjhornergtfs_janitor_2026] and providing bus route geometries to the OSM network by using different routing algorithms [@hubsch_whubschgtfstoosm_2026; @gabriele_gabboxlgtfs_osm_import_2026; @poletti_public_2016; @bast_sparse_2018].
 
 These tools, specially those in the second category, provide useful methodologies for GTFS-OSM association.
 However, the ones that generate geometries rely on routing algorithms, ignoring the database of already existing route relations in OSM.
