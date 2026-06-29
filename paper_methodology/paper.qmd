@@ -50,10 +50,10 @@ abstract: |
 keywords: 
   - GTFS
   - OpenStreetMap
-  - Transit planning
-  - Network analysis
   - Conflation
   - R package
+  - Network analysis
+  - Transit planning
 
 ---
 
