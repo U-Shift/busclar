@@ -81,9 +81,7 @@ An analysis that ranges from simple visualization techniques to more complex mod
 <!-- ![Publications and citations of GTFS related papers in Web of Science database between 2005 and 2026](figures/intro/web_of_science_gtfs.png) -->
 
 However, the lack of standardization in GTFS shapes still presents some challenges for a proper spatial analysis.
-@fig-gtfs-shapes-mess-tcb illustrates an example of this issue for the Transportes Coletivos do Barreiro (Barreiro, Portugal) GTFS feed, where the geometries for different shapes that follow the same path do not overlap with each other, neither with the OpenStreetMap (OSM) road network, or other map providers.
-An issue that has been identified in the GTFS community [@gtfs_shapes_github_discussion] and in the literature [@vuurstaek_gtfs_2020], but that remains unresolved. 
-Nevertheless, the solution will unlikely come from the GTFS standard evolution, as it requires a denormalized representation of public transport in order to support all the different modes and their specificities, such as subways or ferries, that have shapes which are not part of the road network. 
+@fig-gtfs-shapes-mess-tcb illustrates an example of this issue for the Transportes Coletivos do Barreiro (Barreiro, Portugal) GTFS feed, where the geometries for different shapes that follow the same path do not overlap with each other, neither with the OpenStreetMap (OSM) road network, or other map providers. 
 
 <!-- Mention GTFSS isssues-->
 <!-- https://github.com/google/transit/issues?q=is%3Aissue%20state%3Aopen%20shapes -->
@@ -91,6 +89,14 @@ Nevertheless, the solution will unlikely come from the GTFS standard evolution, 
 <!-- https://github.com/google/transit/issues/459 -->
 
 ![OSM road network overlapped with GTFS shapes for TCB, Barreiro, Portugal.](figures/intro/gtfs_shapes_mess_tcb.png){#fig-gtfs-shapes-mess-tcb width="75%"}
+
+An issue that has been identified in the GTFS community [@gtfs_shapes_github_discussion] and in the literature [@vuurstaek_gtfs_2020], but that remains unresolved, despite the existance of guidelines for shapes representation in GTFS [@mobilitydata_shapes_nodate], such as:
+
+> Ensure that shapes align with the path that vehicles travel along in the WGS84 coordinate system, avoid offsets caused by differing coordinate systems.
+
+> For roadway services (e.g., bus), alignments should follow the centerline of the roadway the vehicle travels on. This may be either the centerline of the street if there are no designated lanes or the centerline of the travel direction side if lanes are specified.
+
+Still, there are open discussions in the GTFS community regarding enforcing best practices for shapes representation, as it requires a denormalized representation of public transport in order to support all the different modes and their specificities, such as subways or ferries, that have shapes which are not part of the road network. 
 
 
 As an alternative, OSM provides its own public transport geometries through route relations.
@@ -423,6 +429,8 @@ Analysis that rely on routing engines or catchment areas will benefit from havin
 This unlocks a wide range of modeling possibilities that can be used to support transport planning and policy making. 
 
 Future work can leverage this methodology to build comprehensive analysis of the public transport network and the urban environment, for instance, combining public transport frequencies with the road network characteristics to prioritize bus lanes implementation.
+
+Additionally, properly represented shapes geometries enhances "the accuracy of trip visualizations in trip planning applications, ensuring a seamless experience for riders", as highlighted by @mobilitydata_shapes_nodate.
 
 This work contributes to a broader discussion on the future of GTFS data, highlighting the potential of OSM as a complementary source of information for public transport networks. Its integration with GTFS can enhance the quality and accuracy of public transport data, providing a more comprehensive understanding of the network and its interactions with the urban environment. Eventually, using a common geographical information base, GTFS could include the relation ids instead of the detailed geometries for each route, potentially reducing the amount of information stored at the shapes.txt file.
 
