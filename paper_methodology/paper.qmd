@@ -97,7 +97,6 @@ As an alternative, OSM provides its own public transport geometries through rout
 Made up of a set of OSM stop nodes and road ways, route relations describe "the physical path taken by the vehicles through the infrastructure by a transit service" [@openstreetmap_public_nodate].
 Their availability has been growing, with more than 300,000 public transport route relations documented in OSM until May 2026, as shown in @fig-osm-gtfs-growth.
 Nevertheless and despite the OSM including attributes to associate relations to the GTFS feed, such as `gtfs:shape_id` and `gtfs:route_id` [@openstreetmap_gtfs_nodate], their usage is still minimal, accounting for only 4.52% and 11.46% of the route relations.
-It is worth mentioning that adding a relation in OSM does not imply changing the geometries of OSM segments.
 
 Therefore, associating GTFS and OSM data requires conflation, when these tags are not filled out.
 This process, also known as map matching, is defined as the combination of "geographic information from overlapping sources so as to retain accurate data, minimize redundancy, and reconcile data conflicts" [@longley_geographic_2001].
@@ -172,6 +171,10 @@ For that, it requires a GTFS feed (loaded in the previous step) and a query that
 
 Internally, after fetching the OSM public transport network data that matches the query (a set of OSM route relations), the algorithm identifies the subset of OSM routes relations that match each GTFS route (based on the route identifier).
 Then, for each shape, the geometrical match is performed considering the OSM route $j$ that minimizes the closeness metric $C(i, j)$ for GTFS shape $i$.
+
+Note that it is relevant to define the projected CRS to be considered for the geometrical match, to avoid distortions in the distance calculations.
+For this case study, we used EPSG:3763 (PT-TM06/ETRS89) as this is the official geodetic reference system and cartographic projection for mainland Portugal.
+
 The matching algorithm is formulated as follows:
 
 **1.
@@ -203,9 +206,6 @@ Shape $S_i$ is associated with the OSM route $O_{j^*}$ that minimizes the closen
 
 $$j^* = \operatorname{argmin}_{j} C(i, j)$$
 
-Note that it is relevant to define the projected CRS to be considered for the geometrical match, to avoid distortions in the distance calculations.
-For this case study, we used EPSG:3763 (PT-TM06/ETRS89) as this is the official geodetic reference system and cartographic projection for mainland Portugal.
-
 **4.
 Conflict Resolution:** If multiple GTFS shapes are associated with the same OSM route $O_j$, only the shape $S_i$ that minimizes the closeness metric is retained.
 The other conflicting shapes are ignored and a warning is triggered.
@@ -225,9 +225,9 @@ WARNING!  4 error(s) were GTFS routes that had multiple shapes associated to the
 ...
 ```
 
+
 The result is a `sf` `data.frame` that associates each GTFS `shape_id` with an OSM route relation `osm_id` and its respective geometry, as exemplified in @lst-match-result.
 Additionally, it includes the heuristic values for the closeness metric, which can be used to evaluate the quality of the match (columns `distance_diff`, `points_diff` and `stops_diff`).
-
 
 ```{#lst-match-result .r lst-cap="Sample of match result for TCB"}
 Simple feature collection with 55 features and 5 fields
@@ -243,6 +243,7 @@ First 10 features:
 4   1-QVBB-TERM 18957439        133.49      409.43          1 MULTILINESTRING ((-9.050197...
 5     1-VA-TERM 18957440         77.73       79.10          1 MULTILINESTRING ((-9.039743...
 ```
+
 
 ## Build shapes table from OSM geometries
 
@@ -435,6 +436,7 @@ Additionally, it makes available `GTFShift::osm_shapes_to_routes()`, a method th
 
 Finally, the development of this work has also contributed to the improvement of this open database, with more than 6,000 OSM bus route relations updated with the parameters to associate them with the GTFS feeds ^[OSM changesets by GTFShift team available at [_blind_]].
 Porto (Portugal), Madrid (Spain) or Toulouse (France) are some examples of cities that have had their public transport bus relations improved on OSM as a result of this work. 
+It is worth mentioning that adding a relation in OSM does not imply changing the geometries of OSM segments.
 
 The methods presented in this paper can be transposed beyond GTFS standard, such as NeTEx in Europe or TransXChange in the UK. Despite not supporting them natively, its open source nature allows for the extension of its functionalities to support other formats, enabling the harmonization of public transport data with OSM in different contexts and for different purposes with minimal effort.
 
@@ -446,4 +448,3 @@ The methods presented in this paper can be transposed beyond GTFS standard, such
 -->
 
 # References {.unnumbered}
-
