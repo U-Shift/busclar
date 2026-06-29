@@ -99,7 +99,7 @@ Their availability has been growing, with more than 300,000 public transport rou
 Nevertheless and despite the OSM including attributes to associate relations to the GTFS feed, such as `gtfs:shape_id` and `gtfs:route_id` [@openstreetmap_gtfs_nodate], their usage is still minimal, accounting for only 4.52% and 11.46% of the route relations.
 It is worth mentioning that adding a relation in OSM does not imply changing the geometries of OSM segments.
 
-Therefore, associating GTFS and OSM data requires conflation.
+Therefore, associating GTFS and OSM data requires conflation, when these tags are not filled out.
 This process, also known as map matching, is defined as the combination of "geographic information from overlapping sources so as to retain accurate data, minimize redundancy, and reconcile data conflicts" [@longley_geographic_2001].
 However, this is not a trivial process.
 When the input data comes from different sources, conflation may lead to several challenges, such as the loss of data quality, topological inconsistencies, or the mismatch of geometries [@vuurstaek_gtfs_2020].
