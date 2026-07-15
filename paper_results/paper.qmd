@@ -59,7 +59,7 @@ They also contribute to a more equitable mobility. Considering the number of peo
 
 However, introducing them on road infrastructure still hampers other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014]. It is therefore crutial to underlie bus lane implementation on reliable and robust information. 
 
-To tackle this challenge, we present GTFShift, an open-source R package that implements the full pipeline to identify and prioritize bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This paper presents GTFShift methodology for bus lane prioritization and its application to the city of Lisbon, in Portugal, as a case study.
+To tackle this challenge, we present an open and reproductible methodology to identify and prioritize bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritization output. This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
 
 
 # Literature review
@@ -68,48 +68,75 @@ To tackle this challenge, we present GTFShift, an open-source R package that imp
 
 ## Bus lanes benefits
 
-Bus lanes (or transit priority lanes) have the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
-<!-- without additional material or human resources -->
+Bus lanes (or transit priority lanes) have several benefits, not only for bus operations, but also for the overall public transport system and the city as a whole. 
 
-These benefits are amplified when there is a continuous bus lane network, with the greatest travel time savings at intersections [@truong-2015], particularly if vehicles obtain right-of-way at traffic lights.
-<!-- See also @szarata2022;  -->
+By allocating mixed road space to buses, a lane can have its capacity to move people increased up to four times [@uitp_regions_2025], with several studies demonstrating its potential to improve the efficiency and reliability of bus services. 
+Case studies reveal speed increases of 300% [@basso-2011], travel time reductions of up to 18% and waiting time reductions of about 12% [@russo_dedicated_2022], as well as increases of 65% in the probability of buses being on time [@surprenant-legault-2011]. 
+An operational performance enhancement that enables the increment of bus frequencies betwen 20% [@russo_dedicated_2022] and 70% [@basso-2011], even with a smaller fleet [@basso-2011], but that goes beyond the numbers. 
+Drivers enquired by @cordera_good_2024 reported also relevant impacts on their comfort and stress levels, as well as on the safety of both passengers and pedestrians.
+
+Passengers, in turn, benefit from time savings at the stop and inside the vehicles, increasing their confidence in the bus system and the odds of switching to bus as a mode of transport, with studies showing a probability of modal shift between 26% [@russo_dedicated_2022] and 70% [@vedagiri_estimating_2009]. 
+In constrast, a study on the effects of allowing private vehicles to use bus lanes in India found a 19pp decrease in the probability of modal transfer after cars were introduced in bus lanes [@mane_effect_2018].
+
+From a social and spatial justice perspective, bus lanes are also a tool to promote more equitable mobility, as they prioritize the movement of people over vehicles and improve the provision of transport service to the entire population with a more economical and efficient use of public space, while having much lower externalities than other modes [@vuchic1981].
+
+Moreover, when compared to other hard measures to contain congestion such as road pricing or public transport subsidies, bus lanes were the only capable of inducing changes in bus size, frequency, circulation speeds and spacing between stops [@basso-2011], making them highly relevant to improve the overall efficiency of the public transport system. 
+
+Still, it is important to acknowledge that their benefits can be hampered or leveraged by their design and implementation. For instance, performance has been found to degrade when right-turns are allowed [@diab_understanding_2012]. 
+On the other hand, pre-signals [@wu_bus_1998] enable a localized improvement of bus lane performance at intersections, while a continuous network of bus lanes has been found to generate a "multiplier effect" on the benefits induced. 
+@truong-2015 has found that "travel time benefits and general traffic travel time disbenefits are proportional to the number of links with a bus lane", with sparse segments even having a negative effect on buses under certain circumstances.
 
 
 ## Obstacles to bus lane implementation
 
-However, introducing them on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014].
+Despite the acknowledged benefits, introducing bus lanes on road infrastructure affects other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010; @uk_study_2005; @russo_dedicated_2022], potentially jeopardizing public acceptance [@batty-2014; @cesme2018].
 
+Nevertheless, modal transfer and the willingness of private vehicle users to avoid the roads that have had a capacity decrease due to bus lane implementation can mitigate these effects, as shown by @russo_dedicated_2022, who estimated motor-vehicle travel time increment after bus lane implementation to decrease from 4.10 min/km to 1.76 min/km (with a base line of 1.49 for mixed traffic) when considering a higher elasticity of car demand.
 
-## Common criteria for implementing bus lanes
+These, associated to the other already covered pros and cons and their inherent variability, makes it crutial to underlie bus lane implementation on reliable and robust information to guide an effective design, in a transparent process that involves all the stakeholders, associated to education and enforcement campaigns [@cesme2018].
 
-Common criteria for implementing bus lanes include:
+## Criteria for bus lanes implementation
 
--   Frequency of buses (and trams) per hour and direction, at a peak hour;
--   Number of lanes in the same direction;
--   Existing traffic conditions;
--   Existing bus lanes in the area (from a network continuity perspective).
+The literature presents several approaches to identify and prioritize bus lane implementation at a strategic level, that can be gathered in two main categories: threshold and performance based.
 
-For instance, NACTO reccomends that dedicated bus lanes should be applied «on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability» [@nacto2016transit].
-Nevertheless, the decision should be based on a more detailed analysis of the network, including the existing traffic conditions, the number of bus stops, and the demand for public transport in the area.
+Threshold based approaches imply an a-priori definition of a set of criteria that must be met to justify the implementation of a bus lane. For instance, @vuchic1981 advocates that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, ratio of average auto to bus occupancies and bus frequency per hour, combined in @fig-vuchic-criteria. 
+In this figure we can observe, for instance, that for a street with 2 lanes ($N$) and 400 veh/h/lane ($q_A$) with a ratio of average auto to bus occupancies of 0.03 ($X$), the minimum bus frequency to justify its implementation is considered to be 12 bus/h ($q_B$).
 
-@vuchic1981 suggests that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, and bus frequency per hour. For instance, the minimum bus frequency for a street with 2 lanes in the same direction and 400 veh/h/lane is considered to be 12 bus/h to justify its implementation, according to the author.
+![Travel volume warrant for bus lane introduction [@vuchic1981]](figures/lr/vuchinc.png){#fig-vuchic-criteria width=65%}
 
-This paper focuses on estimating hourly bus frequency for each road network segment in urban areas, using General Transit Feed Specification (GTFS) data, an international transit information standard, which is widely available from many transit agencies.
-Identifying high-frequency corridors is essential for prioritizing and supporting new bus lane implementation.
+In a similar way, @nacto2016transit recommends that dedicated bus lanes should be applied "on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability". 
+A review by @uk_study_2005 on the state of the practice in Korea, United Kingdom and United States of America revealed additional criteria, such as the passenger volume (per hour) and the number of lanes (per direction).
 
-For this, we present [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package [@gshift2025] that extends the functionality of other R libraries that deal with GTFS, such as `tidytransit` [@tidytransit] and `gtfstools` [@gtfstools]. 
-This tool helps prioritize bus lanes in a given territory to improve transit efficiency.
+Conversely, performance based methods propose optimization models to evaluate the system as a whole, considering the effects of bus lane implementation on all modes and the overall efficiency of the transport system. 
+For instance, @sun_combinatorial_2017 developed a multi-objective bi-level programming model to simultaneously optimize bus lane layout and bus frequency while minimizing travel time, emissions, and operating costs. 
+Similarly, @tsitsokas_modeling_2021 employ combinatorial optimization and dynamic traffic modeling to identify the optimal spatial distribution of lanes across large-scale networks, explicitly accounting for queue spillbacks and "multiplier effects" from continuous lane segments.
 
+Together, they build up a thorough set of indicators:
+
+- Frequency of buses per hour and direction, at a peak hour [@uk_study_2005; @vuchic1981; @nacto2016transit; @tsitsokas_modeling_2021];
+- Number of lanes in the same direction [@uk_study_2005; @vuchic1981];
+- Traffic conditions [@uk_study_2005; @vuchic1981];
+- Bus lanes network continuity [@tsitsokas_modeling_2021];
+- Passenger demand [@uk_study_2005; @tsitsokas_modeling_2021] or detailed OD travel demand [@sun_combinatorial_2017; @tsitsokas_modeling_2021].
+
+However, they vary in complexity and applicability. Performance based methods are the most comprehensive, but also the most complex, requiring more data and computational resources. They are also more difficult to implement and understand, which may limit their applicability in decision making processes and communication campaigns, which are key to ensure public acceptance and support for bus lane implementation [@cesme2018].
+
+On the other hand and despite the simplicity of threshold methods, there is not a consensus on the threshold values to be used, nor yet a systematic and open approach for their implementation, which may lead to inconsistent and non-reproducible results.
+
+This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to estimate the key indicators for bus lane implementation, providing a systematic and reproducible framework, customizable to different contexts and political requirements.
+It aims to support a more transparent and evidence-based decision-making in urban transport planning.
 
 # Methodology
 
 ## Bus frequency
 
-## Number os lanes
+## Number of lanes
 
 ## Network continuity
 
 ## Traffic conditions
+
+## Passenger demand
 
 
 # Results
