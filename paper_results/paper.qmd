@@ -59,7 +59,11 @@ They also contribute to a more equitable mobility. Considering the number of peo
 
 However, introducing them on road infrastructure still hampers other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014]. It is therefore crutial to underlie bus lane implementation on reliable and robust information. 
 
-To tackle this challenge, we present an open and reproductible methodology to identify and prioritise bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritisation output. This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
+To tackle this challenge, we present an open and reproductible methodology to identify and prioritise bus lane implementation. 
+Founded on GTFS, OpenStreetMap (OSM) open data, and leveraging a methodology to harmonise these data sources developed by the authors [@gtfshift_paper_method], it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. 
+This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritisation output. 
+This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
+
 
 
 # Literature review
@@ -121,28 +125,119 @@ Together, they build up a thorough set of indicators:
 
 However, they vary in complexity and applicability. Performance based methods are the most comprehensive, but also the most complex, requiring more data and computational resources. They are also more difficult to implement and understand, which may limit their applicability in decision making processes and communication campaigns, which are key to ensure public acceptance and support for bus lane implementation [@cesme2018].
 
-On the other hand and despite the simplicity of threshold methods, there is not a consensus on the threshold values to be used, nor yet a systematic and open approach for their implementation, which may lead to inconsistent and non-reproducible results.
+On the other hand and despite the simplicity of threshold methods, there is not a consensus on the threshold values to be used, nor yet a systematic and open approach for their processing and aggregation, an issue that may lead to inconsistent and non-reproducible results as authors report mismatches between different data sources [@vuurstaek_gtfs_2020; @gtfshift_paper_method].
 
-This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to estimate the key indicators for bus lane implementation, providing a systematic and reproducible framework, customizable to different contexts and political requirements.
+This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to characterise and harmonise the several dimensions relevant to the bus lane implementation problem, enabling a deep analysis and understanding of the local context before applying any potential threshold values, that can be adjusted by the public decision makers to their specific needs. 
 It aims to support a more transparent and evidence-based decision-making in urban transport planning.
+
+# Data 
+
+Characterising the several dimensions of the bus lane implementation problem involves the combination of inherently different data sources. 
+To foster a systematic and reproducible approach, we have gathered three open data sources that enable to estimate the full set of relevant indicators found in the literature:
+
+- **General Transit Feed Specification (GTFS)**, a widely adopted open data standard to distribute planned public transport data, including route geometries (shapes) and detailed schedules for service operations, from which we can infer the frequency of buses;
+
+- **GTFS Realtime (GTFS-RT)**, an extension of GTFS that provides real-time information about how planned services perform in practice, such as vehicle position and occupation status, that can be used to determine proxies for travel speed and passenger demand;
+
+- **OpenStreetMap (OSM)**, a community-driven map database providing detailed information about the road network geometry and topology, including the number of lanes and the existence of bus lanes.
 
 # Methodology
 
+The methodology presented in this paper leverages a previous work by the authors, that enables the harmonisation of GTFS shapes with OSM road network geometries, improving the spatial accuracy of bus route representation and unlocking a wide range of spatial analysis through the relation between the public transport network and the built infrastructure [@gtfshift_paper_method]. 
+
+Bus lane prioritisation is one of its possible use cases. To apply the methodology to this end, the codebase previously developed and made available at the GTFShift R package, has been extended with several methods to collect, process the several dimensions of this problem, and gather them at the OSM road network level, enabling a comprehensive analysis of the conditions on the road network and the evaluation and weighting of the produced indicators according to the local context for bus lane implementation. 
+The data sources and processing flow are schematically presented in @fig-method-diagram, and further detailed in the following subsections.
+
+![Data sources and processing flow (GTFS logos generated with AI for illustrative purposes)](figures/methods/diagram.png){#fig-method-diagram width="90%"}
+
 ## Bus frequency
+
+To quantify the number of buses that traverse each road segment at each hour, the `GTFShift::get_way_frequency_hourly()` method is used. This method spatially maps scheduled trips from GTFS data for a reference date $D$ onto OpenStreetMap (OSM) way segments, $\mathcal{W}$, using `GTFShift::osm_shapes_to_routes()` and aggregates them into hourly intervals.
+
+For each scheduled trip $\tau \in T_D$, the departure hour $h(\tau) \in \{0, \dots, 23\}$ is determined by its departure time at the origin stop ($k = 1$):
+
+$$h(\tau) = \left\lfloor \frac{t_{\text{dep}}(\tau, 1)}{3600} \right\rfloor$$
+
+The total hourly transit frequency $F(w, h)$ traversing an OSM way segment $w \in \mathcal{W}$ during hour $h$ is obtained by aggregating the number of trips by their geometries (GTFS shapes) $s \in \mathcal{S}_w$ that pass through segment $w$ and have departed at hour $h$:
+
+$$F(w, h) = \sum_{s \in \mathcal{S}_w} f(s, h)$$
+
+where $f(s, h) = \left| \{ \tau \in T_D \mid s(\tau)=s, \; h(\tau)=h \} \right|$ is the number of trips using shape $s$ that depart at hour $h$, and $\mathcal{S}_w = \{s \in \mathcal{S} \mid m_{s,w}=1\}$ is the set of GTFS shapes map-matched to segment $w$ using `GTFShift::osm_shapes_to_routes()`, where $m_{s,w}=1$ indicates that shape $s$ traverses segment $w$. 
 
 ## Number of lanes
 
+To evaluate road space availability for dedicated bus lane prioritisation, the number of circulation and parking lanes per direction is derived from OpenStreetMap (OSM) attributes using `GTFShift::prioritise_lanes()`.
+
+The total number of circulation lanes $N_{\text{circ}}(w)$ for segment $w$ is parsed from OSM tags (`lanes`), falling back to directional tag sums (`lanes:forward`, `lanes:backward`, `lanes:both_ways`), or defaulting to $N_{\text{circ}}(w) = 1$ for one-way roads (`oneway = yes`) and $N_{\text{circ}}(w) = 2$ for bidirectional roads. The number of flow directions $N_{\text{dir}}(w) \in \{1, 2\}$ is determined by `oneway` tags, enforcing $N_{\text{dir}}(w) = 1$ when $N_{\text{circ}}(w) = 1$.
+
+The per-direction circulation capacity $N_{\text{dir\_lanes}}(w)$ is calculated as:
+
+$$N_{\text{dir\_lanes}}(w) = \max\left(1, \; \frac{N_{\text{circ}}(w)}{N_{\text{dir}}(w)}\right)$$
+
+Additionally, on-street parking lanes $N_{\text{park}}(w) \in \{0, 1, 2\}$ are inferred by checking lateral parking tags (`parking:lane:left/right/both`), accounting for active parking restrictions.
+
 ## Network continuity
+
+To evaluate network continuity and identify gaps between existing infrastructure and prioritized corridors, designated bus lanes are extracted from OpenStreetMap using `GTFShift::osm_bus_lanes()`.
+
+For a spatial bounding box enclosing the study area, road network features tagged with public service vehicle (PSV) and dedicated bus lane attributes (such as `bus:lanes`, `lanes:bus`, `psv:lanes`, `lanes:psv`, and `psv`) are queried from OSM to construct a binary indicator $b(w) \in \{0, 1\}$ for each segment $w \in \mathcal{W}$:
+
+$$b(w) = \begin{cases} 1 & \text{if segment } w \text{ contains an existing designated bus lane,} \\ 0 & \text{otherwise.} \end{cases}$$
+
+Mapping $b(w)$ across the network reveals existing dedicated transit corridors, enabling spatial continuity analysis and network gap identification when evaluating candidates for new bus lane implementations.
 
 ## Traffic conditions
 
+To characterize traffic conditions and evaluate bus speeds along transit corridors, segment operating speeds are derived using `GTFShift::rt_average_speed()`, as instantaneous speed readings, directly available in GTFS-RT feeds, might not reflect performance across an entire segment.
+
+Real-time vehicle position data streams are collected using `GTFShift::rt_collect_json()` or `GTFShift::rt_collect_protobuf()`. Where necessary, route shape geometries are formatted into sorted continuous line features via `GTFShift::multiline_to_sorted_linestring()`. For each trip $\tau$, let $\{(x_i, t_i)\}_{i=1}^n$ denote the chronologically ordered sequence of vehicle position observations $x_i$ and timestamps $t_i$ ($t_1 \le t_2 \le \dots \le t_n$). Each position $x_i$ is projected onto the trip's route shape geometry $s(\tau)$ using `GTFShift::project_points_along_geometry()`, yielding forward $d_i$ and reverse $d_i^{\text{rev}}$ cumulative distances along the shape.
+
+Between consecutive updates $(i-1, i)$, the elapsed time is $\Delta t_i = t_i - t_{i-1}$. To handle circular routes robustly, the spatial displacement $\Delta d_i$ is defined as:
+
+$$\Delta d_i = \min\left(|d_i - d_{i-1}|, \; |d_i^{\text{rev}} - d_{i-1}^{\text{rev}}|\right)$$
+
+The average operating speed $v_i$ between consecutive updates is then computed as:
+
+$$v_i = \frac{\Delta d_i}{\Delta t_i}$$
+
+Converting $v_i$ into kilometers per hour ($v_i^{\text{km/h}} = \frac{\Delta d_i / 1000}{\Delta t_i / 3600}$) yields localized bus speed metrics along the transit network, providing an empirical basis for assessing traffic-induced delays.
+
+To aggregate these trip-level vehicle speeds onto the road network, `GTFShift::rt_extend_prioritisation()` spatially assigns real-time updates to OSM way segments using a spatial buffer $B(w)$ of radius $\delta = 15\text{ m}$ around each segment $w \in \mathcal{W}$. Filtering for active transit observations (`IN_TRANSIT_TO`), each segment $w$ captures a set of $N_w$ speed observations $\{v_1, \dots, v_{N_w}\}$. 
+
+For each segment $w$, summary traffic performance indicators are calculated, including the mean operating speed $\bar{v}(w)$:
+
+$$\bar{v}(w) = \frac{1}{N_w} \sum_{i=1}^{N_w} v_i$$
+
+alongside median $v_{50}(w)$, 25th percentile $v_{25}(w)$, and 75th percentile $v_{75}(w)$ speeds. 
+
 ## Passenger demand
 
+GTFS-RT feeds might report vehicle occupation via parameters such as `occupancy_percentage` or `occupancy_status` [@mobilitydata_gtfs_vehiclePosition], that can be used to estimate the number of passengers aboard each vehicle in real time.
 
-# Results
+As an alternative, bus operators can also provide APIs with daily passenger counts per route, which offer a more direct quantification of passenger demand. In the scope of this study, this latter option was used.
+
+Route-level demand datasets are linked to GTFS route definitions by joining on the route short identifier (`route_short_name`), mapping each route $r \in \mathcal{R}$ to its observed daily demand $D(r)$. 
+
+For each OSM way segment $w \in \mathcal{W}$, let $\mathcal{R}_w \subseteq \mathcal{R}$ denote the set of active GTFS routes map-matched to segment $w$. The cumulative daily passenger demand $D(w)$ traversing segment $w$ is calculated by unnesting the set of routes $\mathcal{R}_w$ and summing their respective daily demand values:
+
+$$D(w) = \sum_{r \in \mathcal{R}_w} D(r)$$
+
+where $D(r)$ represents the daily passenger demand assigned to route $r$. 
+
+Mind that this approach might overestimate passenger demand, as it assumes that all passengers on a route use that segment. In reality, some passengers might board or alight at stops before or after that segment.
+
+# Application to case study and prioritisation
+
+Carris Metropolitana, the bus operator for most of the Lisbon Metropolitan Area, was choosen to demonstrate and validate the application of the methodology and presented in this paper ^[All teh code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise](https://github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise)]. With an operation covering its 18 municipalities (as urban operator in 15 and suburban in the remaining), it offers more than 700 bus routes to serve the 2.8 M residents of the region [@ine_populacao_2022], moving up to 19.2 M of passengers each month [@carris_metropolitana_nossa_nodate]. Its network is depicted in @fig-cs-network.
+
+![Carris Metropolitana network](figures/cs/cm_network.png){#fig-cs-network width="75%"}
 
 
 # Conclusion
+
+
+<!-- This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to estimate the key indicators for bus lane implementation, providing a systematic and reproducible framework, customizable to different contexts and political requirements.
+It aims to support a more transparent and evidence-based decision-making in urban transport planning. -->
 
 
 # Acknowledgment {.unnumbered}
