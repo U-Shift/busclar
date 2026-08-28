@@ -1,5 +1,5 @@
 ---
-title: "Bus lane prioritization using open data with GTFS R package"
+title: "Bus lane prioritisation using open data with GTFS R package"
 
 date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
 
@@ -55,11 +55,11 @@ Improving bus operations is a key aspect of this challenge, as they are one of t
 
 Bus lanes are a simple, yet often disputed solution, with the potential to improve the reliability of bus operations by limiting the negative impacts of traffic congestion [@cesme2018], reducing the variability of travel times [@surprenant-legault-2011], and increasing the average commercial speed -- which can ultimately be used to increase service frequency [@basso-2011].
 
-They also contribute to a more equitable mobility. Considering the number of people each mode is able to move, @vuchic1981 advocates buses should be given between 5 to 50 times greater importance than a private vehicle. By prioritizing the movement of people over vehicles, bus lanes enable the capacity increase of a single lane from 1.000-1.400, up to 4.000 people/hour when segregation is implemented [@uitp_regions_2025].
+They also contribute to a more equitable mobility. Considering the number of people each mode is able to move, @vuchic1981 advocates buses should be given between 5 to 50 times greater importance than a private vehicle. By prioritising the movement of people over vehicles, bus lanes enable the capacity increase of a single lane from 1.000-1.400, up to 4.000 people/hour when segregation is implemented [@uitp_regions_2025].
 
 However, introducing them on road infrastructure still hampers other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014]. It is therefore crutial to underlie bus lane implementation on reliable and robust information. 
 
-To tackle this challenge, we present an open and reproductible methodology to identify and prioritize bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritization output. This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
+To tackle this challenge, we present an open and reproductible methodology to identify and prioritise bus lane implementation. Founded on GTFS and OpenStreetMap (OSM) open data, it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritisation output. This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
 
 
 # Literature review
@@ -78,7 +78,7 @@ Drivers enquired by @cordera_good_2024 reported also relevant impacts on their c
 Passengers, in turn, benefit from time savings at the stop and inside the vehicles, increasing their confidence in the bus system and the odds of switching to bus as a mode of transport, with studies showing a probability of modal shift between 26% [@russo_dedicated_2022] and 70% [@vedagiri_estimating_2009]. 
 In constrast, a study on the effects of allowing private vehicles to use bus lanes in India found a 19pp decrease in the probability of modal transfer after cars were introduced in bus lanes [@mane_effect_2018].
 
-From a social and spatial justice perspective, bus lanes are also a tool to promote more equitable mobility, as they prioritize the movement of people over vehicles and improve the provision of transport service to the entire population with a more economical and efficient use of public space, while having much lower externalities than other modes [@vuchic1981].
+From a social and spatial justice perspective, bus lanes are also a tool to promote more equitable mobility, as they prioritise the movement of people over vehicles and improve the provision of transport service to the entire population with a more economical and efficient use of public space, while having much lower externalities than other modes [@vuchic1981].
 
 Moreover, when compared to other hard measures to contain congestion such as road pricing or public transport subsidies, bus lanes were the only capable of inducing changes in bus size, frequency, circulation speeds and spacing between stops [@basso-2011], making them highly relevant to improve the overall efficiency of the public transport system. 
 
@@ -97,7 +97,7 @@ These, associated to the other already covered pros and cons and their inherent 
 
 ## Criteria for bus lanes implementation
 
-The literature presents several approaches to identify and prioritize bus lane implementation at a strategic level, that can be gathered in two main categories: threshold and performance based.
+The literature presents several approaches to identify and prioritise bus lane implementation at a strategic level, that can be gathered in two main categories: threshold and performance based.
 
 Threshold based approaches imply an a-priori definition of a set of criteria that must be met to justify the implementation of a bus lane. For instance, @vuchic1981 advocates that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, ratio of average auto to bus occupancies and bus frequency per hour, combined in @fig-vuchic-criteria. 
 In this figure we can observe, for instance, that for a street with 2 lanes ($N$) and 400 veh/h/lane ($q_A$) with a ratio of average auto to bus occupancies of 0.03 ($X$), the minimum bus frequency to justify its implementation is considered to be 12 bus/h ($q_B$).
