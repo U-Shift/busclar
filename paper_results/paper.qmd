@@ -143,12 +143,14 @@ To foster a systematic and reproducible approach, we have gathered three open da
 
 # Methodology
 
-The methodology presented in this paper leverages a previous work by the authors, that enables the harmonisation of GTFS shapes with OSM road network geometries, improving the spatial accuracy of bus route representation and unlocking a wide range of spatial analysis through the relation between the public transport network and the built infrastructure [@gtfshift_paper_method]. 
+The methodology presented in this paper leverages a previous work by the authors, that enables the harmonisation of GTFS shapes with OSM road network geometries, improving the spatial accuracy of bus route representation and unlocking a wide range of spatial analysis through the relation between the public transport network and the built infrastructure [@gtfshift_paper_method].
 
 Bus lane prioritisation is one of its possible use cases. To apply the methodology to this end, the codebase previously developed and made available at the GTFShift R package, has been extended with several methods to collect, process the several dimensions of this problem, and gather them at the OSM road network level, enabling a comprehensive analysis of the conditions on the road network and the evaluation and weighting of the produced indicators according to the local context for bus lane implementation. 
 The data sources and processing flow are schematically presented in @fig-method-diagram, and further detailed in the following subsections.
 
 ![Data sources and processing flow (GTFS logos generated with AI for illustrative purposes)](figures/methods/diagram.png){#fig-method-diagram width="90%"}
+
+It is important to disclose the assumption that the geometrical match between GTFS shapes and OSM road network geometries has been performed and OSM route relations have been updated accordingly, with `gtfs:route_id` and `gtfs:shape_id` tags, enabling a direct match between these data sources. This assumption prevents the duplication of the methodology presented in the previous paper and allows a greater focus on the application of the methodology to the bus lane prioritisation problem.
 
 ## Bus frequency
 
@@ -228,10 +230,75 @@ Mind that this approach might overestimate passenger demand, as it assumes that 
 
 # Application to case study and prioritisation
 
-Carris Metropolitana, the bus operator for most of the Lisbon Metropolitan Area, was choosen to demonstrate and validate the application of the methodology and presented in this paper ^[All teh code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise](https://github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise)]. With an operation covering its 18 municipalities (as urban operator in 15 and suburban in the remaining), it offers more than 700 bus routes to serve the 2.8 M residents of the region [@ine_populacao_2022], moving up to 19.2 M of passengers each month [@carris_metropolitana_nossa_nodate]. Its network is depicted in @fig-cs-network.
+## Case study
+
+Carris Metropolitana, the bus operator for most of the Lisbon Metropolitan Area, was choosen to demonstrate and validate the application of the methodology and presented in this paper ^[All the code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise](https://github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise)]. 
+With an operation covering its 18 municipalities (as urban operator in 15 and suburban in the remaining), it offers more than 700 bus routes to serve the 2.8 M residents of the region [@ine_populacao_2022], moving up to 19.2 M of passengers each month [@carris_metropolitana_nossa_nodate]. 
+Its network is depicted in @fig-cs-network.
 
 ![Carris Metropolitana network](figures/cs/cm_network.png){#fig-cs-network width="75%"}
 
+Furthermore, it provides a comprehensive API that provides not only the GTFS standards for planned and real-time monitoring of services, but also aditional endpoints that disclose operational metrics regarding complaints, delays, service execution or passenger demand [@carris_metropolitana_carrismetropolitanaapi_2026]. 
+The wide geographical coverage combined with the availability of such rich operational data makes it a valuable case study to demonstrate and validate the application of the methodology presented in this paper.
+
+## Results
+
+The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries, for a working day^[20/05/2026], by @gtfshift_paper_method, and considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips. 
+Passenger demand was collected for the same day.
+Additionally, a GTFS-RT dataset covering 14 business days^[13-30/04/2026] was used to calculate the speed-related metrics. 
+The results for the dimensions analysed are synthesised in @tbl-results and complemented by the maps presented in @fig-results-maps. 
+
+| Metric \ Dimension | Bus frequency (n, by length) | Nr lanes (n, by length) | Nr lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
+| :---- | --: | --: | --: | --: | --: | --: | --: |
+| Mean | 6.86 | 1.32 | 1.27 | 34.5 | 25.51 | 2493 |	5190 |
+| SD | 7.26 | 0.70 | 0.66 | 19.30 | 13.84 | 3642	| 6154 |
+| P25 | 2.00 | 1.00 | 1.00 | 20.99 | 17.04 | 304	| 922 |
+| P50 | 4.00 | 1.00 | 1.00 | 28.96 | 21.80 | 1123 |	2971 |
+| P75 | 9.00 | 1.00 | 1.00 | 41.43 | 29.86 | 3263 |	6949 |
+: Dimension specific results {#tbl-results}
+
+\begin{quote}
+\footnotesize
+\textbf{Notes:} Bus frequency for peak hour (8:00). Results aggregated per road segment frequency or length, specified in the dimension header.
+\end{quote}
+
+Together, they reveal interesting patterns regarding bus operations and its relation with the infrastructure. 
+On average, road segments carry a scheduled bus frequency of 6.86 buses/h (median of 4.00 buses/h), with highest values concentrated at the main accesses to the city of Lisbon, as well as in inner urban consolidated areas, such as the municipalities of Amadora, Almada, Odivelas, Oeiras, Seixal, Sesimbra or Setúbal (@fig-results-map-frequency).
+
+However, these services are executed on a road network with limited capacity. 
+The mean number of lanes per direction is 1.32 (1.27 when weighted by frequency), with all percentile values indicating that most segments have only one lane available per direction. @fig-results-map-nr-lanes illustrates this reality, with most of the network represented in purple, specially outside the main access corridors to the city of Lisbon.
+
+Comparing spatial (by segment length) and operational (by bus frequency) aggregations reveals key performance dynamics. 
+Most notably, operating speeds drop substantially when weighted by bus frequency: 
+The mean speed decreases from 34.50 km/h to 25.51 km/h, and the median speed falls from 28.96 km/h to 21.80 km/h (with 25% of bus-weighted segments operating below 17.04 km/h). 
+Their geographical distribution is aligned with the road capacity, with higher speeds being observed in the road segments that have more lanes available per direction, leaving the urban consolidated areas with the lowest speeds (@fig-results-map-speed).
+
+This indicates that higher bus volumes are disproportionately concentrated on slower, more congested arterial segments. Segments where passenger demand is also higher, as it more than doubles under frequency weighting, with mean daily passenger volumes rising from 2,493 to 5,190 passengers (and median demand increasing from 1,123 to 2,971 passengers) (@fig-results-map-pax-demand).
+
+Finally, from a network continuity perspective, @fig-results-map-bus-lanes reveals a sparse and fragmented bus lane infrastructure, mostly located in the city of Lisbon^[It is worth mentioning that the city of Lisbon has a greater extension of bus lanes that was not captured in this analysis, due to the fact that Carris Metropolitana only serves sub-urban bus services in this municipality and therefore does not have routes covering the entire municipal network.]. Of the 4,927 km of road segments serviced by Carris Metropolitana, only 36.20 km (less than 1%) have bus dedicated lanes.
+
+::: {layout="[[50,50], [50,50], [-25, 50, -25]]" #fig-results-maps}
+![Bus frequency for peak hour (8:00)](figures/results/map_frequency.png){#fig-results-map-frequency}
+
+![Number of lanes*](figures/results/map_nr_lanes.png){#fig-results-map-nr-lanes}
+
+![Bus lanes](figures/results/map_bus_lanes.png){#fig-results-map-bus-lanes}
+
+![Speed*](figures/results/map_speed.png){#fig-results-map-speed}
+
+![Passenger demand*](figures/results/map_pax_demand.png){#fig-results-map-pax-demand}
+
+Results maps per dimension
+:::
+
+\begin{quote}
+\footnotesize
+\textbf{Notes:} * Road segment weight proportional to the number of buses that go through it at peak hour (8:00).
+\end{quote}
+
+These findings emphasize that high-frequency bus corridors carry the overwhelming majority of transit riders under heavy congestion and tight space constraints, underscoring the critical need to extend the current bus lane infrastructure, which clearly reveals to be insufficient to meet the demand.
+
+## Prioritisation
 
 # Conclusion
 
