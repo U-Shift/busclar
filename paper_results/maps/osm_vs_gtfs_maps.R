@@ -1,6 +1,8 @@
 library(mapview)
 library(dplyr)
 
+# GTFS global ----------------------------------------------------------------------
+
 gtfs_osm_url <- "https://github.com/U-Shift/GTFShift/releases/download/v0.9/gtfs_2026-05-27_bus_unified_osm.zip"
 gtfs_osm <- tidytransit::read_gtfs(gtfs_osm_url)
 summary(gtfs_osm)
@@ -35,12 +37,17 @@ View(shapes_osm_with_agency)
 
 # Get municipalities limits 
 municipalities <- sf::st_read("https://github.com/U-Shift/busclar/releases/download/0.9/municipalities.gpkg")
+sf::st_write(municipalities, "municipalities.geojson")
 
-mapview(municipalities, color = "#1cabce", alpha = 1, alpha.regions = 0, col.regions = "#1cabce", layer.name = "LMA municipalities", lwd = 1.5) +
+mapview(municipalities, color = "#b3b3b3", alpha = 1, alpha.regions = 0, col.regions = "#b3b3b3", layer.name = "LMA municipalities", lwd = 1.5, homebutton = FALSE) +
 mapview(
   shapes_osm_with_agency |> filter(agency_name == "Carris Metropolitana"),
   zcol = "agency_name", layer.name = "OSM route geometries",
   legend = TRUE, homebutton = FALSE,
   # color = "#363636"
-  color = "#363636"
+  color = "#e6c701"
 )
+
+# Results ----------------------------------------------------------------------
+
+

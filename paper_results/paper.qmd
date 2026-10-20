@@ -26,6 +26,8 @@ format:
     toc: true
     lightbox: true # abrir imagens popup
   elsevier-pdf:
+    citeproc: false
+    top-level-division: section
     keep_tex: true
     include-in-header: 
        text: |
@@ -63,7 +65,6 @@ To tackle this challenge, we present an open and reproductible methodology to id
 Founded on GTFS, OpenStreetMap (OSM) open data, and leveraging a methodology to harmonise these data sources developed by the authors [@gtfshift_paper_method], it enables to overcome the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. 
 This methodology is implemented using GTFShift, an open-source R package that operationalizes the full pipeline, from data ingestion to prioritisation output. 
 This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
-
 
 
 # Literature review
@@ -231,6 +232,34 @@ Mind that this approach might overestimate passenger demand, as it assumes that 
 Carris Metropolitana, the bus operator for most of the Lisbon Metropolitan Area, was choosen to demonstrate and validate the application of the methodology and presented in this paper ^[All teh code scripts executed to generate the outputs presented in this section are available at [github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise](https://github.com/U-Shift/GTFShift-web/tree/main/scripts/02_prioritise)]. With an operation covering its 18 municipalities (as urban operator in 15 and suburban in the remaining), it offers more than 700 bus routes to serve the 2.8 M residents of the region [@ine_populacao_2022], moving up to 19.2 M of passengers each month [@carris_metropolitana_nossa_nodate]. Its network is depicted in @fig-cs-network.
 
 ![Carris Metropolitana network](figures/cs/cm_network.png){#fig-cs-network width="75%"}
+
+
+::: {#fig-results layout="[[50,-0.5,50], [50,-0.5,50], [-25,50,-25]]"}
+![Bus frequency, at 8am](figures/results/frequency.png){#fig-results-bus-frequency}
+
+![Number of lanes](figures/results/nr_lanes.png){#fig-results-nr-lanes}
+
+![Network continuity](figures/results/bus_lanes.png){#fig-results-continuity}
+
+![Traffic conditions](figures/results/speed.png){#fig-results-traffic}
+
+![Passenger demand](figures/results/pax.png){#fig-results-passengers}
+
+Indicators computed for Carris Metropolitana bus network
+:::
+
+| Statistic | Bus Frequency (Length) | Nr of Lanes (Length) | Nr of Lanes (Frequency) | Avg Speed (Length) | Avg Speed (Frequency) | Pax Demand (Length) | Pax Demand (Frequency) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Mean | 6.86 | 1.32 | 1.27 | 34.45 | 25.51 | 2493.11 | 5189.53 |
+| Std. Dev. | 7.26 | 0.70 | 0.66 | 19.30 | 13.84 | 3641.91 | 6153.77 |
+| Min | 1.00 | 1.00 | — | 0.00 | — | 0.00 | — |
+| P5 | 1.00 | 1.00 | 1.00 | 14.25 | 11.37 | 56.00 | 114.00 |
+| P25 | 2.00 | 1.00 | 1.00 | 20.99 | 17.04 | 304.00 | 922.00 |
+| Median | 4.00 | 1.00 | 1.00 | 28.96 | 21.80 | 1123.00 | 2971.00 |
+| P75 | 9.00 | 1.00 | 1.00 | 41.43 | 29.86 | 3263.00 | 6949.00 |
+| P95 | 22.00 | 3.00 | 3.00 | 80.78 | 52.14 | 8839.00 | 20199.00 |
+| Max | 83.00 | 11.00 | — | 100.96 | — | 32769.00 | — |
+: Summary statistics of network indicators (weighted by length and frequency) {#tbl-network-indicators}
 
 
 # Conclusion

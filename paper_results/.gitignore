@@ -7,3 +7,6 @@ paper_files/*s
 
 paper.*
 !paper.qmd
+
+/.quarto/
+**/*.quarto_ipynb
