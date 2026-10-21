@@ -255,7 +255,7 @@ The wide geographical coverage combined with the availability of such rich opera
 
 The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries, for a working day^[20/05/2026], by @gtfshift_paper_method, and considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips. 
 Passenger demand was collected for the same day.
-Additionally, a GTFS-RT dataset covering 14 business days^[13-30/04/2026] was used to calculate the speed-related metrics. 
+Additionally, a GTFS-RT dataset covering 14 business days^[13-30/04/2026] across operating hours was used to calculate the speed-related metrics. This multi-day aggregation smooths out localized daily incidents and guarantees adequate observation counts on low-frequency suburban links, reflecting persistent baseline travel conditions across the metropolitan network. 
 The results for the dimensions analysed are synthesised in @tbl-results and complemented by the maps presented in @fig-results-maps. 
 
 | Metric \ Dimension | Bus frequency (n, by length) | Nr lanes (n, by length) | Nr lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
@@ -416,10 +416,10 @@ It provides an accessible platform for transport planners, policymakers, and sta
 Some limitations should be acknowledged. 
 The methodology relies on the quality and completeness of OSM data, namely regarding the number of lanes and existing bus lanes, for which default values are assumed when tags are missing. 
 Passenger demand was aggregated from route-level daily counts, potentially overestimating segment loads, as it assumes that all passengers on a route traverse every segment. 
-Speeds were derived from bus positions, reflecting bus rather than general traffic conditions, and only Carris Metropolitana services were considered, while other operators also use part of the network, particularly in Lisbon. 
+Speeds were derived from bus positions rather than general traffic conditions, and aggregated across weekday operating hours rather than isolated strictly to the 08:00 peak hour. While this guarantees statistical robustness across segments with lower headways, it provides a conservative estimate of congestion by averaging peak and off-peak operating speeds. Furthermore, only Carris Metropolitana services were considered, while other operators also use part of the network, particularly in Lisbon. 
 Finally, network continuity was used as an interpretation layer rather than as a selection criterion.
 
-Future work should address these limitations by integrating occupancy data from GTFS-RT feeds and stop-level boarding and alighting counts, combining multiple operators, and explicitly incorporating network continuity in the selection process, for instance by aggregating segments into corridors. 
+Future work should address these limitations by integrating occupancy data from GTFS-RT feeds and stop-level boarding and alighting counts, exploring hour-specific speed profiles for corridors with high vehicle update density, combining multiple operators, and explicitly incorporating network continuity in the selection process, for instance by aggregating segments into corridors. 
 The indicators produced can also feed performance-based approaches, evaluating the impacts of candidate scenarios on all road users. 
 Being built upon widely available open data standards and accompanied by open-source tooling, the methodology and dashboard can be readily replicated in other urban regions, contributing to a more transparent, reproducible and evidence-based planning of bus priority measures.
 
