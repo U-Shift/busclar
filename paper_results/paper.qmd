@@ -281,18 +281,38 @@ Finally, from a network continuity perspective, @fig-results-map-bus-lanes revea
 ::: {layout="[[50,50], [50,50], [-25, 50, -25]]" #fig-results-maps}
 ![Bus frequency for peak hour (8:00)](figures/results/frequency.png){#fig-results-map-frequency}
 
-![Number of lanes](figures/results/nr_lanes.png){#fig-results-map-nr-lanes}
+![Number of lanes*](figures/results/nr_lanes_w_frequency.png){#fig-results-map-nr-lanes}
 
 ![Bus lanes](figures/results/bus_lanes.png){#fig-results-map-bus-lanes}
 
-![Speed](figures/results/speed.png){#fig-results-map-speed}
+![Speed*](figures/results/speed_w_frequency.png){#fig-results-map-speed}
 
-![Passenger demand](figures/results/pax.png){#fig-results-map-pax-demand}
+![Passenger demand*](figures/results/pax_w_frequency.png){#fig-results-map-pax-demand}
 
 Results maps per dimension
 :::
 
+::: {.content-visible unless-format="html"}
+\begin{quote}
+\footnotesize
+\textbf{Notes:} * Road segment weight proportional to the number of buses that go through it at peak hour (8:00).
+\end{quote}
+:::
+
+::: {.content-visible when-format="html"}
+
+> ***Notes:** Road segment weight proportional to the number of buses that go through it at peak hour (8:00).*
+
+:::
+
+
+
 These findings emphasize that high-frequency bus corridors carry the overwhelming majority of transit riders under heavy congestion and tight space constraints, underscoring the critical need to extend the current bus lane infrastructure, which clearly reveals to be insufficient to meet the demand.
+
+
+## Prioritisation
+
+
 
 # Conclusion
 
