@@ -312,6 +312,86 @@ These findings emphasize that high-frequency bus corridors carry the overwhelmin
 
 ## Prioritisation
 
+The indicators produced allow road segments to be filtered by any combination of thresholds. Since there is no consensus in the literature on the values to adopt, six scenarios were defined to explore how different criteria shape the set of candidate segments (@tbl-scenarios). 
+Bus frequency and number of lanes thresholds were derived from the literature, namely the 10-minute peak headway recommended by @nacto2016transit (6 bus/h) and the order of magnitude suggested by @vuchic1981 for multi-lane streets (12 bus/h with 2 lanes per direction). 
+Speed and passenger demand thresholds, in turn, were derived from the local context, using the frequency-weighted percentiles reported in @tbl-results.
+
+Scenario S1 represents a service-level baseline, upon which S2 to S4 each add a single dimension, isolating its individual effect: space availability (S2), reliability and congestion (S3) and passenger demand (S4). 
+S3 and S4 deliberately omit the number of lanes, following the principle of prioritising the movement of people over vehicles, even if it implies converting the only general traffic lane. 
+Finally, S5 and S6 combine all dimensions, under moderate and strict thresholds, respectively.
+
+| Scenario | Rationale | Frequency (bus/h) | Lanes/dir | Speed (km/h) | Demand (pax/day) | Candidate length (km) | % of served network | Of which without bus lane (km) |
+| :-- | :-- | --: | --: | --: | --: | --: | --: | --: |
+| S1 | Service level | $\geq$ 6 | -- | -- | -- | 1,399.1 | 28.4% | 1,370.9 |
+| S2 | Space availability | $\geq$ 12 | $\geq$ 2 | -- | -- | 191.3 | 3.9% | 163.1 |
+| S3 | Reliability | $\geq$ 6 | -- | $\leq$ 17.0 | -- | 261.2 | 5.3% | 233.0 |
+| S4 | Passenger demand | $\geq$ 6 | -- | -- | $\geq$ 2,971 | 1,259.5 | 25.6% | 1,231.3 |
+| S5 | Combined, moderate | $\geq$ 6 | $\geq$ 2 | $\leq$ 21.8 | $\geq$ 2,971 | 108.5 | 2.2% | 80.3 |
+| S6 | Combined, strict | $\geq$ 12 | $\geq$ 2 | $\leq$ 17.0 | $\geq$ 6,949 | 49.7 | 1.0% | 21.5 |
+: Prioritisation scenarios and results {#tbl-scenarios}
+
+::: {.content-visible unless-format="html"}
+\begin{quote}
+\footnotesize
+\textbf{Notes:} Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in Table \ref{tbl-results}.
+\end{quote}
+:::
+
+::: {.content-visible when-format="html"}
+
+> ***Notes:** Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in @tbl-results.*
+
+:::
+
+The results reveal a high sensitivity of the outcome to the criteria adopted, with candidate length ranging from 1,399.1 km (S1) to 49.7 km (S6), a 28-fold difference. 
+Frequency alone (S1) is a weak discriminator, selecting more than a quarter of the served network, and adding passenger demand (S4) barely changes it (-10%), confirming that high-frequency segments are also those carrying most passengers. 
+Conversely, speed (S3) and number of lanes (S2) are the most restrictive dimensions, reducing the candidate set by 81% and 86%, respectively. 
+This reflects the space constraints identified in the previous section: most congested, high-frequency segments have a single lane per direction, so requiring a remaining general traffic lane excludes much of the network where buses would benefit the most.
+
+When all dimensions are combined, the candidate network shrinks to 108.5 km (S5) and 49.7 km (S6), of which 80.3 km and 21.5 km, respectively, do not yet have a bus lane. 
+These represent manageable intervention packages, expanding the existing 36.2 km of bus lanes by 59% to 222%, concentrated on the segments where congestion, service and demand overlap (@fig-scenarios).
+
+::: {layout="[[50,50], [50,50], [50,50]]" #fig-scenarios}
+![S1 -- Service level](figures/results/s1.png){#fig-scenario-s1}
+
+![S2 -- Space availability](figures/results/s2.png){#fig-scenario-s2}
+
+![S3 -- Reliability](figures/results/s3.png){#fig-scenario-s3}
+
+![S4 -- Passenger demand](figures/results/s4.png){#fig-scenario-s4}
+
+![S5 -- Combined, moderate](figures/results/s5.png){#fig-scenario-s5}
+
+![S6 -- Combined, strict](figures/results/s6.png){#fig-scenario-s6}
+
+Candidate road segments per prioritisation scenario
+:::
+
+Network continuity, although not used as a selection criterion, is key to interpret these results, as the benefits of bus lanes grow with the number of consecutive links covered, while sparse segments may even be counterproductive [@truong-2015]. 
+Looking at the moderate scenario (@fig-scenario-s5), two distinct patterns emerge. 
+In the city of Lisbon, the identified segments would connect existing bus lanes, closing gaps and increasing the continuity of the current infrastructure, namely along Avenida Marechal Teixeira Rebelo and Estrada da Correia, Avenida do Brasil, Alameda das Comunidades Portuguesas, Avenida João XXI, Avenida Engenheiro Duarte Pacheco, Avenida Infante Dom Henrique, Avenida de Berlim and Avenida Dom João II (@fig-cs-lisboa).
+Outside Lisbon, candidate segments are more dispersed, reflecting both the absence of a pre-existing bus lane network and the localised nature of congestion in suburban areas. 
+Still, some relevant axes can be identified, such as Avenida 1º de Maio in Seixal (@fig-cs-seixal), Avenida Luísa Todi, 22 de Dezembro, 5 de Outubro and Manuel Maria Portela in Setúbal (@fig-cs-setubal), or Avenida dos Bombeiros Voluntários de Algés, Avenida General Norton de Matos and Alameda Fernão Lopes in Oeiras (@fig-cs-oeiras). 
+These corridors, rather than isolated segments, should be the focus of implementation, possibly extending the intervention to adjacent segments that do not strictly meet all thresholds, in order to ensure continuous and effective bus priority.
+
+The same criteria can also be used to assess the performance of existing bus lanes. 
+Segments with a bus lane that meet the frequency, lanes and demand thresholds while operating above the speed threshold (in green in @fig-cs-local) can be considered effective, as the priority given is translating into faster bus operations. 
+In contrast, existing bus lanes that fail at least one of the criteria (in yellow) are not yet delivering the expected performance, as is the case of the corridor between Areeiro and Alameda das Comunidades Portuguesas or several segments in Lumiar, in Lisbon. 
+Where this is due to low operating speeds, it may reveal design or operational issues, such as illegal parking, permitted turning movements [@diab_understanding_2012], conflicts at intersections or a lack of continuity [@truong-2015], calling for complementary measures such as enforcement, signal priority or the extension of the bus lane to adjacent segments. 
+Where it is due to low frequency or demand, it should be noted that only Carris Metropolitana services were considered, while these segments may also be used by other operators, namely Carris in the city of Lisbon.
+
+::: {layout="[[50,50], [50,50]]" #fig-cs-local}
+![Lisbon](figures/results/cs_lisboa.png){#fig-cs-lisboa}
+
+![Oeiras](figures/results/cs_oeiras.png){#fig-cs-oeiras}
+
+![Seixal](figures/results/cs_seixal.png){#fig-cs-seixal}
+
+![Setúbal](figures/results/cs_setubal.png){#fig-cs-setubal}
+
+Candidate road segments for the moderate scenario (S5) and existing bus lanes, local detail
+:::
+
 
 
 # Conclusion
