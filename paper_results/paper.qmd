@@ -307,7 +307,7 @@ These findings emphasize that high-frequency bus corridors carry the overwhelmin
 
 ## Prioritisation
 
-The indicators produced allow road segments to be filtered by any combination of thresholds. Since there is no consensus in the literature on the values to adopt, six scenarios were defined to explore how different criteria shape the set of candidate segments (@tbl-scenarios). 
+The indicators produced allow road segments to be filtered by any combination of thresholds. Since there is no consensus in the literature on the values to adopt, six scenarios were defined to explore how different criteria shape the set of candidate segments (@tbl-scenarios), with the results summarised in @tbl-scenarios-results. 
 Bus frequency and number of lanes thresholds were derived from the literature, namely the 10-minute peak headway recommended by @nacto2016transit (6 bus/h) and the order of magnitude suggested by @vuchic1981 for multi-lane streets (12 bus/h with 2 lanes per direction). 
 Speed and passenger demand thresholds, in turn, were derived from the local context, using the frequency-weighted percentiles reported in @tbl-results.
 
@@ -327,30 +327,49 @@ This tension between traffic capacity preservation and transit delay highlights 
 
 
 
-::: landscape
-
-| Scenario | Rationale | Frequency (bus/h) | Lanes/dir | Speed (km/h) | Demand (pax/day) | Candidate length (km) | % of served network | Of which without bus lane (km) |
-| :-- | :-- | --: | --: | --: | --: | --: | --: | --: |
-| S1 | Service level | $\geq$ 6 | -- | -- | -- | 1,399.1 | 28.4% | 1,370.9 |
-| S2 | Space availability | $\geq$ 12 | $\geq$ 2 | -- | -- | 191.3 | 3.9% | 163.1 |
-| S3 | Reliability | $\geq$ 6 | -- | $\leq$ 17.0 | -- | 261.2 | 5.3% | 233.0 |
-| S4 | Passenger demand | $\geq$ 6 | -- | -- | $\geq$ 2,971 | 1,259.5 | 25.6% | 1,231.3 |
-| S5 | Combined, moderate | $\geq$ 6 | $\geq$ 2 | $\leq$ 21.8 | $\geq$ 2,971 | 108.5 | 2.2% | 80.3 |
-| S6 | Combined, strict | $\geq$ 12 | $\geq$ 2 | $\leq$ 17.0 | $\geq$ 6,949 | 49.7 | 1.0% | 21.5 |
-: Prioritisation scenarios and results {#tbl-scenarios}
+| Scenario | Rationale | Frequency (bus/h) | Lanes/dir | Speed (km/h) | Demand (pax/day) |
+| :-- | :----- | ----: | --: | ---: | ----: |
+| S1 | Service level | $\geq$ 6 | -- | -- | -- |
+| S2 | Space availability | $\geq$ 12 | $\geq$ 2 | -- | -- |
+| S3 | Reliability | $\geq$ 6 | -- | $\leq$ 17.0 | -- |
+| S4 | Passenger demand | $\geq$ 6 | -- | -- | $\geq$ 2,971 |
+| S5 | Combined, moderate | $\geq$ 6 | $\geq$ 2 | $\leq$ 21.8 | $\geq$ 2,971 |
+| S6 | Combined, strict | $\geq$ 12 | $\geq$ 2 | $\leq$ 17.0 | $\geq$ 6,949 |
+: Prioritisation scenario thresholds {#tbl-scenarios}
 
 ::: {.content-visible unless-format="html"}
 \begin{quote}
 \footnotesize
-\textbf{Notes:} Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in Table 1.
+\textbf{Notes:} Bus frequency for peak hour (8:00). Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in Table 1.
 \end{quote}
 :::
 
 ::: {.content-visible when-format="html"}
 
-> ***Notes:** Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in @tbl-results.*
+> ***Notes:** Bus frequency for peak hour (8:00). Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in @tbl-results.*
 
 :::
+
+| Scenario | Candidate length (km) | % of served network | Of which without bus lane (km) |
+| :- | ---: | ---: | ----: |
+| S1 | 1,399.1 | 28.4% | 1,370.9 |
+| S2 | 191.3 | 3.9% | 163.1 |
+| S3 | 261.2 | 5.3% | 233.0 |
+| S4 | 1,259.5 | 25.6% | 1,231.3 |
+| S5 | 108.5 | 2.2% | 80.3 |
+| S6 | 49.7 | 1.0% | 21.5 |
+: Prioritisation scenario results {#tbl-scenarios-results}
+
+::: {.content-visible unless-format="html"}
+\begin{quote}
+\footnotesize
+\textbf{Notes:} Served network of 4,927 km.
+\end{quote}
+:::
+
+::: {.content-visible when-format="html"}
+
+> ***Notes:** Served network of 4,927 km.*
 
 :::
 
