@@ -180,15 +180,13 @@ where $f(s, h) = \left| \{ \tau \in T_D \mid s(\tau)=s, \; h(\tau)=h \} \right|$
 
 ## Number of lanes
 
-To evaluate road space availability for dedicated bus lane prioritisation, the number of circulation and parking lanes per direction is derived from OpenStreetMap (OSM) attributes using `GTFShift::prioritise_lanes()`.
+To evaluate road space availability for dedicated bus lane prioritisation, the number of circulation lanes per direction is derived from OpenStreetMap (OSM) attributes using `GTFShift::prioritise_lanes()`.
 
 The total number of circulation lanes $N_{\text{circ}}(w)$ for segment $w$ is parsed from OSM tags (`lanes`), falling back to directional tag sums (`lanes:forward`, `lanes:backward`, `lanes:both_ways`), or defaulting to $N_{\text{circ}}(w) = 1$ for one-way roads (`oneway = yes`) and $N_{\text{circ}}(w) = 2$ for bidirectional roads. The number of flow directions $N_{\text{dir}}(w) \in \{1, 2\}$ is determined by `oneway` tags, enforcing $N_{\text{dir}}(w) = 1$ when $N_{\text{circ}}(w) = 1$.
 
 The per-direction circulation capacity $N_{\text{dir\_lanes}}(w)$ is calculated as:
 
 $$N_{\text{dir\_lanes}}(w) = \max\left(1, \; \frac{N_{\text{circ}}(w)}{N_{\text{dir}}(w)}\right)$$
-
-Additionally, on-street parking lanes $N_{\text{park}}(w) \in \{0, 1, 2\}$ are inferred by checking lateral parking tags (`parking:lane:left/right/both`), accounting for active parking restrictions.
 
 ## Network continuity
 
@@ -416,7 +414,7 @@ It provides an accessible platform for transport planners, policymakers, and sta
 ![GTFShift web dashboard](figures/dashboard/print.png){#fig-dashboard-print}
 
 Some limitations should be acknowledged. 
-The methodology relies on the quality and completeness of OSM data, namely regarding the number of lanes, parking and bus lanes, for which default values are assumed when tags are missing. 
+The methodology relies on the quality and completeness of OSM data, namely regarding the number of lanes and existing bus lanes, for which default values are assumed when tags are missing. 
 Passenger demand was aggregated from route-level daily counts, potentially overestimating segment loads, as it assumes that all passengers on a route traverse every segment. 
 Speeds were derived from bus positions, reflecting bus rather than general traffic conditions, and only Carris Metropolitana services were considered, while other operators also use part of the network, particularly in Lisbon. 
 Finally, network continuity was used as an interpretation layer rather than as a selection criterion.
