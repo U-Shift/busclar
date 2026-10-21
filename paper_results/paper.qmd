@@ -323,6 +323,8 @@ This reflects the space constraints identified in the previous section: most con
 When all dimensions are combined, the candidate network shrinks to 108.5 km (S5) and 49.7 km (S6), of which 80.3 km and 21.5 km, respectively, do not yet have a bus lane. 
 These represent manageable intervention packages, expanding the existing 36.2 km of bus lanes by 59% to 222%, concentrated on the segments where congestion, service and demand overlap (@fig-scenarios).
 
+This tension between traffic capacity preservation and transit delay highlights that physical space constraints should not automatically disqualify corridors from priority interventions. While S2 and the combined scenarios (S5–S6) strictly enforce the preservation of a general traffic lane, scenarios S3 and S4 identify substantial networks (up to 261.2 km in S3) operating at severe delay, the vast majority possessing only a single circulation lane per direction. Where full-lane segregation is physically or politically unfeasible, transport authorities can deploy alternative operational and design instruments. These include reallocating curb and on-street parking space to carve out dedicated transit lanes, reconfiguring parallel two-way streets into one-way pairs with contraflow bus lanes, establishing peak-hour bus gates or transit-only streets in commercial cores, and installing transit signal priority (TSP) paired with queue-jump lanes at congested intersections [@wu_bus_1998; @nacto2016transit]. Such targeted solutions ensure that bus reliability can be meaningfully improved even along corridors constrained by narrow right-of-ways.
+
 
 
 ::: landscape
