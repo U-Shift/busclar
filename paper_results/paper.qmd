@@ -396,6 +396,27 @@ Candidate road segments for the moderate scenario (S5) and existing bus lanes, l
 
 # Conclusion
 
+Despite its acknowledged benefits, bus lane implementation is often hampered by the lack of reliable, consistent and transparent information to support decision-making, with threshold-based approaches lacking both consensus on the values to adopt and a systematic way to compute and aggregate the underlying indicators. 
+This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM) and open-source tools, implemented in the GTFShift R package, to characterise the main dimensions found in the literature (bus frequency, number of lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
+
+Its application to the Carris Metropolitana network, in the Lisbon Metropolitan Area, demonstrated its feasibility at a metropolitan scale and revealed a clear mismatch between bus operations and the infrastructure that supports them. 
+High-frequency services, which carry most passengers, are concentrated on slower and congested segments, most of them with a single lane per direction, while only 36.2 km (less than 1%) of the 4,927 km served have a dedicated bus lane, mostly located in the city of Lisbon and in a fragmented way.
+
+The scenario analysis further showed that the outcome of any prioritisation exercise is highly sensitive to the criteria adopted, with candidate networks ranging from 1,399.1 km to 49.7 km. 
+Frequency and passenger demand alone are weak discriminators, while speed and the number of lanes are the most restrictive dimensions. 
+This highlights that the choice of thresholds is not merely technical, but reflects political choices, namely whether to preserve general traffic capacity or to prioritise the movement of people, even at the cost of converting the only available general traffic lane. 
+By making each dimension explicit and measurable, the proposed methodology enables decision makers to explore these trade-offs transparently, identifying manageable intervention packages and corridors that close gaps in the existing network, as well as to assess the performance of existing bus lanes and detect where complementary measures, such as enforcement or signal priority, are needed.
+
+Some limitations should be acknowledged. 
+The methodology relies on the quality and completeness of OSM data, namely regarding the number of lanes, parking and bus lanes, for which default values are assumed when tags are missing. 
+Passenger demand was aggregated from route-level daily counts, potentially overestimating segment loads, as it assumes that all passengers on a route traverse every segment. 
+Speeds were derived from bus positions, reflecting bus rather than general traffic conditions, and only Carris Metropolitana services were considered, while other operators also use part of the network, particularly in Lisbon. 
+Finally, network continuity was used as an interpretation layer rather than as a selection criterion.
+
+Future work should address these limitations by integrating occupancy data from GTFS-RT feeds and stop-level boarding and alighting counts, combining multiple operators, and explicitly incorporating network continuity in the selection process, for instance by aggregating segments into corridors. 
+The indicators produced can also feed performance-based approaches, evaluating the impacts of the candidate scenarios on all road users. 
+Being built upon widely available open data standards, the methodology can be readily replicated in other contexts, contributing to a more transparent, reproducible and evidence-based planning of bus priority measures.
+
 
 <!-- This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to estimate the key indicators for bus lane implementation, providing a systematic and reproducible framework, customizable to different contexts and political requirements.
 It aims to support a more transparent and evidence-based decision-making in urban transport planning. -->
