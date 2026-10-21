@@ -46,7 +46,7 @@ format:
         - "An open-source R package and web dashboard support decision-making"
 
     
-abstract: "Dedicated bus lanes are an effective intervention to protect transit reliability and promote modal shift. However, their implementation is often hampered by conflicts over road space allocation, fragmented infrastructure, and a lack of open, transparent, and reproducible tools to guide planning decisions. This paper presents an open methodology and software framework to identify and prioritise bus lane implementation at the road-network scale. Leveraging General Transit Feed Specification (GTFS), real-time vehicle positions (GTFS-RT), and OpenStreetMap (OSM), it harmonizes multi-source data to compute key indicators: bus frequency, available road lanes, traffic speeds, and passenger demand. The framework is applied to the Carris Metropolitana network across the Lisbon Metropolitan Area, encompassing over 4,900 km of served roads. Results show that high-frequency corridors carrying the majority of riders suffer from severe congestion and spatial constraints, with less than 1% of the network currently segregated. A multi-criteria scenario analysis demonstrates that candidate networks vary 28-fold depending on policy priorities, highlighting the trade-off between preserving private vehicle capacity and moving people. An accompanying open-source interactive dashboard operationalizes the methodology to support evidence-based urban transport planning."
+abstract: "Dedicated bus lanes are an effective intervention to protect transit reliability and promote modal shift. However, their implementation is often hampered by conflicts over road space allocation, fragmented infrastructure, and a lack of open, transparent, and reproducible tools to guide planning decisions. This paper presents an open methodology and software framework to identify and prioritise bus lane implementation at the road-network scale. Leveraging General Transit Feed Specification (GTFS), real-time vehicle positions (GTFS-RT), and OpenStreetMap (OSM) (complemented by route-level ridership data where real-time occupancy feeds are unavailable) it harmonizes multi-source data to compute key indicators: bus frequency, available road lanes, traffic speeds, and passenger demand. The framework is applied to the Carris Metropolitana network across the Lisbon Metropolitan Area, encompassing over 4,900 km of served roads. Results show that high-frequency corridors carrying the majority of riders suffer from severe congestion and spatial constraints, with less than 1% of the network currently segregated. A multi-criteria scenario analysis demonstrates that candidate networks vary 28-fold depending on policy priorities, highlighting the trade-off between preserving private vehicle capacity and moving people. An accompanying open-source interactive dashboard operationalizes the methodology to support evidence-based urban transport planning."
 
 keywords: 
   - "Bus priority lanes"
@@ -143,13 +143,15 @@ It aims to support a more transparent and evidence-based decision-making in urba
 # Data 
 
 Characterising the several dimensions of the bus lane implementation problem involves the combination of inherently different data sources. 
-To foster a systematic and reproducible approach, we have gathered three open data sources that enable estimating the full set of relevant indicators found in the literature:
+To foster a systematic and reproducible approach, we rely primarily on open data sources that enable estimating the full set of relevant indicators found in the literature:
 
 - **General Transit Feed Specification (GTFS)**, a widely adopted open data standard to distribute planned public transport data, including route geometries (shapes) and detailed schedules for service operations, from which we can infer the frequency of buses;
 
-- **GTFS Realtime (GTFS-RT)**, an extension of GTFS that provides real-time information about how planned services perform in practice, such as vehicle position and occupation status, that can be used to determine proxies for travel speed and passenger demand;
+- **GTFS Realtime (GTFS-RT)**, an extension of GTFS that provides real-time information about how planned services perform in practice, such as vehicle positions to determine proxies for travel speed, and vehicle occupation status (`occupancy_status` or `occupancy_percentage`) where available;
 
 - **OpenStreetMap (OSM)**, a community-driven map database providing detailed information about the road network geometry and topology, including the number of lanes and the existence of bus lanes.
+
+Where real-time passenger occupancy feeds are not published or standardized within GTFS-RT, these sources can be complemented by route-level passenger counts obtained through operator APIs or automated passenger counting (APC) records, as demonstrated in our case study.
 
 # Methodology
 
@@ -398,7 +400,7 @@ Candidate road segments for the moderate scenario (S5) and existing bus lanes, l
 # Conclusion
 
 Despite its acknowledged benefits, bus lane implementation is often hampered by the lack of reliable, consistent and transparent information to support decision-making, with threshold-based approaches lacking both consensus on the values to adopt and a systematic way to compute and aggregate the underlying indicators. 
-This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM) and open-source tools to characterise the main dimensions found in the literature (bus frequency, number of lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
+This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM, complemented by route-level demand records where real-time occupancy feeds are absent) and open-source tools to characterise the main dimensions found in the literature (bus frequency, number of lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
 
 Its application to the Carris Metropolitana network, in the Lisbon Metropolitan Area, demonstrated its feasibility at a metropolitan scale and revealed a clear mismatch between bus operations and the infrastructure that supports them. 
 High-frequency services, which carry most passengers, are concentrated on slower and congested segments, most of them with a single lane per direction, while only 36.2 km (less than 1%) of the 4,927 km served have a dedicated bus lane, mostly located in the city of Lisbon and in a fragmented way.
