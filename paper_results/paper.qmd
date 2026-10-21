@@ -1,8 +1,6 @@
 ---
 title: "Bus lane prioritisation using open data with GTFS R package"
 
-date: "`r format(Sys.Date(), '%B %d, %Y')`" # %B for locale full month name
-
 author:
  - name: Gonçalo F. Matos
    email: goncaloafmatos@tecnico.ulisboa.pt
@@ -41,11 +39,15 @@ format:
       formatting: review # doubleblind
       cite-style: authoryear
     
-abstract: "..."
-    
+abstract: "Dedicated bus lanes are an effective intervention to protect transit reliability and promote modal shift. However, their implementation is often hampered by conflicts over road space allocation, fragmented infrastructure, and a lack of open, transparent, and reproducible tools to guide planning decisions. This paper presents an open methodology and software framework to identify and prioritise bus lane implementation at the road-network scale. Leveraging General Transit Feed Specification (GTFS), real-time vehicle positions (GTFS-RT), and OpenStreetMap (OSM), it harmonizes multi-source data to compute key indicators: bus frequency, available road lanes, traffic speeds, and passenger demand. The framework is applied to the Carris Metropolitana network across the Lisbon Metropolitan Area, encompassing over 4,900 km of served roads. Results show that high-frequency corridors carrying the majority of riders suffer from severe congestion and spatial constraints, with less than 1% of the network currently segregated. A multi-criteria scenario analysis demonstrates that candidate networks vary 28-fold depending on policy priorities, highlighting the trade-off between preserving private vehicle capacity and moving people. An accompanying open-source interactive dashboard operationalizes the methodology to support evidence-based urban transport planning."
+
 keywords: 
-  - "..."
-  - "..."
+  - "Bus priority lanes"
+  - "Transit prioritisation"
+  - "GTFS"
+  - "OpenStreetMap"
+  - "Open data"
+  - "Urban transport planning"
 
 ---
 
