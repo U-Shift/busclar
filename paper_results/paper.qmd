@@ -98,7 +98,7 @@ Moreover, when compared to other hard measures to contain congestion such as roa
 
 Still, it is important to acknowledge that their benefits can be hampered or leveraged by their design and implementation. For instance, performance has been found to degrade when right-turns are allowed [@diab_understanding_2012]. 
 On the other hand, pre-signals [@wu_bus_1998] enable a localized improvement of bus lane performance at intersections, while a continuous network of bus lanes has been found to generate a "multiplier effect" on the benefits induced. 
-@truong-2015 has found that "travel time benefits and general traffic travel time disbenefits are proportional to the number of links with a bus lane", with sparse segments even having a negative effect on buses under certain circumstances.
+@truong-2015 have found that "travel time benefits and general traffic travel time disbenefits are proportional to the number of links with a bus lane", with sparse segments even having a negative effect on buses under certain circumstances.
 
 
 ## Obstacles to bus lane implementation
@@ -253,9 +253,9 @@ The wide geographical coverage combined with the availability of such rich opera
 
 ## Results
 
-The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries, for a working day^[20/05/2026], by @gtfshift_paper_method, and considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips. 
+The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries for a working day (20 May 2026) by @gtfshift_paper_method, considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips. 
 Passenger demand was collected for the same day.
-Additionally, a GTFS-RT dataset covering 14 business days^[13-30/04/2026] across operating hours was used to calculate the speed-related metrics. This multi-day aggregation smooths out localized daily incidents and guarantees adequate observation counts on low-frequency suburban links, reflecting persistent baseline travel conditions across the metropolitan network. 
+Additionally, a GTFS-RT dataset covering 14 business days (13–30 April 2026) across operating hours was used to calculate the speed-related metrics. This multi-day aggregation smooths out localized daily incidents and guarantees adequate observation counts on low-frequency suburban links, reflecting persistent baseline travel conditions across the metropolitan network. 
 The results for the dimensions analysed are synthesised in @tbl-results and complemented by the maps presented in @fig-results-maps. 
 
 | Metric \ Dimension | Bus frequency (n, by length) | Nr lanes (n, by length) | Nr lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
