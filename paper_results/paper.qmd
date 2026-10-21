@@ -340,7 +340,7 @@ These represent manageable intervention packages, expanding the existing 36.2 km
 ::: {.content-visible unless-format="html"}
 \begin{quote}
 \footnotesize
-\textbf{Notes:} Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in @tbl-results.
+\textbf{Notes:} Bus frequency for peak hour (8:00). Served network of 4,927 km. Speed and demand thresholds correspond to the frequency-weighted P25/P50 and P50/P75 values in Table 1.
 \end{quote}
 :::
 
