@@ -71,9 +71,10 @@ They also contribute to a more equitable mobility. Considering the number of peo
 However, introducing them on road infrastructure still hampers other modes, such as private vehicles, which may experience a decrease in the level of service due to reduced allocated space [@arasan-2010], potentially jeopardizing public acceptance [@batty-2014]. It is therefore crucial to base bus lane implementation on reliable and robust information. 
 
 To tackle this challenge, we present an open and reproducible methodology to identify and prioritise bus lane implementation. 
-Founded on GTFS, OpenStreetMap (OSM) open data, and leveraging a methodology to harmonise these data sources developed by the authors [@gtfshift_paper_method], it enables overcoming the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. 
-This methodology is implemented using [`GTFShift`](https://u-shift.github.io/GTFShift/), an open-source R package that operationalizes the full pipeline, from data ingestion to prioritisation output. 
+Founded on GTFS and OpenStreetMap (OSM) open data, and leveraging the data harmonisation tools provided by the `GTFShift` R package [@matos_gtfshift_2026], this approach overcomes the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. 
+`GTFShift` operationalizes the full pipeline, from data ingestion to prioritisation output. 
 This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
+
 
 
 # Literature review
@@ -135,7 +136,7 @@ Together, they build up a thorough set of indicators:
 
 However, they vary in complexity and applicability. Performance-based methods are the most comprehensive, but also the most complex, requiring more data and computational resources. They are also more difficult to implement and understand, which may limit their applicability in decision making processes and communication campaigns, which are key to ensure public acceptance and support for bus lane implementation [@cesme2018].
 
-On the other hand, despite the simplicity of threshold methods, there is no consensus on the threshold values to be used, nor yet a systematic and open approach for their processing and aggregation, an issue that may lead to inconsistent and non-reproducible results as authors report mismatches between different data sources [@vuurstaek_gtfs_2020; @gtfshift_paper_method].
+On the other hand, despite the simplicity of threshold methods, there is no consensus on the threshold values to be used, nor yet a systematic and open approach for their processing and aggregation, an issue that may lead to inconsistent and non-reproducible results as authors report mismatches between different data sources [@vuurstaek_gtfs_2020].
 
 This paper aims to tackle this gap by proposing a methodology that leverages open data and open-source tools to characterise and harmonise the several dimensions relevant to the bus lane implementation problem, enabling a deep analysis and understanding of the local context before applying any potential threshold values, that can be adjusted by the public decision-makers to their specific needs. 
 It aims to support a more transparent and evidence-based decision-making in urban transport planning.
@@ -155,14 +156,14 @@ Where real-time passenger occupancy feeds are not published or standardized with
 
 # Methodology
 
-The methodology presented in this paper leverages previous work by the authors that enables the harmonisation of GTFS shapes with OSM road network geometries, improving the spatial accuracy of bus route representation and unlocking a wide range of spatial analysis through the relation between the public transport network and the built infrastructure [@gtfshift_paper_method].
+The methodology presented in this paper leverages the `GTFShift` R package [@matos_gtfshift_2026] to harmonise GTFS shapes with OSM road network geometries, improving the spatial accuracy of bus route representation and unlocking network-wide spatial analysis.
 
-Bus lane prioritisation is one of its possible use cases. To apply the methodology to this end, the codebase previously developed and made available at the GTFShift R package, has been extended with several methods to collect and process the several dimensions of this problem, and gather them at the OSM road network level, enabling a comprehensive analysis of the conditions on the road network and the evaluation and weighting of the produced indicators according to the local context for bus lane implementation. 
+For bus lane prioritisation, this pipeline integrates multiple operational and infrastructural indicators at the OSM road segment level, enabling a comprehensive assessment of network conditions and the context-sensitive weighting of candidate interventions. 
 The data sources and processing flow are schematically presented in @fig-method-diagram, and further detailed in the following subsections.
 
 ![Data sources and processing flow (GTFS logos generated with AI for illustrative purposes)](figures/methods/diagram.png){#fig-method-diagram width="90%"}
 
-It is important to disclose the assumption that the geometrical match between GTFS shapes and OSM road network geometries has been performed and OSM route relations have been updated accordingly, with `gtfs:route_id` and `gtfs:shape_id` tags, enabling a direct match between these data sources. This assumption prevents the duplication of the methodology presented in the previous paper and allows a greater focus on the application of the methodology to the bus lane prioritisation problem.
+It is important to disclose the assumption that the geometrical match between GTFS shapes and OSM road network geometries has been performed and OSM route relations have been updated accordingly, with `gtfs:route_id` and `gtfs:shape_id` tags, enabling a direct match between these data sources. This workflow is fully supported by `GTFShift` and documented in the package vignette^[See [u-shift.github.io/GTFShift/articles/osm_update.html](https://u-shift.github.io/GTFShift/articles/osm_update.html)]. Relying on this established harmonisation pipeline allows this paper to focus directly on the bus lane prioritisation framework and indicator formulation.
 
 ## Bus frequency
 
@@ -253,7 +254,7 @@ The wide geographical coverage combined with the availability of such rich opera
 
 ## Results
 
-The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries for a working day (20 May 2026) by @gtfshift_paper_method, considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips. 
+The case study analysis was built upon the harmonisation results of GTFS shapes and OSM road network geometries for a working day (20 May 2026) using `GTFShift` [@matos_gtfshift_2026], considering a match of 92.76% of the GTFS shapes with OSM route relations, corresponding to 96.35% of the trips ^[The harmonised dataset is archived and openly available at [doi.org/10.5281/zenodo.24200367](https://doi.org/10.5281/zenodo.24200367)]. 
 Passenger demand was collected for the same day.
 Additionally, a GTFS-RT dataset covering 14 business days (13–30 April 2026) across operating hours was used to calculate the speed-related metrics. This multi-day aggregation smooths out localized daily incidents and guarantees adequate observation counts on low-frequency suburban links, reflecting persistent baseline travel conditions across the metropolitan network. 
 The results for the dimensions analysed are synthesised in @tbl-results and complemented by the maps presented in @fig-results-maps. 
