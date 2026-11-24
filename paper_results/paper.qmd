@@ -422,6 +422,7 @@ Candidate road segments for the moderate scenario (S5) and existing bus lanes, l
 
 Despite its acknowledged benefits, bus lane implementation is often hampered by the lack of reliable, consistent and transparent information to support decision-making, with threshold-based approaches lacking both consensus on the values to adopt and a systematic way to compute and aggregate the underlying indicators. 
 This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM, complemented by route-level demand records where real-time occupancy feeds are absent) and open-source tools to characterise the main dimensions found in the literature (bus frequency, number of available lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
+Together, these indicators enable the evidence-based prioritisation of interventions to expand the bus lane network.
 
 Its application to the Carris Metropolitana network, in the Lisbon Metropolitan Area, demonstrated its feasibility at a metropolitan scale and revealed a clear mismatch between bus operations and the infrastructure that supports them. 
 High-frequency services, which carry most passengers, are concentrated on slower and congested segments, most of them with a single lane per direction, while only 36.2 km (less than 1%) of the 4,927 km served have a dedicated bus lane, mostly located in the city of Lisbon and in a fragmented way.
@@ -432,9 +433,15 @@ This highlights that the choice of thresholds is not merely technical, but refle
 By making each dimension explicit and measurable, the proposed methodology enables decision-makers to explore these trade-offs transparently, identifying manageable intervention packages and corridors that close gaps in the existing network, as well as to assess the performance of existing bus lanes and detect where complementary measures, such as enforcement or signal priority, are needed.
 
 To bridge the gap between technical data processing and practical decision-making, an interactive web dashboard was also developed^[Available online at [ushift.pt/apps/gtfshift](https://ushift.pt/apps/gtfshift), with source code available at [github.com/U-Shift/GTFShift-web](https://github.com/U-Shift/GTFShift-web).] (@fig-dashboard-print). 
-It provides an accessible platform for transport planners, policymakers, and stakeholders to interactively inspect candidate road segments, tune multi-criteria thresholds dynamically, and visualize the resulting priority networks without requiring programming skills.
+It provides an accessible platform for transport planners, policymakers, and stakeholders to dynamically tune multi-criteria thresholds, explore the resulting priority networks (@fig-dashboard-overview), and inspect individual road segments in detail (including their OSM attributes, harmonised indicator values, associated bus routes, and 24-hour service profiles) (@fig-dashboard-way) without requiring programming skills.
 
-![GTFShift web dashboard](figures/dashboard/print.png){#fig-dashboard-print}
+::: {layout="[[100], [100]]" #fig-dashboard-print}
+![Network-wide view and interactive multi-criteria prioritisation filters](figures/dashboard/print.png){#fig-dashboard-overview}
+
+![Segment-level detail panel showing OSM attributes, harmonised indicators, associated routes, and hourly profiles](figures/dashboard/print_way.png){#fig-dashboard-way}
+
+GTFShift interactive web dashboard
+:::
 
 Some limitations should be acknowledged. 
 The methodology relies on the quality and completeness of OSM data, namely regarding the number of available lanes and existing bus lanes, for which default values are assumed when tags are missing. 
@@ -444,7 +451,8 @@ Finally, network continuity was used as an interpretation layer rather than as a
 
 Future work should address these limitations by integrating occupancy data from GTFS-RT feeds and stop-level boarding and alighting counts, exploring hour-specific speed profiles for corridors with high vehicle update density, combining multiple operators, and explicitly incorporating network continuity in the selection process, for instance by aggregating segments into corridors. 
 The indicators produced can also feed performance-based approaches, evaluating the impacts of candidate scenarios on all road users. 
-Being built upon widely available open data standards and accompanied by open-source tooling, the methodology and dashboard can be readily replicated in other urban regions, contributing to a more transparent, reproducible and evidence-based planning of bus priority measures.
+Being built upon widely available open data standards and accompanied by open-source tooling, the methodology and dashboard can be readily replicated in other urban regions, providing a solid basis for informed decision-making and transparent, reproducible planning of bus priority measures. 
+Ultimately, expanding and implementing dedicated bus lanes is a key intervention to improve service reliability and punctuality, reducing user frustration, strengthening confidence in the system, and helping to attract more passengers to public transport [@surprenant-legault-2011; @russo_dedicated_2022; @vedagiri_estimating_2009].
 
 # Acknowledgment {.unnumbered}
 
