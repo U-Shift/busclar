@@ -114,13 +114,13 @@ These factors, combined with the other pros and cons discussed and their inheren
 
 The literature presents several approaches to identify and prioritise bus lane implementation at a strategic level, that can be gathered in two main categories: threshold- and performance-based.
 
-Threshold-based approaches imply an a-priori definition of a set of criteria that must be met to justify the implementation of a bus lane. For instance, @vuchic1981 advocates that bus lanes should be implemented based on the number of lanes, vehicle volume per lane, ratio of average auto to bus occupancies and bus frequency per hour, combined in @fig-vuchic-criteria. 
+Threshold-based approaches imply an a-priori definition of a set of criteria that must be met to justify the implementation of a bus lane. For instance, @vuchic1981 advocates that bus lanes should be implemented based on the number of available lanes, vehicle volume per lane, ratio of average auto to bus occupancies and bus frequency per hour, combined in @fig-vuchic-criteria. 
 In this figure we can observe, for instance, that for a street with 2 lanes ($N$) and 400 veh/h/lane ($q_A$) with a ratio of average auto to bus occupancies of 0.03 ($X$), the minimum bus frequency to justify its implementation is considered to be 12 bus/h ($q_B$).
 
 ![Travel volume warrant for bus lane introduction [@vuchic1981]](figures/lr/vuchinc.png){#fig-vuchic-criteria width=65%}
 
 In a similar way, @nacto2016transit recommends that dedicated bus lanes should be applied "on major routes with frequent headways (10 minutes at peak) or where traffic congestion may significantly affect reliability". 
-A review by @uk_study_2005 on the state of the practice in Korea, United Kingdom and United States of America revealed additional criteria, such as the passenger volume (per hour) and the number of lanes (per direction).
+A review by @uk_study_2005 on the state of the practice in Korea, United Kingdom and United States of America revealed additional criteria, such as the passenger volume (per hour) and the number of available lanes (per direction).
 
 Conversely, performance-based methods propose optimization models to evaluate the system as a whole, considering the effects of bus lane implementation on all modes and the overall efficiency of the transport system. 
 For instance, @sun_combinatorial_2017 developed a multi-objective bi-level programming model to simultaneously optimize bus lane layout and bus frequency while minimizing travel time, emissions, and operating costs. 
@@ -129,7 +129,7 @@ Similarly, @tsitsokas_modeling_2021 employ combinatorial optimization and dynami
 Together, they build up a thorough set of indicators:
 
 - Frequency of buses per hour and direction, at a peak hour [@uk_study_2005; @vuchic1981; @nacto2016transit; @tsitsokas_modeling_2021];
-- Number of lanes in the same direction [@uk_study_2005; @vuchic1981];
+- Number of available lanes in the same direction [@uk_study_2005; @vuchic1981];
 - Traffic conditions [@uk_study_2005; @vuchic1981];
 - Bus lanes network continuity [@tsitsokas_modeling_2021];
 - Passenger demand [@uk_study_2005; @tsitsokas_modeling_2021] or detailed OD travel demand [@sun_combinatorial_2017; @tsitsokas_modeling_2021].
@@ -150,7 +150,7 @@ To foster a systematic and reproducible approach, we rely primarily on open data
 
 - **GTFS Realtime (GTFS-RT)**, an extension of GTFS that provides real-time information about how planned services perform in practice, such as vehicle positions to determine proxies for travel speed, and vehicle occupation status (`occupancy_status` or `occupancy_percentage`) where available;
 
-- **OpenStreetMap (OSM)**, a community-driven map database providing detailed information about the road network geometry and topology, including the number of lanes and the existence of bus lanes.
+- **OpenStreetMap (OSM)**, a community-driven map database providing detailed information about the road network geometry and topology, including the number of available lanes and the existence of bus lanes.
 
 Where real-time passenger occupancy feeds are not published or standardized within GTFS-RT, these sources can be complemented by route-level passenger counts obtained through operator APIs or automated passenger counting (APC) records, as demonstrated in our case study.
 
@@ -179,7 +179,7 @@ $$F(w, h) = \sum_{s \in \mathcal{S}_w} f(s, h)$$
 
 where $f(s, h) = \left| \{ \tau \in T_D \mid s(\tau)=s, \; h(\tau)=h \} \right|$ is the number of trips using shape $s$ that depart at hour $h$, and $\mathcal{S}_w = \{s \in \mathcal{S} \mid m_{s,w}=1\}$ is the set of GTFS shapes map-matched to segment $w$ using `GTFShift::osm_shapes_to_routes()`, where $m_{s,w}=1$ indicates that shape $s$ traverses segment $w$. 
 
-## Number of lanes
+## Number of available lanes
 
 To evaluate road space availability for dedicated bus lane prioritisation, the number of circulation lanes per direction is derived from OpenStreetMap (OSM) attributes using `GTFShift::prioritise_lanes()`.
 
@@ -259,7 +259,7 @@ Passenger demand was collected for the same day.
 Additionally, a GTFS-RT dataset covering 14 business days (13–30 April 2026) across operating hours was used to calculate the speed-related metrics. This multi-day aggregation smooths out localized daily incidents and guarantees adequate observation counts on low-frequency suburban links, reflecting persistent baseline travel conditions across the metropolitan network. 
 The results for the dimensions analysed are synthesised in @tbl-results and complemented by the maps presented in @fig-results-maps. 
 
-| Metric \ Dimension | Bus frequency (n, by length) | Nr lanes (n, by length) | Nr lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
+| Metric \ Dimension | Bus frequency (n, by length) | Available lanes (n, by length) | Available lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
 | :---- | --: | --: | --: | --: | --: | --: | --: |
 | Mean ± SD | 6.86 ± 7.26 | 1.32 ± 0.70 | 1.27 ± 0.66 | 34.50 ± 19.30 | 25.51 ± 13.84 | 2,493 ± 3,642 | 5,190 ± 6,154 |
 | Min | 1.00 | 1.00 | 1.00 | 0.00 | 0.00 | 0 | 0 |
@@ -278,7 +278,7 @@ Together, they reveal interesting patterns regarding bus operations and its rela
 On average, road segments carry a scheduled bus frequency of 6.86 buses/h (median of 4.00 buses/h), with highest values concentrated at the main accesses to the city of Lisbon, as well as in inner urban consolidated areas, such as the municipalities of Amadora, Almada, Odivelas, Oeiras, Seixal, Sesimbra or Setúbal (@fig-results-map-frequency).
 
 However, these services are executed on a road network with limited capacity. 
-The mean number of lanes per direction is 1.32 (1.27 when weighted by frequency), with all percentile values indicating that most segments have only one lane available per direction. @fig-results-map-nr-lanes illustrates this reality, with most of the network represented in purple, especially outside the main access corridors to the city of Lisbon.
+The mean number of available lanes per direction is 1.32 (1.27 when weighted by frequency), with all percentile values indicating that most segments have only one lane per direction. @fig-results-map-nr-lanes illustrates this reality, with most of the network represented in purple, especially outside the main access corridors to the city of Lisbon.
 
 Comparing spatial (by segment length) and operational (by bus frequency) aggregations reveals key performance dynamics. 
 Most notably, operating speeds drop substantially when weighted by bus frequency: 
@@ -292,7 +292,7 @@ Finally, from a network continuity perspective, @fig-results-map-bus-lanes revea
 ::: {layout="[[50,-1,50], [50,-1,50], [-25,50,-25]]" #fig-results-maps}
 ![Bus frequency for peak hour (8:00)](figures/results/frequency.png){#fig-results-map-frequency}
 
-![Number of lanes*](figures/results/nr_lanes_w_frequency.png){#fig-results-map-nr-lanes}
+![Number of available lanes*](figures/results/nr_lanes_w_frequency.png){#fig-results-map-nr-lanes}
 
 ![Bus lanes](figures/results/bus_lanes.png){#fig-results-map-bus-lanes}
 
@@ -310,16 +310,16 @@ These findings emphasize that high-frequency bus corridors carry the overwhelmin
 ## Prioritisation
 
 The indicators produced allow road segments to be filtered by any combination of thresholds. Since there is no consensus in the literature on the values to adopt, six scenarios were defined to explore how different criteria shape the set of candidate segments (@tbl-scenarios), with the results summarised in @tbl-scenarios-results. 
-Bus frequency and number of lanes thresholds were derived from the literature, namely the 10-minute peak headway recommended by @nacto2016transit (6 bus/h) and the order of magnitude suggested by @vuchic1981 for multi-lane streets (12 bus/h with 2 lanes per direction). 
+Bus frequency and number of available lanes thresholds were derived from the literature, namely the 10-minute peak headway recommended by @nacto2016transit (6 bus/h) and the order of magnitude suggested by @vuchic1981 for multi-lane streets (12 bus/h with 2 lanes per direction). 
 Speed and passenger demand thresholds, in turn, were derived from the local context, using the frequency-weighted percentiles reported in @tbl-results.
 
 Scenario S1 represents a service-level baseline, upon which S2 to S4 each add a single dimension, isolating its individual effect: space availability (S2), reliability and congestion (S3) and passenger demand (S4). 
-S3 and S4 deliberately omit the number of lanes, following the principle of prioritising the movement of people over vehicles, even if it implies converting the only general traffic lane. 
+S3 and S4 deliberately omit the number of available lanes, following the principle of prioritising the movement of people over vehicles, even if it implies converting the only general traffic lane. 
 Finally, S5 and S6 combine all dimensions, under moderate and strict thresholds, respectively.
 
 The results reveal a high sensitivity of the outcome to the criteria adopted, with candidate length ranging from 1,399.1 km (S1) to 49.7 km (S6), a 28-fold difference. 
 Frequency alone (S1) is a weak discriminator, selecting more than a quarter of the served network, and adding passenger demand (S4) barely changes it (-10%), confirming that high-frequency segments are also those carrying most passengers. 
-Conversely, speed (S3) and number of lanes (S2) are the most restrictive dimensions, reducing the candidate set by 81% and 86%, respectively. 
+Conversely, speed (S3) and number of available lanes (S2) are the most restrictive dimensions, reducing the candidate set by 81% and 86%, respectively. 
 This reflects the space constraints identified in the previous section: most congested, high-frequency segments have a single lane per direction, so requiring a remaining general traffic lane excludes much of the network where buses would benefit the most.
 
 When all dimensions are combined, the candidate network shrinks to 108.5 km (S5) and 49.7 km (S6), of which 80.3 km and 21.5 km, respectively, do not yet have a bus lane. 
@@ -329,7 +329,7 @@ This tension between traffic capacity preservation and transit delay highlights 
 
 
 
-| Scenario | Rationale | Frequency (bus/h) | Lanes/dir | Speed (km/h) | Demand (pax/day) |
+| Scenario | Rationale | Frequency (bus/h) | Available lanes/dir | Speed (km/h) | Demand (pax/day) |
 | :-- | :----- | ----: | --: | ---: | ----: |
 | S1 | Service level | $\geq$ 6 | -- | -- | -- |
 | S2 | Space availability | $\geq$ 12 | $\geq$ 2 | -- | -- |
@@ -399,7 +399,7 @@ Still, some relevant axes can be identified, such as Avenida 1º de Maio in Seix
 These corridors, rather than isolated segments, should be the focus of implementation, possibly extending the intervention to adjacent segments that do not strictly meet all thresholds, in order to ensure continuous and effective bus priority.
 
 The same criteria can also be used to assess the performance of existing bus lanes. 
-Segments with a bus lane that meet the frequency, lanes and demand thresholds while operating above the speed threshold (in green in @fig-cs-local) can be considered effective, as the priority given is translating into faster bus operations. 
+Segments with a bus lane that meet the frequency, available lanes and demand thresholds while operating above the speed threshold (in green in @fig-cs-local) can be considered effective, as the priority given is translating into faster bus operations. 
 In contrast, existing bus lanes that fail at least one of the criteria (in yellow) are not yet delivering the expected performance, as is the case of the corridor between Areeiro and Alameda das Comunidades Portuguesas or several segments in Lumiar, in Lisbon. 
 Where this is due to low operating speeds, it may reveal design or operational issues, such as illegal parking, permitted turning movements [@diab_understanding_2012], conflicts at intersections or a lack of continuity [@truong-2015], calling for complementary measures such as enforcement, signal priority or the extension of the bus lane to adjacent segments. 
 Where it is due to low frequency or demand, it should be noted that only Carris Metropolitana services were considered, while these segments may also be used by other operators, namely Carris in the city of Lisbon.
@@ -421,13 +421,13 @@ Candidate road segments for the moderate scenario (S5) and existing bus lanes, l
 # Conclusion
 
 Despite its acknowledged benefits, bus lane implementation is often hampered by the lack of reliable, consistent and transparent information to support decision-making, with threshold-based approaches lacking both consensus on the values to adopt and a systematic way to compute and aggregate the underlying indicators. 
-This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM, complemented by route-level demand records where real-time occupancy feeds are absent) and open-source tools to characterise the main dimensions found in the literature (bus frequency, number of lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
+This paper addressed this gap by proposing a methodology that leverages open data (GTFS, GTFS-RT and OSM, complemented by route-level demand records where real-time occupancy feeds are absent) and open-source tools to characterise the main dimensions found in the literature (bus frequency, number of available lanes, network continuity, traffic conditions and passenger demand) and harmonise them at the road segment level.
 
 Its application to the Carris Metropolitana network, in the Lisbon Metropolitan Area, demonstrated its feasibility at a metropolitan scale and revealed a clear mismatch between bus operations and the infrastructure that supports them. 
 High-frequency services, which carry most passengers, are concentrated on slower and congested segments, most of them with a single lane per direction, while only 36.2 km (less than 1%) of the 4,927 km served have a dedicated bus lane, mostly located in the city of Lisbon and in a fragmented way.
 
 The scenario analysis further showed that the outcome of any prioritisation exercise is highly sensitive to the criteria adopted, with candidate networks ranging from 1,399.1 km to 49.7 km. 
-Frequency and passenger demand alone are weak discriminators, while speed and the number of lanes are the most restrictive dimensions. 
+Frequency and passenger demand alone are weak discriminators, while speed and the number of available lanes are the most restrictive dimensions. 
 This highlights that the choice of thresholds is not merely technical, but reflects political choices, namely whether to preserve general traffic capacity or to prioritise the movement of people, even at the cost of converting the only available general traffic lane. 
 By making each dimension explicit and measurable, the proposed methodology enables decision-makers to explore these trade-offs transparently, identifying manageable intervention packages and corridors that close gaps in the existing network, as well as to assess the performance of existing bus lanes and detect where complementary measures, such as enforcement or signal priority, are needed.
 
@@ -437,7 +437,7 @@ It provides an accessible platform for transport planners, policymakers, and sta
 ![GTFShift web dashboard](figures/dashboard/print.png){#fig-dashboard-print}
 
 Some limitations should be acknowledged. 
-The methodology relies on the quality and completeness of OSM data, namely regarding the number of lanes and existing bus lanes, for which default values are assumed when tags are missing. 
+The methodology relies on the quality and completeness of OSM data, namely regarding the number of available lanes and existing bus lanes, for which default values are assumed when tags are missing. 
 Passenger demand was aggregated from route-level daily counts, potentially overestimating segment loads, as it assumes that all passengers on a route traverse every segment. 
 Speeds were derived from bus positions rather than general traffic conditions, and aggregated across weekday operating hours rather than isolated strictly to the 08:00 peak hour. While this guarantees statistical robustness across segments with lower headways, it provides a conservative estimate of congestion by averaging peak and off-peak operating speeds. Furthermore, only Carris Metropolitana services were considered, while other operators also use part of the network, particularly in Lisbon. 
 Finally, network continuity was used as an interpretation layer rather than as a selection criterion.
