@@ -1,5 +1,5 @@
 ---
-title: "Bus lane prioritisation using open data with the GTFShift R package"
+title: "GTFShift: A decision support tool for bus lane prioritization using open data"
 
 author:
  - name: Gonçalo F. Matos
@@ -73,7 +73,7 @@ However, introducing them on road infrastructure still hampers other modes, such
 To tackle this challenge, we present an open and reproducible methodology to identify and prioritise bus lane implementation. 
 Founded on GTFS and OpenStreetMap (OSM) open data, and leveraging the data harmonisation tools provided by the `GTFShift` R package [@matos_gtfshift_2026], this approach overcomes the technical challenges of bus network aggregation and its integration with road network data and traffic conditions, providing a thorough set of indicators to support decision-making. 
 `GTFShift` operationalizes the full pipeline, from data ingestion to prioritisation output. 
-This paper presents the methodology behind it and its application to the Lisbon Metropolitan Area, in Portugal, as a case study.
+This paper presents the methodology behind it and its results when applied to the Lisbon Metropolitan Area, in Portugal, as a case study.
 
 
 
@@ -261,11 +261,12 @@ The results for the dimensions analysed are synthesised in @tbl-results and comp
 
 | Metric \ Dimension | Bus frequency (n, by length) | Nr lanes (n, by length) | Nr lanes (n, by frequency) | Speed (km/h, by length) | Speed (km/h, by frequency) | Passenger demand (n, by length) | Passenger demand (n, by frequency) | 
 | :---- | --: | --: | --: | --: | --: | --: | --: |
-| Mean | 6.86 | 1.32 | 1.27 | 34.50 | 25.51 | 2,493 | 5,190 |
-| SD | 7.26 | 0.70 | 0.66 | 19.30 | 13.84 | 3,642 | 6,154 |
+| Mean ± SD | 6.86 ± 7.26 | 1.32 ± 0.70 | 1.27 ± 0.66 | 34.50 ± 19.30 | 25.51 ± 13.84 | 2,493 ± 3,642 | 5,190 ± 6,154 |
+| Min | 1.00 | 1.00 | 1.00 | 0.00 | 0.00 | 0 | 0 |
 | P25 | 2.00 | 1.00 | 1.00 | 20.99 | 17.04 | 304 | 922 |
-| P50 | 4.00 | 1.00 | 1.00 | 28.96 | 21.80 | 1,123 | 2,971 |
+| P50 (Median) | 4.00 | 1.00 | 1.00 | 28.96 | 21.80 | 1,123 | 2,971 |
 | P75 | 9.00 | 1.00 | 1.00 | 41.43 | 29.86 | 3,263 | 6,949 |
+| Max | 83.00 | 11.00 | 11.00 | 100.96 | 100.96 | 32,769 | 32,769 |
 : Dimension specific results {#tbl-results}
 
 \begin{quote}
